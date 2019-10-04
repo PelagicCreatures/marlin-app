@@ -1,0 +1,13 @@
+header.mdc-top-app-bar.mdc-top-app-bar--fixed
+	div.mdc-top-app-bar__row
+		section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-start
+			a.material-icons.mdc-top-app-bar__navigation-icon(href="#") menu
+
+			#page-title.mdc-top-app-bar__title(data-hijax="true")
+				span= title
+
+			section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-end.hidden-logged-out
+				.position-relative
+					.show-notifications-button.material-icons.mdc-top-app-bar__action-item
+						i.fa.fa-fw.fa-bell
+					.badge.activity-count

@@ -1,0 +1,29 @@
+extends wrapper
+
+block content
+	.row
+		.col-sm-1
+		.col-sm-10.content-area
+			.page-header
+				h1 Change Email Address
+				
+			form.form(action="/api/users/change-email" method="POST" data-jsclass="formValidator,regForm" data-submitter="#submitter")
+				
+				.form-group
+					label New Email Address
+					input.form-control(name="email" data-validate="required,email" data-unique-endpoint= "/api/users/is-unique?field=email")
+					.validation-help
+						
+				.form-group
+					label Confirm New Email Address
+					input.form-control(name="confirm-email" data-validate="required,email" data-match="input[name='email']")
+					.validation-help
+						
+				.form-group
+					button#submitter.btn.btn-primary Save
+				
+				p After you click "save" we will send a new validation message to your new email address. Follow the link in the email to complete this process.
+					
+				.ajax-errors
+					
+		.col-sm-1

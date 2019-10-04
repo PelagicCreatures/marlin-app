@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
+    link(rel="shortcut icon" href="/favicon.ico")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no, minimal-ui, viewport-fit=cover")
+    meta(name="apple-mobile-web-app-capable" content="yes")
+    meta(name="apple-mobile-web-app-status-bar-style" content="black")
+    meta(name="apple-mobile-web-app-title" content="UserApp")
+    meta(name="format-detection" content="telephone=no")
+    link(rel="apple-touch-icon" href="/images/logo.png")
+
+    title= title
+    if env === 'production'
+      link(rel='stylesheet', href='/dist/css/userapp.min.css')
+    else
+      link(rel='stylesheet', href='/dist/css/userapp.css')
+    
+    link(href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet')
+        
+  body.mdc-typography
+
+    include components/drawer
+
+    .mdc-drawer-app-content
+      
+      include components/navigation
+      
+      include components/modals
+
+      block content
+    
+    block fab
+      
+    if env === 'production'
+      script(src="/dist/js/userapp.min.js")
+    else
+      script(src="/dist/js/userapp.js")

@@ -1,0 +1,23 @@
+aside#nav-drawer.mdc-drawer.mdc-drawer--dismissible
+	.mdc-drawer__header.hidden-logged-out
+		.mdc-drawer__header-content.text-center
+			if user
+				a(href=user ? '/' + user.username : "/profile")= user.username
+
+	.mdc-drawer__content
+		nav.mdc-list
+			.hidden-logged-in
+				a.nav-item.mdc-list-item.toggle-modal(href="#" data-target="#register-form")
+					i.material-icons account_circle
+					|  Create Account
+				a.nav-item.mdc-list-item.toggle-modal(href="#" data-target="#login-form")
+					i.material-icons account_circle
+					|  Login
+
+			.hidden-logged-out
+				a.nav-item.mdc-list-item(href="/settings" data-toggle="tooltip" title="Your Settings." data-placement="bottom")
+					i.material-icons settings_applications
+					|  Settings
+				a.nav-item.mdc-list-item(href="" data-jsclass="logoutController") Logout
+
+.mdc-drawer-scrim

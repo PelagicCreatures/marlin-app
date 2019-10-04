@@ -1,0 +1,47 @@
+extends wrapper
+
+block content
+	.row
+		.col-sm-1
+		.col-sm-10.content-area
+			.page-header
+				h1 User Registration 
+							
+			form.form(action="/api/users/register" method="POST" data-jsclass="formValidator,regForm" data-submitter="#submitter")
+						
+				.form-group
+					label Email Address
+					input.form-control(name="email" data-validate="required,email"  data-unique-endpoint= "/api/users/is-unique?field=email")
+					.validation-help
+						
+				.form-group
+					label Confirm Email Address
+					input.form-control(name="confirm-email" data-validate="required,email" data-match="input[name='email']")
+					.validation-help
+						
+				.form-group
+					label Password
+					input.form-control(type="password" name="password" data-validate="required,password" data-min-length="8")
+					.validation-help
+						
+				.form-group
+					label Confirm Password
+					input.form-control(type="password" name="confirm-password" data-validate="required,password" data-match="input[name='password']" placeholder="confirm password")
+					.validation-help
+
+				.form-group
+					label Username - set your unique name
+					input.form-control(name="username" data-validate="required" placeholder="letter, numbers and dash only" data-max-length="20" data-mask="^[a-zA-Z0-9-]+$" data-mask-error-prompt="only letters numbers and hyphen" data-unique-endpoint= "/api/users/is-unique?field=username")
+					.validation-help
+				
+				.form-group
+					button#submitter.btn.btn-primary  Sign Up
+					
+				.ajax-errors
+					
+				p <strong>NOTE:</strong> After you click "Sign Up" we will send a new validation message to your new email address. Follow the link in the email to complete this process.
+				
+				p
+					a(href="/users/login") Already have an account
+					
+		.col-sm-1
