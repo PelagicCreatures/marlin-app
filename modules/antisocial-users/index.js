@@ -37,6 +37,7 @@ module.exports = (options, app, db) => {
 	}
 
 	require('./routes/register.js')(usersApp);
+	require('./routes/login.js')(usersApp);
 
 	debug('mounting users API on ' + usersApp.options.MOUNTPOINT);
 

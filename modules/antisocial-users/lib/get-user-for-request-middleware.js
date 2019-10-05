@@ -116,6 +116,5 @@ function touchToken(db, token, cb) {
 	});
 }
 
-export {
-	getUserForRequestMiddleware, validateToken
-};
+module.exports.getUserForRequestMiddleware = getUserForRequestMiddleware;
+module.exports.validateToken = validateToken;

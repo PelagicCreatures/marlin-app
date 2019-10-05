@@ -4,7 +4,7 @@ const $ = App.jQuery;
 
 const cookieOptions = {
 	path: '/',
-	domain: document.Location.hostname
+	domain: document.location.hostname
 }
 
 function didLogIn() {

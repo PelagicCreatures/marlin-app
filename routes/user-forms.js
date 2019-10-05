@@ -1,13 +1,11 @@
-import {
-	getUserForRequestMiddleware
-}
-from('./modules/antisocial-users/lib/get-user-for-request-middleware')
 const express = require('express');
 const router = express.Router();
 
+const getUserForRequestMiddleware = require('../modules/antisocial-users/lib/get-user-for-request-middleware').getUserForRequestMiddleware;
+
 module.exports = function mount(userAPI) {
 
-	router.get('/users/register', sessions, getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/register', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (req.antisocialUser) {
 			return res.redirect('/users/home');
 		}
