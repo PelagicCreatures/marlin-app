@@ -36,8 +36,14 @@ module.exports = (options, app, db) => {
 		}
 	}
 
+	require('./routes/is-unique.js')(usersApp);
 	require('./routes/register.js')(usersApp);
 	require('./routes/login.js')(usersApp);
+	require('./routes/logout.js')(usersApp);
+	require('./routes/change-email.js')(usersApp);
+	require('./routes/password-reset.js')(usersApp);
+	require('./routes/password-set.js')(usersApp);
+	require('./routes/validate-email.js')(usersApp);
 
 	debug('mounting users API on ' + usersApp.options.MOUNTPOINT);
 
