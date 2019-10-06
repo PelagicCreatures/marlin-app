@@ -35,7 +35,7 @@ html
       
       include components/modals
 
-      .top-margin
+      #content-body.top-margin(data-hijax="true")
         .mdc-layout-grid
           .mdc-layout-grid__inner
             .mdc-layout-grid__cell--span-12
@@ -54,5 +54,4 @@ html
       script(src="/dist/js/userapp.js")
         
     script.
-      var Modernizr = {};
       $(document).ready(function() { boot(); });
