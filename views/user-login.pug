@@ -1,33 +1,37 @@
 extends wrapper
 
 block content
-	.row
-		.col-sm-1
-		.col-sm-10.content-area
-			.page-header
-				h1 User Login 
-				
-			form.form(action="/api/users/login" method="POST" data-jsclass="formValidator,loginForm" data-submitter="#submitter")
-				
-				.form-group
-					label Email Address
-					input.form-control(name="email" data-validate="required,email")
-					.validation-help
+	.page-header
+		h2 <i class="material-icons">person</i> User Login 
+		
+	form.form.form-validation(action="/api/users/login" method="POST" data-jsclass="formValidator,formController" data-submitter="#submitter")
+		.reg-form-container
+			.reg-form.clear-fix.mdc-elevation--z1
+				section.form-group
+					.mdc-text-field.mdc-text-field--with-trailing-icon
+						input#email.mdc-text-field__input(name="email" data-validate="required,email" value="")
+						label.mdc-floating-label(for="email") Email Address
+						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
+						.mdc-line-ripple
+					.mdc-text-field-helper-line
+						.validation-help.mdc-text-field-helper-text--persistent
 						
-				.form-group
-					label Password
-					input.form-control(type="password" name="password" data-validate="required,password" data-min-length="8")
-					.validation-help
-			
-				.form-group
-					button#submitter.btn.btn-primary  Login
+				section.form-group
+					.mdc-text-field.mdc-text-field--with-trailing-icon
+						input#password.mdc-text-field__input(type="password" name="password" data-validate="required,password" data-min-length="8" value="")
+						label.mdc-floating-label(for="password") Password
+						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
+						.mdc-line-ripple
+					.mdc-text-field-helper-line
+						.validation-help.mdc-text-field-helper-text--persistent
+
+				section.form-group.pull-right
+					button#submitter.mdc-button.mdc-dialog__button.mdc-button--raised(disabled) Login
 					
 				.ajax-errors
-					
-				p
+			
+			.reg-form-footer.mdc-typography--button.clear-fix
+				.pull-left
 					a(href="/users/password-reset") Forgot Password
-					
-				p
+				.pull-right
 					a(href="/users/register") Don't have an account
-					
-		.col-sm-1

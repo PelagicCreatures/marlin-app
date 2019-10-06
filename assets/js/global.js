@@ -1,6 +1,42 @@
 var MDCInstanciateOnce = 0;
+var flashTimer = null;
 
-const $ = App.jQuery;
+function boot() {
+	var options = {
+		'coverResize': false,
+		'geometry': {
+			'enabled': true,
+			breakpoints: [{
+				className: 'screen-xsmall',
+				maxWidth: 600
+			}, {
+				className: 'screen-small',
+				maxWidth: 960
+			}, {
+				className: 'screen-medium',
+				maxWidth: 1280
+			}, {
+				className: 'screen-large',
+				maxWidth: undefined
+			}, ],
+		},
+		'hijax': {
+			'enabled': true,
+			'disableScrollAnimation': true
+		},
+	};
+
+	$('body').digitopiaController(options);
+
+	instantiateMaterialDesignElements();
+
+	if (getAccessToken()) {
+		didLogIn();
+	}
+	else {
+		didLogOut();
+	}
+}
 
 const cookieOptions = {
 	path: '/',
@@ -8,26 +44,37 @@ const cookieOptions = {
 }
 
 function didLogIn() {
-	var current = getAccessToken();
+	flashAjaxStatus('success', 'Logged in');
 	$('body').removeClass('is-logged-out').addClass('is-logged-in');
 	$('.DigitopiaInstance').trigger('DidLogIn');
 }
 
 function didLogOut() {
+	flashAjaxStatus('success', 'Logged out');
 	$('body').removeClass('is-logged-in').addClass('is-logged-out');
 	App.Cookies.remove('access_token', cookieOptions);
 	$('.DigitopiaInstance').trigger('DidLogOut');
 }
 
 function getAccessToken() {
-	return App.Cookies.get('access_token');
+	return App.Cookies.get('access-token');
 }
 
-if (getAccessToken()) {
-	didLogIn();
+function loadPage(href) {
+	$('body').trigger('DigitopiaLoadPage', href);
 }
-else {
-	didLogOut();
+
+function flashAjaxStatus(level, message) {
+	if (flashTimer) {
+		clearTimeout(flashTimer);
+	}
+	$('#ajax-status').find('.mdc-snackbar__text').html(message);
+	$('#ajax-status').addClass('mdc-snackbar--active');
+
+	flashTimer = setTimeout(function () {
+		flashTimer = null;
+		$('#ajax-status').removeClass('mdc-snackbar--active');
+	}, 1500);
 }
 
 function instantiateMaterialDesignElements(element) {
@@ -51,6 +98,13 @@ function instantiateMaterialDesignElements(element) {
 		});
 	}
 
+	let inputs = document.querySelectorAll('.mdc-text-field');
+	if (inputs && inputs.length) {
+		inputs.forEach((element) => {
+			App.MDC.MDCTextField.attachTo(element);
+		});
+	}
+
 	let wantRipple = document.querySelectorAll('.mdc-fab,.mdc-button');
 	if (wantRipple && wantRipple.length) {
 		wantRipple.forEach((element) => {
@@ -58,5 +112,3 @@ function instantiateMaterialDesignElements(element) {
 		});
 	}
 }
-
-instantiateMaterialDesignElements();

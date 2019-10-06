@@ -1,17 +1,47 @@
 module.exports = function (grunt) {
 
-	var jsFiles = ['working/assets/*.js', 'assets/js/*.js'];
-	var cssFiles = ['working/assets/*.css', 'assets/css/*.css'];
+	var jsFiles = [
+		'working/assets/*.js',
+		'assets/js/*.js',
+		'node_modules/digitopia/dist/js/digitopia.js',
+	];
+
+	var cssFiles = [
+		'node_modules/digitopia/dist/css/digitopia.css',
+		'working/assets/*.css',
+		'assets/css/*.css'
+	];
+
 	var stylusFiles = [
 		'assets/stylus/*.styl'
 	];
+
 	var allFiles = [];
 	allFiles = allFiles.concat(jsFiles, cssFiles, stylusFiles);
+
+	var copyCommand = [{
+		expand: true,
+		cwd: 'node_modules/jquery/dist/',
+		src: ['jquery.js', 'jquery.min.js'],
+		dest: 'public/dist/js/',
+		filter: 'isFile'
+	}, {
+		expand: true,
+		cwd: 'node_modules/digitopia/',
+		src: ['images/*'],
+		dest: 'public/digitopia/',
+		filter: 'isFile'
+	}];
 
 	grunt.initConfig({
 		jsDistDir: 'public/dist/js/',
 		cssDistDir: 'public/dist/css/',
 		pkg: grunt.file.readJSON('package.json'),
+		copy: {
+			main: {
+				files: copyCommand
+			}
+		},
 		stylus: {
 			options: {
 				compress: false
@@ -58,10 +88,11 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			files: allFiles,
-			tasks: ['concat']
+			tasks: ['copy', 'stylus', 'concat']
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-stylus');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-terser');
@@ -69,6 +100,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.registerTask('default', [
+		'copy',
 		'stylus',
 		'concat',
 		'cssmin',
@@ -76,6 +108,7 @@ module.exports = function (grunt) {
 	]);
 
 	grunt.registerTask('devel', [
+		'copy',
 		'stylus',
 		'concat',
 		'watch'

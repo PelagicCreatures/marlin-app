@@ -98,7 +98,6 @@ module.exports = (usersApp) => {
 							'name': user.name,
 							'username': user.username,
 							'email': user.email,
-							'contributionStatus': user.stripeStatus,
 							'validated': user.validated
 						}
 					});

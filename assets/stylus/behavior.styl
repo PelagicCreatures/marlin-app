@@ -1,5 +1,73 @@
 @import 'nib'
 
+*, *::before, *::after
+	box-sizing: border-box
+
+body
+	margin:0
+	padding:0
+	overscroll-behavior: none
+
+a
+	color: #333
+
+.top-margin
+	margin-top: 64px
+
+section
+	margin: .5rem 0
+
+.clear-fix
+	&::after
+		display: block
+		content: ""
+		clear: both
+
+.pull-left
+	float:left
+
+.pull-right
+	float:right
+
+// icon/text alignment
+h2
+	i
+		font-size: 30px!important
+		vertical-align: text-bottom
+
+// form post error notifications
+
+.ajax-errors
+	margin-top: 30px
+	color: red
+	text-transform: capitalize
+	i
+		font-size:18px
+		vertical-align: text-bottom
+
+// form layout and geometry
+
+.reg-form-container
+	max-width: 516px
+	.reg-form
+		border: thin solid #eee
+		border-radius: 4px
+		padding: 1em
+		.mdc-text-field
+			height: 56px
+			width: 100%
+		.form-group
+			position:relative
+			margin-top: 1em
+	.reg-form-footer
+		padding-top: 1em
+		text-transform: uppercase
+	label
+		text-transform: uppercase
+
+
+// show/hide content bassed on login status
+
 .is-logged-in
 	.hidden-logged-in
 		display:none!important
@@ -7,3 +75,37 @@
 .is-logged-out
 	.hidden-logged-out
 		display:none!important
+
+// make autofill less horrifyingly ugly
+
+input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focus,textarea:-webkit-autofill,textarea:-webkit-autofill:hover,textarea:-webkit-autofill:focus,select:-webkit-autofill,select:-webkit-autofill:hover,select:-webkit-autofill:focus
+	-webkit-text-fill-color: green
+	-webkit-box-shadow: 0 0 0px 1000px #fff inset
+	transition: background-color 5000s ease-in-out 0s
+
+// form validation indicators and help prompts managed by jsclass formValidator.js
+
+.form-validation
+	.input-relative
+		position:relative
+
+	.input-ok-indicator
+		opacity:0
+		color: green!important
+		font-size: .75em
+
+	.input-ok
+		.input-ok-indicator
+			opacity:1
+
+	.validation-help
+		height: 18px
+		font-size: .75em
+		opacity: 0
+		pointer-events:none
+		color:#b00020
+
+	.input-error
+		&.touched
+			.validation-help
+				opacity:1

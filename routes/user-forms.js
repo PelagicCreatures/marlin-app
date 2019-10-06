@@ -4,6 +4,14 @@ const router = express.Router();
 const getUserForRequestMiddleware = require('../modules/antisocial-users/lib/get-user-for-request-middleware').getUserForRequestMiddleware;
 
 module.exports = function mount(userAPI) {
+	router.get('/users/home', getUserForRequestMiddleware(userAPI), function (req, res, next) {
+		if (!req.antisocialUser) {
+			return res.sendStatus(401);
+		}
+		res.render('user-home', {
+			user: req.antisocialUser
+		});
+	});
 
 	router.get('/users/register', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (req.antisocialUser) {

@@ -8,20 +8,18 @@
 
 */
 
-import {
-	test
-}
-from './modules/testES6'
-
 import * as MDC from './modules/MDC'
-
 import jQuery from "jquery";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
+import async from "async";
 
+window.jQuery = jQuery;
+window.$ = jQuery;
+window.async = async;
+window.$.cookie = Cookies;
 
 export {
 	MDC,
-	test,
 	jQuery,
 	Cookies
 }

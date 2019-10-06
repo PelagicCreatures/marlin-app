@@ -21,6 +21,11 @@ html
     link(href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet')
         
   body.mdc-typography
+    script(nonce= nonce).
+      var result;
+      var cookie=(result=new RegExp('(?:^|; )responsive=([^;]*)').exec(document.cookie))?decodeURIComponent(result[1]):null;
+      if(cookie){document.body.className = document.body.className + ' ' + cookie;}
+
 
     include components/drawer
 
@@ -30,11 +35,24 @@ html
       
       include components/modals
 
-      block content
+      .top-margin
+        .mdc-layout-grid
+          .mdc-layout-grid__inner
+            .mdc-layout-grid__cell--span-12
+              block content
     
     block fab
-      
+    
+    #ajax-status.mdc-snackbar
+      .mdc-snackbar__text
+      .mdc-snackbar__action-wrapper
+        button.mdc-snackbar__action-button(type="button")
+    
     if env === 'production'
       script(src="/dist/js/userapp.min.js")
     else
       script(src="/dist/js/userapp.js")
+        
+    script.
+      var Modernizr = {};
+      $(document).ready(function() { boot(); });

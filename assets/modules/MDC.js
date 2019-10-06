@@ -8,6 +8,11 @@ import {
 from '@material/ripple';
 
 import {
+	MDCLineRipple
+}
+from '@material/line-ripple';
+
+import {
 	MDCTopAppBar
 }
 from '@material/top-app-bar';
@@ -59,6 +64,7 @@ from '@material/checkbox';
 
 export {
 	MDCRipple,
+	MDCLineRipple,
 	MDCTopAppBar,
 	MDCDrawer,
 	MDCDialog,
