@@ -1,5 +1,6 @@
 var MDCInstanciateOnce = 0;
 var flashTimer = null;
+var snackBar;
 
 function boot() {
 	var options = {
@@ -68,12 +69,12 @@ function flashAjaxStatus(level, message) {
 	if (flashTimer) {
 		clearTimeout(flashTimer);
 	}
-	$('#ajax-status').find('.mdc-snackbar__text').html(message);
-	$('#ajax-status').addClass('mdc-snackbar--active');
+	$('.mdc-snackbar').find('.mdc-snackbar__label').html(message);
+	snackBar.open();
 
 	flashTimer = setTimeout(function () {
 		flashTimer = null;
-		$('#ajax-status').removeClass('mdc-snackbar--active');
+		snackBar.close();
 	}, 1500);
 }
 
@@ -82,6 +83,8 @@ function instantiateMaterialDesignElements(element) {
 		const topAppBar = new App.MDC.MDCTopAppBar(document.querySelector('.mdc-top-app-bar'));
 
 		const nav = new App.MDC.MDCDrawer.attachTo(document.querySelector('#nav-drawer'));
+
+		snackBar = new App.MDC.MDCSnackbar.attachTo(document.querySelector('.mdc-snackbar'));
 
 		document.querySelector('.mdc-top-app-bar__navigation-icon').addEventListener('click', (e) => {
 			e.preventDefault();

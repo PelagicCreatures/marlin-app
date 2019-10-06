@@ -41,12 +41,12 @@ html
             .mdc-layout-grid__cell--span-12
               block content
     
-    block fab
+    #fab(data-hijax="true")
+      block fab
     
-    #ajax-status.mdc-snackbar
-      .mdc-snackbar__text
-      .mdc-snackbar__action-wrapper
-        button.mdc-snackbar__action-button(type="button")
+    .mdc-snackbar
+      .mdc-snackbar__surface
+        .mdc-snackbar__label
     
     if env === 'production'
       script(src="/dist/js/userapp.min.js")

@@ -23,21 +23,21 @@
 						var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel;
 						var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage;
 						var redirect = jqXHR.getResponseHeader('x-digitopia-hijax-location') ? jqXHR.getResponseHeader('x-digitopia-hijax-location') : data.hijaxLocation;
-						var didLogIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didlogin;
-						var didLogOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didlogout;
+						var loggedIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didLogin;
+						var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout;
 
 						self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>');
 
-						if (didLogIn) {
+						if (loggedIn) {
 							didLogIn();
 						}
 
-						if (didLogOut) {
+						if (loggedOut) {
 							didLogOut();
 						}
 
 						if (data.status === 'ok') {
-							$('body').trigger('DigitopiaLoadPage', '/users/home');
+							loadPage('/users/home');
 						}
 					})
 					.fail(function (jqXHR, textStatus, errorThrown) {

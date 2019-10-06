@@ -27,7 +27,8 @@ module.exports = (usersApp) => {
 				'path': '/',
 				'signed': true
 			}).send({
-				'status': 'ok'
+				'status': 'ok',
+				'didLogut': true
 			});
 		});
 	});

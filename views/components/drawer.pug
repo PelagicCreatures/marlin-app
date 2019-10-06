@@ -1,8 +1,9 @@
-aside#nav-drawer.mdc-drawer.mdc-drawer--dismissible(data-hijax="true")
+aside#nav-drawer.mdc-drawer.mdc-drawer--dismissible
 	.mdc-drawer__header.hidden-logged-out
-		.mdc-drawer__header-content.text-center
-			if user
-				a(href="/users/home")= user.username
+		#user-drawer-header.mdc-drawer__header-content.text-center(data-hijax="true")
+			div
+				if user
+					a(href="/users/home")= user.username
 
 	.mdc-drawer__content
 		nav.mdc-list

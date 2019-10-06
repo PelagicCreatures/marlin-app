@@ -93,6 +93,7 @@ module.exports = (usersApp) => {
 						'status': 'ok',
 						'flashLevel': 'success',
 						'flashMessage': 'Hello Again!',
+						'didLogin': true,
 						'result': {
 							'id': user.id,
 							'name': user.name,
