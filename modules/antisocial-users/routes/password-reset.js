@@ -1,10 +1,6 @@
 const debug = require('debug')('antisocial-user');
 
 const {
-	createToken
-} = require('../lib/create-token');
-
-const {
 	check, validationResult
 } = require('express-validator');
 
@@ -13,6 +9,8 @@ module.exports = (usersApp) => {
 	debug('mounting users API /password-reset');
 
 	let db = usersApp.db;
+
+	let createToken = require('../lib/create-token.js')(usersApp);
 
 	usersApp.router.post('/password-reset', check('email').isEmail(), function (req, res) {
 		db.getInstances('users', {
@@ -53,7 +51,9 @@ module.exports = (usersApp) => {
 				}, function (err, token) {
 					usersApp.emit('sendPasswordReset', user, token);
 					res.send({
-						'status': 'ok'
+						'status': 'ok',
+						'flashLevel': 'success',
+						'flashMessage': 'Message sent to ' + user.email + '. Please check your email.',
 					});
 				});
 			});

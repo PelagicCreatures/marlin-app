@@ -3,10 +3,6 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 
 const {
-	saltAndHash
-} = require('../lib/salt-and-hash');
-
-const {
 	validateToken
 } = require('../lib/get-user-for-request-middleware');
 
@@ -19,6 +15,8 @@ module.exports = (usersApp) => {
 	debug('mounting users API /password-set');
 
 	let db = usersApp.db;
+
+	const saltAndHash = require('../lib/salt-and-hash')(usersApp);
 
 	usersApp.router.post('/password-set',
 
@@ -120,8 +118,7 @@ module.exports = (usersApp) => {
 				res.json({
 					'status': 'ok',
 					'flashLevel': 'success',
-					'flashMessage': 'Password Saved!',
-					'hijaxLocation': req.body.redirect,
+					'flashMessage': 'Password Saved!'
 				});
 			});
 		});

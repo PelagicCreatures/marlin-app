@@ -2,7 +2,7 @@ extends ../wrapper
 
 block content
 	.page-header
-		h1 User Registration 
+		h2 User Registration 
 					
 	form.form.form-validation(action="/api/users/register" method="POST" data-jsclass="formValidator,formController" data-submitter="#submitter")
 				
@@ -59,7 +59,7 @@ block content
 		
 		
 				section.form-group.pull-right
-					button#submitter.mdc-button.mdc-dialog__button.mdc-button--raised(disabled) Sign Up
+					button#submitter.mdc-button.mdc-button--raised(disabled) Sign Up
 					
 				.ajax-errors
 			
@@ -67,4 +67,4 @@ block content
 				.pull-right.mdc-typography--button 
 					a(href="/users/login") Already have an account
 
-			p <strong>NOTE:</strong> After you click "Sign Up" we will send a new validation message to your new email address. Follow the link in the email to complete this process.
+			p.mdc-typography--caption After you click "Sign Up" we will send a new validation message to your new email address. Follow the link in the email to complete this process.

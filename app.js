@@ -10,6 +10,12 @@ var app = express();
 app.locals.sitename = 'User App Boilerplate'
 app.locals.nonce = uuid.v4();
 
+// options for client side javascript
+// WARNING: NO PRIVATE INFO should be in app.locals.options
+app.locals.options = {
+  RECAPTCHA_PUBLIC: process.env.RECAPTCHA_PUBLIC,
+  STRIPE_PUBLIC: process.env.STRIPE_PUBLIC
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,7 +46,13 @@ require('./modules/antisocial-users/lib/db-schema')(db);
 app.db = db;
 
 // set up and mount the user API
-const userAPI = require('./modules/antisocial-users/index')({}, app, db);
+let userOptions = {
+  RECAPTCHA: {
+    public: process.env.RECAPTCHA_public,
+    private: process.env.RECAPTCHA_private
+  }
+}
+const userAPI = require('./modules/antisocial-users/index')(userOptions, app, db);
 
 userAPI.on('didRegister', (user, post, cb) => {
   console.log('didRegister %j', user);

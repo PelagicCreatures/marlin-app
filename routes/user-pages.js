@@ -43,13 +43,6 @@ module.exports = function mount(userAPI) {
 		res.render('users/user-login', {});
 	});
 
-	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), function (req, res) {
-		if (req.antisocialUser) {
-			return res.sendStatus(401);
-		}
-		res.render('users/user-password-reset', {});
-	});
-
 	router.get('/users/change-email', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
@@ -57,11 +50,33 @@ module.exports = function mount(userAPI) {
 		res.render('users/user-change-email', {});
 	});
 
-	router.get('/users/password-set', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/change-password', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/user-password-set', {});
+		res.render('users/user-change-password', {});
+	});
+
+	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), function (req, res) {
+		if (req.antisocialUser) {
+			return res.sendStatus(401).send('Already logged in.');
+		}
+		res.render('users/user-password-reset', {});
+	});
+
+	router.get('/users/password-set', getUserForRequestMiddleware(userAPI), function (req, res) {
+		if (req.antisocialUser) {
+			return res.sendStatus(401).send('Already logged in.');
+		}
+		if (!req.query.token) {
+			return res.sendStatus(400);
+		}
+
+		// TODO read and validate token. Present error if expired or not found
+
+		res.render('users/user-password-set', {
+			token: req.query.token
+		});
 	});
 
 	return router;

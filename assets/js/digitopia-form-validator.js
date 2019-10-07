@@ -50,13 +50,14 @@
 
 						input.closest('.form-group').removeClass('input-ok');
 						if (input.data('touched')) {
-
 							input.closest('.form-group').addClass('input-error');
+							input.closest('.mdc-text-field').addClass('mdc-text-field--invalid');
 							input.closest('.form-group').find('.validation-help').html(errors.join(', '));
 						}
 					}
 					else {
 						input.closest('.form-group').removeClass('input-error');
+						input.closest('.mdc-text-field').removeClass('mdc-text-field--invalid');
 						input.closest('.form-group').addClass('input-ok');
 						if (input.data('dirty')) {
 							input.data('last-value', getRealVal(input));

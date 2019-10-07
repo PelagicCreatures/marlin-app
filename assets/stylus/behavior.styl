@@ -46,11 +46,18 @@ h2
 
 .ajax-errors
 	margin-top: 30px
-	color: red
-	text-transform: capitalize
 	i
 		font-size:18px
 		vertical-align: text-bottom
+.ajax-message
+	color: blue
+.ajax-message-error
+	color: red
+.ajax-message-success
+	color: green
+
+button#submitter
+	margin-left: 1em;
 
 // form layout and geometry
 
@@ -106,11 +113,10 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 	.input-ok-indicator
 		opacity:0
 		color: green!important
-		font-size: .75em
 
 	.input-ok
 		.input-ok-indicator
-			opacity:1
+			opacity:.5
 
 	.validation-help
 		height: 18px

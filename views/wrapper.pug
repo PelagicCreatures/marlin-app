@@ -8,11 +8,12 @@ html
     meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no, minimal-ui, viewport-fit=cover")
     meta(name="apple-mobile-web-app-capable" content="yes")
     meta(name="apple-mobile-web-app-status-bar-style" content="black")
-    meta(name="apple-mobile-web-app-title" content="UserApp")
     meta(name="format-detection" content="telephone=no")
     link(rel="apple-touch-icon" href="/images/logo.png")
 
+    meta(name="apple-mobile-web-app-title" content= sitename)
     title= sitename
+    
     if env === 'production'
       link(rel='stylesheet', href='/dist/css/userapp.min.css')
     else
@@ -50,6 +51,17 @@ html
     .mdc-snackbar
       .mdc-snackbar__surface
         .mdc-snackbar__label
+    
+    // expose app.locals.options to client side javascript gobal var 'appOptions'
+    script!= "var appOptions = " + JSON.stringify(options) + ';'
+    
+    if options.STRIPE_PUBLIC
+      // stripe for subscriptions
+      script(src="https://checkout.stripe.com/checkout.js")
+      
+    if options.RECAPTCHA_PUBLIC
+      // CAPTCHA for forms
+      script(src="https://www.google.com/recaptcha/api.js?render=" + options.RECAPTCHA_PUBLIC)
     
     if env === 'production'
       script(src="/dist/js/userapp.min.js")
