@@ -1,47 +1,70 @@
 extends wrapper
 
 block content
-	.row
-		.col-sm-1
-		.col-sm-10.content-area
-			.page-header
-				h1 User Registration 
-							
-			form.form(action="/api/users/register" method="POST" data-jsclass="formValidator,regForm" data-submitter="#submitter")
-						
-				.form-group
-					label Email Address
-					input.form-control(name="email" data-validate="required,email"  data-unique-endpoint= "/api/users/is-unique?field=email")
-					.validation-help
-						
-				.form-group
-					label Confirm Email Address
-					input.form-control(name="confirm-email" data-validate="required,email" data-match="input[name='email']")
-					.validation-help
-						
-				.form-group
-					label Password
-					input.form-control(type="password" name="password" data-validate="required,password" data-min-length="8")
-					.validation-help
-						
-				.form-group
-					label Confirm Password
-					input.form-control(type="password" name="confirm-password" data-validate="required,password" data-match="input[name='password']" placeholder="confirm password")
-					.validation-help
-
-				.form-group
-					label Username - set your unique name
-					input.form-control(name="username" data-validate="required" placeholder="letter, numbers and dash only" data-max-length="20" data-mask="^[a-zA-Z0-9-]+$" data-mask-error-prompt="only letters numbers and hyphen" data-unique-endpoint= "/api/users/is-unique?field=username")
-					.validation-help
+	.page-header
+		h1 User Registration 
+					
+	form.form.form-validation(action="/api/users/register" method="POST" data-jsclass="formValidator,formController" data-submitter="#submitter")
 				
-				.form-group
-					button#submitter.btn.btn-primary  Sign Up
+		.reg-form-container
+			.reg-form.clear-fix.mdc-elevation--z1
+				section.form-group
+					.mdc-text-field.mdc-text-field--with-trailing-icon
+						input.mdc-text-field__input(name="email" data-validate="required,email"  data-unique-endpoint= "/api/users/is-unique?field=email")
+						label.mdc-floating-label Email Address
+						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
+						.mdc-line-ripple
+					.mdc-text-field-helper-line
+						.validation-help.mdc-text-field-helper-text--persistent
+				
+		
+				section.form-group
+					.mdc-text-field.mdc-text-field--with-trailing-icon
+						input.mdc-text-field__input(name="confirm-email" data-validate="required,email" data-match="input[name='email']")
+						label.mdc-floating-label Confirm Email Address
+						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
+						.mdc-line-ripple
+					.mdc-text-field-helper-line
+						.validation-help.mdc-text-field-helper-text--persistent
+				
+		
+				section.form-group
+					.mdc-text-field.mdc-text-field--with-trailing-icon
+						input.mdc-text-field__input(type="password" name="password" data-validate="required,password" data-min-length="8")
+						label.mdc-floating-label Password
+						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
+						.mdc-line-ripple
+					.mdc-text-field-helper-line
+						.validation-help.mdc-text-field-helper-text--persistent
+				
+		
+				section.form-group
+					.mdc-text-field.mdc-text-field--with-trailing-icon
+						input.mdc-text-field__input(type="password" name="confirm-password" data-validate="required,password" data-match="input[name='password']")
+						label.mdc-floating-label Confirm Password
+						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
+						.mdc-line-ripple
+					.mdc-text-field-helper-line
+						.validation-help.mdc-text-field-helper-text--persistent
+
+		
+				section.form-group
+					.mdc-text-field.mdc-text-field--with-trailing-icon
+						input.mdc-text-field__input(name="username" data-validate="required" placeholder="letter, numbers and dash only" data-min-length="2" data-max-length="20" data-mask="^[a-zA-Z0-9-]+$" data-mask-error-prompt="letter, numbers and dash only" data-unique-endpoint= "/api/users/is-unique?field=username")
+						label.mdc-floating-label Username - set your unique name
+						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
+						.mdc-line-ripple
+					.mdc-text-field-helper-line
+						.validation-help.mdc-text-field-helper-text--persistent
+		
+		
+				section.form-group.pull-right
+					button#submitter.mdc-button.mdc-dialog__button.mdc-button--raised(disabled) Sign Up
 					
 				.ajax-errors
-					
-				p <strong>NOTE:</strong> After you click "Sign Up" we will send a new validation message to your new email address. Follow the link in the email to complete this process.
-				
-				p
+			
+			.reg-form-footer.clear-fix
+				.pull-right.mdc-typography--button 
 					a(href="/users/login") Already have an account
-					
-		.col-sm-1
+
+			p <strong>NOTE:</strong> After you click "Sign Up" we will send a new validation message to your new email address. Follow the link in the email to complete this process.

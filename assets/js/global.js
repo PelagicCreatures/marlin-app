@@ -3,6 +3,8 @@ var flashTimer = null;
 var snackBar;
 
 function boot() {
+
+	// set up digitopia framework for HIJAX
 	var options = {
 		'coverResize': false,
 		'geometry': {
@@ -29,8 +31,17 @@ function boot() {
 
 	$('body').digitopiaController(options);
 
-	instantiateMaterialDesignElements();
+	// Things to do when HIJAX loads a new page
+	$('body').on('DigitopiaDidLoadNewPage', function (e) {
+		if (e.target === this) {
+			instantiateMaterialDesignElements($('body'));
+		}
+	});
 
+	// hook up material design element controllers
+	instantiateMaterialDesignElements($('body'));
+
+	// Set initial login state css show/hide behavior
 	if (getAccessToken()) {
 		didLogIn();
 	}
@@ -44,12 +55,14 @@ const cookieOptions = {
 	domain: document.location.hostname
 }
 
+// call whenever login occurs
 function didLogIn() {
 	flashAjaxStatus('success', 'Logged in');
 	$('body').removeClass('is-logged-out').addClass('is-logged-in');
 	$('.DigitopiaInstance').trigger('DidLogIn');
 }
 
+// call whenever logout occurs
 function didLogOut() {
 	flashAjaxStatus('success', 'Logged out');
 	$('body').removeClass('is-logged-in').addClass('is-logged-out');
@@ -61,10 +74,12 @@ function getAccessToken() {
 	return App.Cookies.get('access-token');
 }
 
+// load a page programatically
 function loadPage(href) {
 	$('body').trigger('DigitopiaLoadPage', href);
 }
 
+// call to show the Material Design "snackbar" for user notifications
 function flashAjaxStatus(level, message) {
 	if (flashTimer) {
 		clearTimeout(flashTimer);
@@ -78,6 +93,17 @@ function flashAjaxStatus(level, message) {
 	}, 1500);
 }
 
+// call when you inject content into the DOM programatically
+function didInjectContent(element) {
+	$('#document-body').trigger('DigitopiaInstantiate');
+	$('#document-body').data('digitopiaHijax').hijaxLinks(element);
+	instantiateMaterialDesignElements(element);
+}
+
+// This manages material design elements
+// called on initial page load, hijax page load events and by didInjectContent.
+// some elements like the drawer, snackbar and the navbar only need this once because
+// they are defined in the shared html wrapper.
 function instantiateMaterialDesignElements(element) {
 	if (!MDCInstanciateOnce++) {
 		const topAppBar = new App.MDC.MDCTopAppBar(document.querySelector('.mdc-top-app-bar'));

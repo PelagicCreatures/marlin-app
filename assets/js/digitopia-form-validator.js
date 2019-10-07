@@ -187,7 +187,12 @@
 			if (val && input.data('mask')) {
 				var mask = new RegExp(input.data('mask'));
 				if (!mask.exec(val)) {
-					errors.push('Invalid characters');
+					if (input.data('mask-error-prompt')) {
+						errors.push(input.data('mask-error-prompt'));
+					}
+					else {
+						errors.push('Invalid characters');
+					}
 				}
 			}
 
@@ -230,7 +235,7 @@
 					return self.isUnique(input, cb);
 				}
 				else {
-					if (input.data('last-unique')) {
+					if (val.length > 2 && input.data('last-unique')) {
 						errors.push('Already exists');
 					}
 				}
@@ -269,7 +274,7 @@
 				$.getJSON(endpoint + delim + 'value=' + getRealVal(input), function (data) {
 					if (data.found) {
 						input.data('last-unique', 1);
-						cb(null, ['must be unique']);
+						cb(null, ['Already exists']);
 					}
 					else {
 						input.removeData('last-unique');

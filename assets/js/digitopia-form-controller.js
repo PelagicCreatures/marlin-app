@@ -26,8 +26,6 @@
 						var loggedIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didLogin;
 						var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout;
 
-						self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>');
-
 						if (loggedIn) {
 							didLogIn();
 						}
@@ -37,7 +35,11 @@
 						}
 
 						if (data.status === 'ok') {
+							flashAjaxStatus('success', flashMessage);
 							loadPage('/users/home');
+						}
+						else {
+							self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>');
 						}
 					})
 					.fail(function (jqXHR, textStatus, errorThrown) {

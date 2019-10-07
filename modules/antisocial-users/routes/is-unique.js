@@ -13,12 +13,13 @@ module.exports = (usersApp) => {
 
 	usersApp.router.get('/is-unique', getUserForRequestMiddleware(usersApp), function (req, res) {
 		var f = req.query.field;
-		if ((f !== 'username' && f !== 'email') || !req.query.v) {
-			res.sendStatus(400);
+
+		if ((f !== 'username' && f !== 'email') || !req.query.value) {
+			return res.sendStatus(400);
 		}
 
 		var query = {};
-		query[f] = req.query.v;
+		query[f] = req.query.value;
 
 		var currentUser = req.antisocialUser;
 

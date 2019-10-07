@@ -140,7 +140,6 @@ module.exports = (usersApp) => {
 							'status': 'ok',
 							'flashLevel': 'success',
 							'flashMessage': 'Saved. Please check your email for confirmation.',
-							'hijaxLocation': '/users/home',
 							'result': {
 								'id': user.id,
 								'name': user.name,
