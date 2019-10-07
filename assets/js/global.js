@@ -41,6 +41,13 @@ function boot() {
 	// hook up material design element controllers
 	instantiateMaterialDesignElements($('body'));
 
+	if (App.Cookies.get('have-account')) {
+		$('body').addClass('have-account');
+	}
+	else {
+		$('body').addClass('dont-have-account');
+	}
+
 	// Set initial login state css show/hide behavior
 	if (getAccessToken()) {
 		didLogIn();
@@ -48,17 +55,23 @@ function boot() {
 	else {
 		didLogOut();
 	}
+
+	window.setTimeout(function () {
+		$('#splash').fadeOut('fast');
+	}, 1000);
 }
 
 const cookieOptions = {
 	path: '/',
-	domain: document.location.hostname
+	domain: document.location.hostname,
+	expires: 365
 }
 
 // call whenever login occurs
 function didLogIn() {
+	App.Cookies.set('have-account', 1, cookieOptions)
 	flashAjaxStatus('success', 'Logged in');
-	$('body').removeClass('is-logged-out').addClass('is-logged-in');
+	$('body').removeClass('is-logged-out').addClass('is-logged-in').addClass('have-account');
 	$('.DigitopiaInstance').trigger('DidLogIn');
 }
 

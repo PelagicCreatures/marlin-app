@@ -68,6 +68,13 @@ h2
 
 // show/hide content bassed on login status
 
+.have-account
+	.hidden-have-account
+		display:none!important
+.dont-have-account
+	.hidden-dont-have-account
+		display:none!important
+
 .is-logged-in
 	.hidden-logged-in
 		display:none!important
@@ -109,3 +116,18 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		&.touched
 			.validation-help
 				opacity:1
+
+// splash screen to cover js boot
+#splash
+	position: fixed
+	top:0
+	left:0
+	right:0
+	bottom:0
+	background-color:#333
+	z-index:99999
+	#splash-logo
+		margin: 24vh auto
+		color:#999
+		text-align: center
+		font-size: 3em

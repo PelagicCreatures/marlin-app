@@ -5,6 +5,13 @@ block content
 
 block fab
   .hidden-logged-in
-    button.mdc-fab.mdc-fab--extended.app-fab-fixed
-      span.mdc-fab__icon.material-icons account_circle
-      span.mdc-fab__label Register
+    .hidden-have-account
+      a(href="/users/register")
+        button#fab-register.mdc-fab.mdc-fab--extended.app-fab-fixed
+          span.mdc-fab__icon.material-icons account_circle
+          span.mdc-fab__label Register
+    .hidden-dont-have-account
+      a(href="/users/login")
+        button#fab-login.mdc-fab.mdc-fab--extended.app-fab-fixed
+          span.mdc-fab__icon.material-icons account_circle
+          span.mdc-fab__label Login

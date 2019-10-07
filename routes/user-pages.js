@@ -8,7 +8,17 @@ module.exports = function mount(userAPI) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('user-home', {
+		res.render('users/user-home', {
+			user: req.antisocialUser,
+			title: 'User Home'
+		});
+	});
+
+	router.get('/users/settings', getUserForRequestMiddleware(userAPI), function (req, res, next) {
+		if (!req.antisocialUser) {
+			return res.sendStatus(401);
+		}
+		res.render('users/user-settings', {
 			user: req.antisocialUser
 		});
 	});
@@ -20,7 +30,7 @@ module.exports = function mount(userAPI) {
 			}
 			return res.redirect('/users/home');
 		}
-		res.render('user-reg', {});
+		res.render('users/user-reg', {});
 	});
 
 	router.get('/users/login', getUserForRequestMiddleware(userAPI), function (req, res) {
@@ -30,28 +40,28 @@ module.exports = function mount(userAPI) {
 			}
 			return res.redirect('/users/home');
 		}
-		res.render('user-login', {});
+		res.render('users/user-login', {});
 	});
 
 	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('user-password-reset', {});
+		res.render('users/user-password-reset', {});
 	});
 
 	router.get('/users/change-email', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('user-change-email', {});
+		res.render('users/user-change-email', {});
 	});
 
 	router.get('/users/password-set', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('user-password-set', {});
+		res.render('users/user-password-set', {});
 	});
 
 	return router;
