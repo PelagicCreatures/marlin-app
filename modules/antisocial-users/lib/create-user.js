@@ -11,7 +11,6 @@ module.exports = (usersApp) => {
 			'username': params.username,
 			'email': params.email,
 			'password': saltAndHash(params.password),
-			'community': params.community,
 			'created': new Date(),
 			'pendingEmail': params.email
 		}, function (err, user) {

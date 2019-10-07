@@ -19,9 +19,6 @@ module.exports = function (db) {
 			type: 'string',
 			mySQLOpts: ['NOT NULL']
 		},
-		'community': {
-			type: 'boolean'
-		},
 		'validated': {
 			type: 'boolean'
 		},
@@ -35,15 +32,6 @@ module.exports = function (db) {
 			type: 'string'
 		},
 		'stripeStatus': {
-			type: 'string'
-		},
-		'ignoredPosters': {
-			type: 'array'
-		},
-		'threadState': {
-			type: 'array'
-		},
-		'oldContributorId': {
 			type: 'string'
 		},
 		'pendingEmail': {

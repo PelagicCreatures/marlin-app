@@ -19,15 +19,21 @@ module.exports = (usersApp) => {
 
 		check('email').isEmail(),
 
-		check('name').optional().trim(),
-		check('username').not().isEmpty().trim().withMessage('username is required'),
-		check('community').optional().isBoolean().withMessage('community is boolean'),
+		check('name').optional()
+		.trim(),
+
+		check('username')
+		.not()
+		.isEmpty()
+		.trim()
+		.withMessage('username is required'),
 
 		check('password')
 		.custom(value => !/\s/.test(value)).withMessage('No spaces are allowed in the password')
 		.isLength({
 			min: 8
-		}).withMessage('password must be at least 8 characters')
+		})
+		.withMessage('password must be at least 8 characters')
 		.matches('[0-9]').withMessage('password must have at least one number')
 		.matches('[a-z]').withMessage('password must have at least one lowercase character')
 		.matches('[A-Z]').withMessage('password must have at least one uppercase character'),
@@ -140,12 +146,12 @@ module.exports = (usersApp) => {
 							'status': 'ok',
 							'flashLevel': 'success',
 							'flashMessage': 'Saved. Please check your email for confirmation.',
+							'didLogin': true,
 							'result': {
 								'id': user.id,
 								'name': user.name,
 								'username': user.username,
-								'email': user.email,
-								'contributionStatus': user.stripeStatus
+								'email': user.email
 							}
 						});
 				});
