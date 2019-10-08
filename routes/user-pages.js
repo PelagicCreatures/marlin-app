@@ -1,7 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const async = require('async');
+const VError = require('verror').VError;
 
-const getUserForRequestMiddleware = require('../modules/antisocial-users/lib/get-user-for-request-middleware').getUserForRequestMiddleware;
+const {
+	validateToken,
+	getUserForRequestMiddleware
+} = require('../modules/antisocial-users/lib/get-user-for-request-middleware');
 
 module.exports = function mount(userAPI) {
 	router.get('/users/home', getUserForRequestMiddleware(userAPI), function (req, res, next) {
@@ -73,10 +78,35 @@ module.exports = function mount(userAPI) {
 			return res.sendStatus(400);
 		}
 
-		// TODO read and validate token. Present error if expired or not found
+		async.series([
+			function findToken(cb) {
+				userAPI.db.getInstances('tokens', {
+					'token': req.query.token
+				}, function (err, tokenInstances) {
+					if (err) {
+						return cb(new VError(err, 'error reading token'));
+					}
+					if (!tokenInstances || tokenInstances.length !== 1) {
+						return cb(new VError('Reset token was not found.'));
+					}
 
-		res.render('users/user-password-set', {
-			token: req.query.token
+					validateToken(userAPI.db, tokenInstances[0], function (err) {
+						if (err) {
+							return cb(err);
+						}
+						cb(null, tokenInstances[0]);
+					});
+				});
+			}
+		], function (err) {
+			if (err) {
+				return res.render('users/user-password-set', {
+					error: err.message
+				});
+			}
+			res.render('users/user-password-set', {
+				token: req.query.token
+			});
 		});
 	});
 

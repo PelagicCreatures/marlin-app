@@ -66,7 +66,7 @@ module.exports = (usersApp) => {
 			}
 
 			async.waterfall([
-				function (user, cb) {
+				function (cb) {
 					passwordMatch(req.body.oldpassword, currentUser, function (err, isMatch) {
 						if (err) {
 							return cb(err);
@@ -76,7 +76,7 @@ module.exports = (usersApp) => {
 							return cb(new VError('password mismatch'));
 						}
 
-						cb(null, user);
+						cb(null);
 					});
 				},
 				function (donePatch) {
@@ -86,7 +86,7 @@ module.exports = (usersApp) => {
 						if (err) {
 							return db(new VError('unable to save pendingEmail'));
 						}
-						donePatch(null, user);
+						donePatch(null);
 					});
 				}
 			], function (err) {
