@@ -36,7 +36,7 @@ module.exports = function (db) {
 		},
 		'pendingEmail': {
 			type: 'string',
-			mySQLOpts: ['NOT NULL', 'UNIQUE KEY']
+			mySQLOpts: ['UNIQUE KEY']
 		}
 	}, [
 		'ENGINE=InnoDB',

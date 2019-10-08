@@ -63,7 +63,7 @@ module.exports = (usersApp) => {
 					'pendingEmail': null
 				}, function (err, updated) {
 					if (err) {
-						return db(new VError('unable to save validation status'));
+						return cb(new VError('unable to save validation status'));
 					}
 					cb(null, token, updated);
 				});
@@ -77,10 +77,11 @@ module.exports = (usersApp) => {
 				});
 			}
 		], function (err, user) {
+			let redirect = req.query.redirect ? req.query.redirect : '/users/home';
 			if (err) {
-				return res.redirect('/users/home?flash=' + encodeURIComponent(err.message));
+				return res.redirect(redirect + '?flash=' + encodeURIComponent(err.message));
 			}
-			res.redirect(req.query.redirect + '?flash=Your account is now activated!' ? req.query.redirect : '/');
+			res.redirect(redirect + '?flash=' + encodeURIComponent('Your account is now activated!'));
 		});
 	});
 };

@@ -10,7 +10,8 @@ module.exports = function mount(userAPI) {
 		}
 		res.render('users/user-home', {
 			user: req.antisocialUser,
-			title: 'User Home'
+			title: 'User Home',
+			flash: req.query.flash
 		});
 	});
 

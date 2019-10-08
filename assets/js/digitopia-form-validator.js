@@ -272,7 +272,7 @@
 				if (endpoint.match(/\?/)) {
 					delim = '&';
 				}
-				$.getJSON(endpoint + delim + 'value=' + getRealVal(input), function (data) {
+				$.getJSON(endpoint + delim + 'value=' + encodeURIComponent(getRealVal(input)), function (data) {
 					if (data.found) {
 						input.data('last-unique', 1);
 						cb(null, ['Already exists']);

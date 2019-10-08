@@ -2,9 +2,6 @@
 
 This repository is a boilerplate app that includes many common functions of a registered user web app. As web apps are usually javascript intensive we use HIJAX to load pages after the initial load. The HIJAX implementation is transparent to the user and to search engines.
 
-TODO
-	* password-change API
-
 ### Features
 	* ExpressJS framework
 	* Material Design Availability

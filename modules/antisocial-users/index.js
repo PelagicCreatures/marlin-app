@@ -41,6 +41,7 @@ module.exports = (options, app, db) => {
 	require('./routes/login.js')(usersApp);
 	require('./routes/logout.js')(usersApp);
 	require('./routes/change-email.js')(usersApp);
+	require('./routes/change-password.js')(usersApp);
 	require('./routes/password-reset.js')(usersApp);
 	require('./routes/password-set.js')(usersApp);
 	require('./routes/validate-email.js')(usersApp);
