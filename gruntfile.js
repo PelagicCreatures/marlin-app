@@ -3,11 +3,11 @@ module.exports = function (grunt) {
 	var jsFiles = [
 		'working/assets/*.js',
 		'assets/js/*.js',
-		'node_modules/digitopia/dist/js/digitopia.js',
+		'modules/digitopia/dist/js/digitopia.js',
 	];
 
 	var cssFiles = [
-		'node_modules/digitopia/dist/css/digitopia.css',
+		'modules/digitopia/dist/css/digitopia.css',
 		'working/assets/*.css',
 		'assets/css/*.css'
 	];
@@ -27,7 +27,7 @@ module.exports = function (grunt) {
 		filter: 'isFile'
 	}, {
 		expand: true,
-		cwd: 'node_modules/digitopia/',
+		cwd: 'modules/digitopia/',
 		src: ['images/*'],
 		dest: 'public/digitopia/',
 		filter: 'isFile'

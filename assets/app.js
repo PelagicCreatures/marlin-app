@@ -13,13 +13,9 @@ import jQuery from "jquery";
 import Cookies from "js-cookie";
 import async from "async";
 
-window.jQuery = jQuery;
-window.$ = jQuery;
-window.async = async;
-window.$.cookie = Cookies;
-
 export {
 	MDC,
 	jQuery,
-	Cookies
+	Cookies,
+	async
 }
