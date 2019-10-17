@@ -7,6 +7,8 @@ var uuid = require('uuid');
 
 var app = express();
 
+require('./config/' + app.get('env'))(app);
+
 app.locals.sitename = 'User App Boilerplate'
 app.locals.nonce = uuid.v4();
 

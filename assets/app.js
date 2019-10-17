@@ -13,9 +13,19 @@ import jQuery from "jquery";
 import Cookies from "js-cookie";
 import async from "async";
 
+import {
+	GetJQueryPlugin, digitopiaController
+}
+from '../modules/digitopia/js/controller.js';
+
+import formController from './modules/digitopia-form-controller.js'
+import formValidator from './modules/digitopia-form-validator.js'
+import logoutController from './modules/logoutController.js'
+
 export {
 	MDC,
 	jQuery,
 	Cookies,
-	async
+	async,
+	digitopiaController
 }

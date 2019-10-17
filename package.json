@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "debug": "node --inspect bin/www",
-    "start": "node bin/www",
+    "debug": "NODE_ENV=local node --inspect bin/www",
+    "development": "NODE_ENV=development node bin/www",
+    "production": "NODE_ENV=production node bin/www",
     "build": "webpack",
-    "watch": "webpack -d --watch --info-verbosity verbose"
+    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
