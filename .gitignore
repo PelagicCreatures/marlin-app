@@ -1,3 +1,4 @@
 public/dist
 working
 node_modules
+*.env

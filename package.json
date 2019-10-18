@@ -10,6 +10,7 @@
     "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose"
   },
   "dependencies": {
+    "@material/data-table": "^3.2.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -19,9 +20,11 @@
     "http-errors": "~1.6.2",
     "jquery": "^3.4.1",
     "js-cookie": "^2.2.1",
+    "moment": "^2.24.0",
     "morgan": "~1.9.0",
     "mysql": "^2.17.1",
     "pug": "2.0.0-beta11",
+    "stripe": "^7.10.0",
     "uid2": "0.0.3"
   },
   "devDependencies": {

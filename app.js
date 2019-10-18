@@ -11,12 +11,18 @@ require('./config/' + app.get('env'))(app);
 
 app.locals.sitename = 'User App Boilerplate'
 app.locals.nonce = uuid.v4();
+app.locals.moment = require('moment');
 
-// options for client side javascript
+// options for client side javascript & pug templates
+// in templates exposed as 'options.xxxx',
+// in JS exposed as 'appOptions.xxxx'
 // WARNING: NO PRIVATE INFO should be in app.locals.options
 app.locals.options = {
+  PUBLIC_HOST: process.env.PUBLIC_HOST,
   RECAPTCHA_PUBLIC: process.env.RECAPTCHA_PUBLIC,
-  STRIPE_PUBLIC: process.env.STRIPE_PUBLIC
+  STRIPE_PUBLIC: process.env.STRIPE_PUBLIC,
+  STRIPE_YEARLY: process.env.STRIPE_YEARLY,
+  STRIPE_MONTHLY: process.env.STRIPE_MONTHLY
 }
 
 // view engine setup
@@ -48,26 +54,10 @@ require('./modules/antisocial-users/lib/db-schema')(db);
 app.db = db;
 
 // set up and mount the user API
-let userOptions = {
-  RECAPTCHA: {
-    public: process.env.RECAPTCHA_public,
-    private: process.env.RECAPTCHA_private
-  }
-}
+let userOptions = {}
 const userAPI = require('./modules/antisocial-users/index')(userOptions, app, db);
 
-userAPI.on('didRegister', (user, post, cb) => {
-  console.log('didRegister event user: %j', user);
-  cb();
-})
-
-userAPI.on('sendEmailConfirmation', function (user, token) {
-  console.log('sendEmailConfirmation event user: %j token: %j', user, token);
-
-});
-userAPI.on('sendPasswordReset', function (user, token) {
-  console.log('sendPasswordReset user: %j token: %j', user, token);
-});
+require('./lib/user-events')(userAPI);
 
 app.use('/', require('./routes/index'));
 app.use('/', require('./routes/user-pages')(userAPI));

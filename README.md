@@ -11,6 +11,7 @@ This repository is a boilerplate app that includes many common functions of a re
 	* Packaging automation
 	* User API (register, login, logout, email validation, password reset etc)
 	* ReCaptcha v3 for registration form
+	* Stripe for subscription plans
 	* css compiles from scss and/or stylus
 	* client side javascript supports importing and transpiling EC6 modules using webpack and babel
 
@@ -49,6 +50,17 @@ install mysql and create tables (see below)
 got to http://localhost:3000 in your browser
 
 As you make changes in assets/ css and js grunt and webpach will recompile client side bundles.
+
+### Environment Variables
+RECAPTCHA_PUBLIC:
+RECAPTCHA_SECRET:
+STRIPE_PUBLIC:
+STRIPE_SECRET:
+STRIPE_YEARLY:
+STRIPE_MONTHLY:
+
+### Testing stripe webook (stripe cli https://github.com/stripe/stripe-cli)
+stripe listen --forward-to localhost:3000/api/users/stripe-webhook
 
 ### Testing DB - mysql running on localhost
 

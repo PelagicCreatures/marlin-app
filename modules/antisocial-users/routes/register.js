@@ -63,7 +63,7 @@ module.exports = (usersApp) => {
 
 			async.waterfall([
 				function captcha(cb) {
-					if (!usersApp.options.RECAPTCHA) {
+					if (!process.env.RECAPTCHA_SECRET) {
 						return setImmediate(cb);
 					}
 
@@ -81,7 +81,7 @@ module.exports = (usersApp) => {
 					}
 
 					var recaptchaURL = 'https://www.google.com/recaptcha/api/siteverify?';
-					recaptchaURL += 'secret=' + usersApp.options.RECAPTCHA.secret + '&';
+					recaptchaURL += 'secret=' + process.env.RECAPTCHA_SECRET + '&';
 					recaptchaURL += 'response=' + req.body['g-recaptcha-response'] + '&';
 					recaptchaURL += 'remoteip=' + ip;
 

@@ -6,8 +6,7 @@ const defaults = {
 	DEFAULT_TOKEN_LEN: 64,
 	PASSWORD_RESET_TTL: 3600 * 24 * 1, // 1 day
 	EMAIL_CONFIRM_TTL: 3600 * 24 * 2, // 2 days
-	MOUNTPOINT: '/api/users',
-	RECAPTCHA: false
+	MOUNTPOINT: '/api/users'
 };
 
 var express = require('express');
@@ -45,6 +44,9 @@ module.exports = (options, app, db) => {
 	require('./routes/password-reset.js')(usersApp);
 	require('./routes/password-set.js')(usersApp);
 	require('./routes/validate-email.js')(usersApp);
+	if (process.env.STRIPE_SECRET) {
+		require('./routes/stripe-webhook.js')(usersApp);
+	}
 
 	debug('mounting users API on ' + usersApp.options.MOUNTPOINT);
 

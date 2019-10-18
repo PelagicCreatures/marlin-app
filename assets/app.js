@@ -21,6 +21,7 @@ from '../modules/digitopia/js/controller.js';
 import formController from './modules/digitopia-form-controller.js'
 import formValidator from './modules/digitopia-form-validator.js'
 import logoutController from './modules/logoutController.js'
+import stripeClientCheckout from './modules/digitopia-stripe-checkout.js'
 
 export {
 	MDC,

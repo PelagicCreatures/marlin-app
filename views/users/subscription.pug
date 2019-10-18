@@ -1,0 +1,104 @@
+extends ../wrapper
+
+block content
+	.page-header
+		h2 Subscription
+				
+	- var canSubscribe = true
+
+	if stripe
+		- var cancelled = false
+
+		if (stripe.subscriptions && stripe.subscriptions.data.length)
+
+			each subscription in stripe.subscriptions.data
+				- var start = subscription.start ? new moment(subscription.start * 1000).format('MM/DD/YYYY') : '';
+				- var period_start = subscription.current_period_start ? new moment(subscription.current_period_start * 1000).format('MM/DD/YYYY') : '';
+				- var period_end = subscription.current_period_end ? new moment(subscription.current_period_end * 1000).format('MM/DD/YYYY') : '';
+				- var ended = subscription.ended_at ? new moment(subscription.ended_at * 1000).format('MM/DD/YYYY') : '';
+				
+				if subscription.cancel_at_period_end
+					- ended = period_end;
+					- cancelled = true;
+				
+				- var end = ended ? ' <strong class="text-danger">cancelled on ' + ended + '</strong>' : '';
+
+				p!= subscription.plan.name + ' started on <strong>' + start + '</strong>' + ' current subscription period <strong>' + period_start + '</strong> through <strong>' + period_end + '</strong>' + end
+		
+			if !cancelled
+				- canSubscribe = false
+				each source in stripe.sources.data
+					- card = source.card
+					if card && source.id == stripe.default_source
+						p!= 'Your current ' + card.brand + ' card ends with <kbd>' + card.last4 + '</kbd> and expires on <kbd>' + card.exp_month + '/' + card.exp_year + '</kbd>'
+						
+				.well
+					a(href="/users/subscription-cancel?redirect=/users/subscription") Click Here 
+					|  to cancel your subscription at end of current period.
+					
+		.mdc-data-table
+			table.mdc-data-table__table
+				thead
+					tr.mdc-data-table__header-row
+						th.mdc-data-table__header-cell Date
+						th.mdc-data-table__header-cell Description
+						th.mdc-data-table__header-cell Start
+						th.mdc-data-table__header-cell End
+						th.mdc-data-table__header-cell Amount
+						th.mdc-data-table__header-cell Prorated
+						th.mdc-data-table__header-cell Paid
+				tbody.mdc-data-table__content
+					if (upcoming && upcoming.lines && upcoming.lines.data.length) 
+						each line in upcoming.lines.data
+
+							- var date = new moment(upcoming.date * 1000).format('MM/DD/YYYY')
+							- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
+							- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
+							- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
+							- var amount = line.amount / 100
+							- var description = line.plan ? line.plan.name : line.description
+
+							tr.mdc-data-table__row
+								td.mdc-data-table__cell= date
+								td.mdc-data-table__cell Next bill
+								td.mdc-data-table__cell= startdate
+								td.mdc-data-table__cell= enddate
+								td.mdc-data-table__cell
+								td.mdc-data-table__cell!= prorate
+								td.mdc-data-table__cell
+			
+					if (invoices && invoices.data && invoices.data.length) 
+						each invoice in invoices.data
+							each line in invoice.lines.data
+								- var date = new moment(invoice.date * 1000).format('MM/DD/YYYY')
+								- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
+								- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
+								- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
+								- var amount = line.amount / 100
+								- var description = line.plan ? line.plan.name : line.description
+								- var paid = invoice.paid ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
+
+								tr.mdc-data-table__row
+									td.mdc-data-table__cell= date
+									td.mdc-data-table__cell= description
+									td.mdc-data-table__cell= startdate
+									td.mdc-data-table__cell= enddate
+									td.mdc-data-table__cell.align-right= amount.toFixed(2)
+									td.mdc-data-table__cell.align-center!= prorate
+									td.mdc-data-table__cell.align-center!= paid
+				
+	if canSubscribe
+					
+		.button-container(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_YEARLY)
+			button.btn.btn-primary Pay Yearly
+				
+		.button-container(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_MONTHLY)
+			button.btn.btn-default Pay Monthly
+		
+		#error-message
+				
+	
+	pre= JSON.stringify(stripe, null, 2)
+	pre= JSON.stringify(upcoming, null, 2)
+	pre= JSON.stringify(invoices, null, 2)
+	

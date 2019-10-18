@@ -110,5 +110,50 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
+	router.get('/users/subscription', getUserForRequestMiddleware(userAPI), function (req, res) {
+		if (!req.antisocialUser) {
+			return res.redirect('/users/login');
+		}
+
+		var stripe = require("stripe")(process.env.STRIPE_SECRET);
+
+		if (req.antisocialUser.stripeCustomer) {
+			async.waterfall([
+				function (cb) {
+					stripe.customers.retrieve(req.antisocialUser.stripeCustomer, function (err, customer) {
+						cb(err, customer);
+					});
+				},
+				function (customer, cb) {
+					stripe.invoices.retrieveUpcoming({
+						customer: req.antisocialUser.stripeCustomer
+					}, function (err, upcoming) {
+						cb(null, customer, upcoming);
+					});
+				},
+				function (customer, upcoming, cb) {
+					stripe.invoices.list({
+						customer: req.antisocialUser.stripeCustomer,
+						limit: 3
+					}, function (err, invoices) {
+						cb(err, customer, upcoming, invoices);
+					});
+				}
+			], function (err, customer, upcoming, invoices) {
+				res.render('users/subscription', {
+					user: req.antisocialUser,
+					stripe: customer,
+					upcoming: upcoming,
+					invoices: invoices
+				});
+			});
+		}
+		else {
+			res.render('users/subscription', {
+				user: req.antisocialUser
+			});
+		}
+	})
+
 	return router;
 };
