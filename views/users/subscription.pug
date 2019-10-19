@@ -12,7 +12,7 @@ block content
 		if (stripe.subscriptions && stripe.subscriptions.data.length)
 
 			each subscription in stripe.subscriptions.data
-				- var start = subscription.start ? new moment(subscription.start * 1000).format('MM/DD/YYYY') : '';
+				- var start = subscription.created ? new moment(subscription.created * 1000).format('MM/DD/YYYY') : '';
 				- var period_start = subscription.current_period_start ? new moment(subscription.current_period_start * 1000).format('MM/DD/YYYY') : '';
 				- var period_end = subscription.current_period_end ? new moment(subscription.current_period_end * 1000).format('MM/DD/YYYY') : '';
 				- var ended = subscription.ended_at ? new moment(subscription.ended_at * 1000).format('MM/DD/YYYY') : '';
@@ -23,7 +23,7 @@ block content
 				
 				- var end = ended ? ' <strong class="text-danger">cancelled on ' + ended + '</strong>' : '';
 
-				p!= subscription.plan.name + ' started on <strong>' + start + '</strong>' + ' current subscription period <strong>' + period_start + '</strong> through <strong>' + period_end + '</strong>' + end
+				p!= 'subscription started on <strong>' + start + '</strong>' + ' current subscription period <strong>' + period_start + '</strong> through <strong>' + period_end + '</strong>' + end
 		
 			if !cancelled
 				- canSubscribe = false
@@ -33,7 +33,7 @@ block content
 						p!= 'Your current ' + card.brand + ' card ends with <kbd>' + card.last4 + '</kbd> and expires on <kbd>' + card.exp_month + '/' + card.exp_year + '</kbd>'
 						
 				.well
-					a(href="/users/subscription-cancel?redirect=/users/subscription") Click Here 
+					a(href="#" data-jsclass="ajaxButton" data-endpoint='/api/users/subscription-cancel' data-method="GET" data-redirect="/users/subscription") Click Here 
 					|  to cancel your subscription at end of current period.
 					
 		.mdc-data-table
@@ -51,7 +51,7 @@ block content
 					if (upcoming && upcoming.lines && upcoming.lines.data.length) 
 						each line in upcoming.lines.data
 
-							- var date = new moment(upcoming.date * 1000).format('MM/DD/YYYY')
+							- var date = new moment(upcoming.created * 1000).format('MM/DD/YYYY')
 							- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
 							- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
 							- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
@@ -70,13 +70,13 @@ block content
 					if (invoices && invoices.data && invoices.data.length) 
 						each invoice in invoices.data
 							each line in invoice.lines.data
-								- var date = new moment(invoice.date * 1000).format('MM/DD/YYYY')
+								- var date = new moment(invoice.created * 1000).format('MM/DD/YYYY')
 								- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
 								- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
 								- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
 								- var amount = line.amount / 100
-								- var description = line.plan ? line.plan.name : line.description
-								- var paid = invoice.paid ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
+								- var description = line.description
+								- var paid = invoice.paid ? '<i class="material-icons" >check_circle</i>' : ''
 
 								tr.mdc-data-table__row
 									td.mdc-data-table__cell= date

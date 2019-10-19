@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "debug": "NODE_ENV=local node --inspect bin/www",
+    "debug": "NODE_ENV=local DEBUG=antisocial-user* node --inspect bin/www",
     "development": "NODE_ENV=development node bin/www",
     "production": "NODE_ENV=production node bin/www",
     "build": "webpack",

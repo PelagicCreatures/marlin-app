@@ -45,6 +45,7 @@ module.exports = (options, app, db) => {
 	require('./routes/password-set.js')(usersApp);
 	require('./routes/validate-email.js')(usersApp);
 	if (process.env.STRIPE_SECRET) {
+		require('./routes/subscription-cancel.js')(usersApp);
 		require('./routes/stripe-webhook.js')(usersApp);
 	}
 

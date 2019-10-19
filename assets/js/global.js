@@ -92,6 +92,11 @@ function loadPage(href) {
 	$('body').trigger('DigitopiaLoadPage', href);
 }
 
+// reload current page programatically
+function reloadPage() {
+	$('body').trigger('DigitopiaReloadPage');
+}
+
 // call to show the Material Design "snackbar" for user notifications
 function flashAjaxStatus(level, message) {
 	if (flashTimer) {
