@@ -119,34 +119,47 @@ module.exports = function mount(userAPI) {
 
 		if (req.antisocialUser.stripeCustomer) {
 			async.waterfall([
-				function (cb) {
-					stripe.customers.retrieve(req.antisocialUser.stripeCustomer, function (err, customer) {
-						cb(err, customer);
+					function (cb) {
+						stripe.customers.retrieve(req.antisocialUser.stripeCustomer, function (err, customer) {
+							cb(err, customer);
+						});
+					},
+					function (customer, cb) {
+						if (!customer.subscriptions && !customer.subscriptions.data.length) {
+							return setImmediate(function () {
+								cb(null, customer, null);
+							});
+						}
+
+						stripe.paymentMethods.retrieve(customer.subscriptions.data[0].default_payment_method, function (err, paymentMethod) {
+							cb(err, customer, paymentMethod);
+						});
+					},
+					function (customer, paymentMethod, cb) {
+						stripe.invoices.retrieveUpcoming({
+							customer: req.antisocialUser.stripeCustomer
+						}, function (err, upcoming) {
+							cb(null, customer, paymentMethod, upcoming);
+						});
+					},
+					function (customer, paymentMethod, upcoming, cb) {
+						stripe.invoices.list({
+							customer: req.antisocialUser.stripeCustomer,
+							limit: 3
+						}, function (err, invoices) {
+							cb(err, customer, paymentMethod, upcoming, invoices);
+						});
+					}
+				],
+				function (err, customer, paymentMethod, upcoming, invoices) {
+					res.render('users/subscription', {
+						user: req.antisocialUser,
+						stripe: customer,
+						paymentMethod: paymentMethod,
+						upcoming: upcoming,
+						invoices: invoices
 					});
-				},
-				function (customer, cb) {
-					stripe.invoices.retrieveUpcoming({
-						customer: req.antisocialUser.stripeCustomer
-					}, function (err, upcoming) {
-						cb(null, customer, upcoming);
-					});
-				},
-				function (customer, upcoming, cb) {
-					stripe.invoices.list({
-						customer: req.antisocialUser.stripeCustomer,
-						limit: 3
-					}, function (err, invoices) {
-						cb(err, customer, upcoming, invoices);
-					});
-				}
-			], function (err, customer, upcoming, invoices) {
-				res.render('users/subscription', {
-					user: req.antisocialUser,
-					stripe: customer,
-					upcoming: upcoming,
-					invoices: invoices
 				});
-			});
 		}
 		else {
 			res.render('users/subscription', {

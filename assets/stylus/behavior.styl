@@ -24,6 +24,10 @@ a
 section
 	margin: .5rem 0
 
+.button-bar
+	button:not(:last-child)
+		margin-right:1em
+
 .clear-fix
 	&::after
 		display: block
@@ -153,3 +157,35 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		text-align: center
 		i
 			font-size: 10em
+
+/* flextable */
+
+.flextable
+	display:none
+	table
+		border: thin solid #dddddd
+		border-collapse: separate
+		*border-collapse: collapse
+		border-radius: 4px
+		border-left:0
+		border-spacing: 0
+		th,td
+			padding: .5em
+			border-left:thin solid #dddddd
+		th
+			border-bottom:thin solid #dddddd
+		tr:not(:last-child)
+			td
+				border-bottom:thin solid #dddddd
+
+.flextable-header
+	text-align:left
+
+.flextable-row-header
+	font-weight: bold
+
+.screen-xsmall .flextable-row-header
+	text-align: left
+
+.not-screen-xsmall .flextable-row-header
+	text-align: center

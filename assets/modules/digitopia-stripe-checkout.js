@@ -16,11 +16,10 @@ function stripeClientCheckout(elem) {
 	this.pk = this.element.data('stripe-pk');
 	this.host = this.element.data('host');
 
-
 	this.start = function () {
 		var stripe = Stripe(this.pk, {});
 
-		self.button.addEventListener('click', function () {
+		self.element.on('click', function () {
 			// When the customer clicks on the button, redirect
 			// them to Checkout.
 			stripe.redirectToCheckout({
@@ -40,6 +39,10 @@ function stripeClientCheckout(elem) {
 					}
 				});
 		});
+	}
+
+	this.stop = function () {
+		this.element.off('click');
 	}
 }
 $.fn.stripeClientCheckout = GetJQueryPlugin('stripeClientCheckout', stripeClientCheckout);

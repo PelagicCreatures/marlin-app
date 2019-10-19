@@ -13,6 +13,10 @@ app.locals.sitename = 'User App Boilerplate'
 app.locals.nonce = uuid.v4();
 app.locals.moment = require('moment');
 
+if (app.get('env') !== 'production') {
+  app.locals.pretty = true;
+}
+
 // options for client side javascript & pug templates
 // in templates exposed as 'options.xxxx',
 // in JS exposed as 'appOptions.xxxx'
