@@ -84,6 +84,22 @@ module.exports = (usersApp) => {
 					});
 				}
 
+				// if we use subscriptions manage the 'subscriber' cookie
+				if (process.env.STRIPE_SECRET) {
+					if (user.stripeStatus === 'ok') {
+						res.cookie('subscriber', 1, {
+							'path': '/'
+						});
+					}
+					else {
+						if (req.cookies.subscriber) {
+							res.clearCookie('subscriber', {
+								'path': '/'
+							});
+						}
+					}
+				}
+
 				res.cookie('access-token', token.token, {
 						'path': '/',
 						'maxAge': token.ttl * 1000,

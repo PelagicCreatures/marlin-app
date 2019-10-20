@@ -34,6 +34,8 @@ function boot() {
 	// Things to do when HIJAX loads a new page
 	$('body').on('DigitopiaDidLoadNewPage', function (e) {
 		if (e.target === this) {
+			checkSubscription();
+
 			instantiateMaterialDesignElements($('body'));
 		}
 	});
@@ -69,6 +71,7 @@ const cookieOptions = {
 
 // call whenever login occurs
 function didLogIn() {
+	checkSubscription();
 	App.Cookies.set('have-account', 1, cookieOptions)
 	flashAjaxStatus('success', 'Logged in');
 	$('body').removeClass('is-logged-out').addClass('is-logged-in').addClass('have-account');
@@ -77,10 +80,20 @@ function didLogIn() {
 
 // call whenever logout occurs
 function didLogOut() {
+	checkSubscription()
 	flashAjaxStatus('success', 'Logged out');
 	$('body').removeClass('is-logged-in').addClass('is-logged-out');
 	App.Cookies.remove('access_token', cookieOptions);
 	$('.DigitopiaInstance').trigger('DidLogOut');
+}
+
+function checkSubscription() {
+	if (App.Cookies.get('subscriber')) {
+		$('body').removeClass('dont-have-subscription').addClass('have-subscription');
+	}
+	else {
+		$('body').removeClass('have-subscription').addClass('dont-have-subscription');
+	}
 }
 
 function getAccessToken() {

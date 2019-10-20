@@ -84,7 +84,7 @@ button#submitter
 		text-transform: uppercase
 
 
-// show/hide content bassed on login status
+// show/hide content bassed on login/subscriber status
 
 .have-account
 	.hidden-have-account
@@ -96,9 +96,15 @@ button#submitter
 .is-logged-in
 	.hidden-logged-in
 		display:none!important
-
 .is-logged-out
 	.hidden-logged-out
+		display:none!important
+
+.have-subscription
+	.hidden-have-subscription
+		display:none!important
+.dont-have-subscription
+	.hidden-dont-have-subscription
 		display:none!important
 
 // make autofill less horrifyingly ugly

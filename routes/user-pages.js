@@ -125,7 +125,7 @@ module.exports = function mount(userAPI) {
 						});
 					},
 					function (customer, cb) {
-						if (!customer.subscriptions && !customer.subscriptions.data.length) {
+						if (!customer.subscriptions || !customer.subscriptions.data.length) {
 							return setImmediate(function () {
 								cb(null, customer, null);
 							});

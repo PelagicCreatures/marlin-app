@@ -3,7 +3,7 @@ aside#nav-drawer.drawer-top.mdc-drawer.mdc-drawer--dismissible
 		#user-drawer-header.mdc-drawer__header-content.text-center(data-hijax="true")
 			div
 				if user
-					a(href="/users/home")= user.username
+					a.nav-item(href="/users/home")= user.username
 
 	.mdc-drawer__content
 		nav.mdc-list

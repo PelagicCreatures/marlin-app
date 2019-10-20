@@ -23,6 +23,15 @@ module.exports = (usersApp) => {
 		}
 
 		db.deleteInstance('tokens', req.antisocialToken.id, function (err) {
+
+			if (process.env.STRIPE_SECRET) {
+				if (currentUser.stripeStatus === 'ok') {
+					res.clearCookie('subscriber', {
+						'path': '/'
+					});
+				}
+			}
+
 			res.clearCookie('access-token', {
 				'path': '/',
 				'signed': true

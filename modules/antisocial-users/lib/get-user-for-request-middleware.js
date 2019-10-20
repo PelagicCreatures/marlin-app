@@ -42,6 +42,9 @@ function getUserForRequestMiddleware(userAPI) {
 					'path': '/',
 					'signed': true
 				});
+				if (process.env.STRIPE_SECRET) {
+					res.clearCookie('subscriber');
+				}
 				return next();
 			}
 
@@ -65,9 +68,24 @@ function getUserForRequestMiddleware(userAPI) {
 					req.antisocialToken = tokenInstances[0];
 					req.antisocialUser = userInstances[0];
 
+					// if we use subscriptions manage the 'subscriber' cookie
+					if (process.env.STRIPE_SECRET) {
+						if (req.antisocialUser.stripeStatus === 'ok') {
+							res.cookie('subscriber', 1, {
+								'path': '/'
+							});
+						}
+						else {
+							if (req.cookies.subscriber) {
+								res.clearCookie('subscriber', {
+									'path': '/'
+								});
+							}
+						}
+					}
+
 					next();
 				});
-
 			});
 		});
 	};
