@@ -128,7 +128,7 @@ var flashAjaxStatus = (level, message) => {
 	flashTimer = setTimeout(function () {
 		flashTimer = null;
 		snackBar.close();
-	}, 1500);
+	}, 3000);
 }
 
 var progressBar = (show) => {
