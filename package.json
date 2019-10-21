@@ -10,7 +10,6 @@
     "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose"
   },
   "dependencies": {
-    "@material/data-table": "^3.2.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -30,12 +29,15 @@
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
+    "@fortawesome/fontawesome-free": "^5.11.2",
     "@material/checkbox": "^3.2.0",
+    "@material/data-table": "^3.2.0",
     "@material/dialog": "^3.2.0",
     "@material/drawer": "^3.2.0",
     "@material/fab": "^3.2.0",
     "@material/form-field": "^3.2.0",
     "@material/layout-grid": "^3.1.0",
+    "@material/linear-progress": "^3.2.0",
     "@material/ripple": "^3.2.0",
     "@material/select": "^3.2.0",
     "@material/snackbar": "^3.2.0",

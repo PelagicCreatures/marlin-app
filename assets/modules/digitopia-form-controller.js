@@ -17,7 +17,7 @@ function formController(elem, options) {
 	this.start = function () {
 		self.element.on('submit', function (e) {
 			e.preventDefault();
-			self.submitter.attr("disabled", true);
+			self.pleaseWait(true);
 			let data = self.element.serializeObject();
 			if (appOptions.RECAPTCHA_PUBLIC) {
 				grecaptcha.execute(appOptions.RECAPTCHA_PUBLIC, {
@@ -68,7 +68,7 @@ function formController(elem, options) {
 				}
 				else {
 					self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>');
-					self.submitter.attr("disabled", false);
+					self.pleaseWait(false);
 				}
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
@@ -88,13 +88,29 @@ function formController(elem, options) {
 					}
 				}
 				self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-error"><i class="material-icons">error</i> ' + message + '</div>');
-				self.submitter.attr("disabled", false);
+				self.pleaseWait(false);
 			});
 	};
 
 	this.stop = function () {
 		self.element.off('submit');
 	};
+
+	this.pleaseWait = function (on) {
+		if (on) {
+			var element = $(self.submitter);
+			element.data('orig-html', element.html());
+			var w = element.width();
+			element.width(w);
+
+			element.html('<i class="fas fa-circle-notch fa-spin"></i>');
+		}
+		else {
+			self.submitter.attr("disabled", false);
+			var element = $(self.submitter);
+			$(element).html($(element).data('orig-html'));
+		}
+	}
 }
 
 $.fn.formController = GetJQueryPlugin('formController', formController);

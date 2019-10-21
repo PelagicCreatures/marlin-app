@@ -62,6 +62,11 @@ import {
 }
 from '@material/checkbox';
 
+import {
+	MDCLinearProgress
+}
+from '@material/linear-progress';
+
 export {
 	MDCRipple,
 	MDCLineRipple,
@@ -74,5 +79,6 @@ export {
 	MDCSnackbar,
 	MDCFormField,
 	MDCCheckbox,
-	MDCSelect
+	MDCSelect,
+	MDCLinearProgress
 }

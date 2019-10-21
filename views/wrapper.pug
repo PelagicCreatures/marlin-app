@@ -39,11 +39,21 @@ html
       
       include components/modals
 
-      #content-body.top-margin(data-hijax="true")
-        .mdc-layout-grid
-          .mdc-layout-grid__inner
-            .mdc-layout-grid__cell--span-12
-              block content
+      .top-margin
+        
+        .progress.mdc-linear-progress.mdc-linear-progress--indeterminate.mdc-linear-progress--closed(role="progressbar")
+          .mdc-linear-progress__buffering-dots
+          .mdc-linear-progress__buffer
+          .mdc-linear-progress__bar.mdc-linear-progress__primary-bar
+            span.mdc-linear-progress__bar-inner
+          .mdc-linear-progress__bar.mdc-linear-progress__secondary-bar
+            span.mdc-linear-progress__bar-inner
+
+        #content-body(data-hijax="true")
+          .mdc-layout-grid
+            .mdc-layout-grid__inner
+              .mdc-layout-grid__cell--span-12
+                block content
     
     #fab(data-hijax="true")
       block fab

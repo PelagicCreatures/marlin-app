@@ -37,6 +37,12 @@ module.exports = function (grunt) {
 		src: ['*.map'],
 		dest: 'public/dist/js/',
 		filter: 'isFile'
+	}, {
+		expand: true,
+		cwd: 'working/assets/fonts/',
+		src: ['*.*'],
+		dest: 'public/dist/css/fonts',
+		filter: 'isFile'
 	}];
 
 	grunt.initConfig({

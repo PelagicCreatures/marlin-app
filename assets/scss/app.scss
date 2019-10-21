@@ -1,6 +1,6 @@
 $mdc-typography-font-family: unquote("-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\"");
 
-$mdc-theme-primary: #6200ea;
+$mdc-theme-primary: #333;
 $mdc-theme-accent: #d500f9;
 $mdc-theme-hint: #1a237e;
 
@@ -22,6 +22,17 @@ $mdc-theme-hint: #1a237e;
 @import "@material/elevation/mdc-elevation";
 @import "@material/fab/mdc-fab";
 @import "@material/select/mdc-select";
+@import "@material/linear-progress/mdc-linear-progress";
+
+$fa-font-path: "../../node_modules/@fortawesome/fontawesome-free/webfonts";
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import "@fortawesome/fontawesome-free/scss/solid";
+@import "@fortawesome/fontawesome-free/scss/regular";
+
+
+.progress {
+	@include mdc-linear-progress-bar-color(#6200ea);
+}
 
 .mdc-top-app-bar__navigation-icon {
 	text-decoration: none;

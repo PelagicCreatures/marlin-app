@@ -1,8 +1,9 @@
 var MDCInstanciateOnce = 0;
 var flashTimer = null;
-var snackBar;
+var snackBar, linearProgress;
+var linearProgressTimer = null;
 
-function boot() {
+var boot = () => {
 
 	// set up digitopia framework for HIJAX
 	var options = {
@@ -61,6 +62,12 @@ function boot() {
 	window.setTimeout(function () {
 		$('#splash').fadeOut('fast');
 	}, 1000);
+
+	$(document).ajaxStart(function () {
+		progressBar(true);
+	}).ajaxStop(function () {
+		progressBar(false);
+	});
 }
 
 const cookieOptions = {
@@ -79,7 +86,7 @@ function didLogIn() {
 }
 
 // call whenever logout occurs
-function didLogOut() {
+var didLogOut = () => {
 	checkSubscription()
 	flashAjaxStatus('success', 'Logged out');
 	$('body').removeClass('is-logged-in').addClass('is-logged-out');
@@ -87,7 +94,7 @@ function didLogOut() {
 	$('.DigitopiaInstance').trigger('DidLogOut');
 }
 
-function checkSubscription() {
+var checkSubscription = () => {
 	if (App.Cookies.get('subscriber')) {
 		$('body').removeClass('dont-have-subscription').addClass('have-subscription');
 	}
@@ -96,22 +103,22 @@ function checkSubscription() {
 	}
 }
 
-function getAccessToken() {
+var getAccessToken = () => {
 	return App.Cookies.get('access-token');
 }
 
 // load a page programatically
-function loadPage(href) {
+var loadPage = (href) => {
 	$('body').trigger('DigitopiaLoadPage', href);
 }
 
 // reload current page programatically
-function reloadPage() {
+var reloadPage = () => {
 	$('body').trigger('DigitopiaReloadPage');
 }
 
 // call to show the Material Design "snackbar" for user notifications
-function flashAjaxStatus(level, message) {
+var flashAjaxStatus = (level, message) => {
 	if (flashTimer) {
 		clearTimeout(flashTimer);
 	}
@@ -124,8 +131,30 @@ function flashAjaxStatus(level, message) {
 	}, 1500);
 }
 
+var progressBar = (show) => {
+	if (show) {
+		if (linearProgressTimer) {
+			clearTimeout(linearProgressTimer);
+			linearProgressTimer = null;
+		}
+		linearProgressTimer = setTimeout(() => {
+			linearProgressTimer = null;
+			linearProgress.open();
+		}, 500);
+	}
+	else {
+		if (linearProgressTimer) {
+			clearTimeout(linearProgressTimer);
+			linearProgressTimer = null;
+		}
+		else {
+			linearProgress.close();
+		}
+	}
+}
+
 // call when you inject content into the DOM programatically
-function didInjectContent(element) {
+var didInjectContent = (element) => {
 	$('#document-body').trigger('DigitopiaInstantiate');
 	$('#document-body').data('digitopiaHijax').hijaxLinks(element);
 	instantiateMaterialDesignElements(element);
@@ -135,13 +164,15 @@ function didInjectContent(element) {
 // called on initial page load, hijax page load events and by didInjectContent.
 // some elements like the drawer, snackbar and the navbar only need this once because
 // they are defined in the shared html wrapper.
-function instantiateMaterialDesignElements(element) {
+var instantiateMaterialDesignElements = (element) => {
 	if (!MDCInstanciateOnce++) {
 		const topAppBar = new App.MDC.MDCTopAppBar(document.querySelector('.mdc-top-app-bar'));
 
 		const nav = new App.MDC.MDCDrawer.attachTo(document.querySelector('#nav-drawer'));
 
 		snackBar = new App.MDC.MDCSnackbar.attachTo(document.querySelector('.mdc-snackbar'));
+
+		linearProgress = new App.MDC.MDCLinearProgress.attachTo(document.querySelector('.mdc-linear-progress'));
 
 		document.querySelector('.mdc-top-app-bar__navigation-icon').addEventListener('click', (e) => {
 			e.preventDefault();
@@ -153,7 +184,7 @@ function instantiateMaterialDesignElements(element) {
 			nav.open = !nav.open;
 		});
 
-		$('body').on('click', '.nav-item', function () {
+		$('body').on('click', '.nav-item', () => {
 			nav.open = false;
 		});
 	}
