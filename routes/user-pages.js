@@ -53,14 +53,18 @@ module.exports = function mount(userAPI) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/change-email', {});
+		res.render('users/change-email', {
+			user: req.antisocialUser
+		});
 	});
 
 	router.get('/users/change-password', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/change-password', {});
+		res.render('users/change-password', {
+			user: req.antisocialUser
+		});
 	});
 
 	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), function (req, res) {

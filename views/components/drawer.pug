@@ -3,17 +3,19 @@ aside#nav-drawer.drawer-top.mdc-drawer.mdc-drawer--dismissible
 		nav.mdc-list
 			.hidden-logged-in
 				a.nav-item.mdc-list-item(href="/users/register")
-					i.material-icons account_circle
-					|  Create Account
+					i.material-icons.mdc-list-item__graphic person_add
+					span.mdc-list-item__text Create Account
 				a.nav-item.mdc-list-item(href="/users/login")
-					i.material-icons account_circle
-					|  Login
+					i.material-icons.mdc-list-item__graphic person
+					span.mdc-list-item__text Login
 
 			.hidden-logged-out
 				if user
-					a.nav-item.mdc-list-item(href="/users/home")
-						i.material-icons.mdc-list-item__graphic person
-						span.mdc-list-item__text= user.username
+					div#drawer-personalized(data-hijax="true")
+						div
+							a.nav-item.mdc-list-item(href="/users/home")
+								i.material-icons.mdc-list-item__graphic person
+								span.mdc-list-item__text= user.username
 				a.nav-item.mdc-list-item(href="/users/settings")
 					i.material-icons.mdc-list-item__graphic settings_applications
 					span.mdc-list-item__text Settings
