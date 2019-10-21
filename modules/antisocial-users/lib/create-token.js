@@ -11,7 +11,8 @@ module.exports = (usersApp) => {
 			'token': guid,
 			'ttl': options.ttl ? options.ttl : usersApp.options.DEFAULT_TTL,
 			'lastaccess': new Date(),
-			'created': new Date()
+			'created': new Date(),
+			'type': options.type ? options.type : 'access'
 		}, function (err, user) {
 			if (err) {
 				var e = new VError(err, 'Could not create token');

@@ -30,7 +30,8 @@ function getUserForRequestMiddleware(userAPI) {
 		debug('getAuthenticatedUser found token in header or cookies', token);
 
 		db.getInstances('tokens', {
-			'token': token
+			'token': token,
+			'type': 'access'
 		}, function (err, tokenInstances) {
 			if (err) {
 				debug('getAuthenticatedUser error finding token', err.message);

@@ -4,7 +4,7 @@ var expect = require('expect.js');
 var uuid = require('uuid');
 var async = require('async');
 
-describe('friends', function () {
+describe('users', function () {
 	this.timeout(50000);
 
 	var client1 = request.agent();
@@ -13,6 +13,8 @@ describe('friends', function () {
 
 	var token1;
 	var token2;
+
+	var id2, id1;
 
 	var app = require('../app');
 
@@ -38,9 +40,11 @@ describe('friends', function () {
 				'password': 'test with spaces'
 			})
 			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
 				expect(res.status).to.equal(422);
 				expect(res.body.errors).to.be.an('array');
-				console.log('errors: ', res.body.errors);
 				done();
 			});
 	});
@@ -56,13 +60,48 @@ describe('friends', function () {
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: %j %j', err, res.body ? res.body.errors : '');
+					console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(err).to.be(null);
 				expect(res.status).to.equal(200);
 				expect(res.body.status).to.equal('ok');
+				id1 = res.body.result.id;
 				token1 = getCookie(res.headers['set-cookie'], 'access-token');
 				expect(token1).to.be.a('string');
+				done();
+			});
+	});
+
+	it('should be able to validate account 1', function (done) {
+		app.db.getInstances('tokens', {
+			'userId': id1,
+			'type': 'validate'
+		}, function (err, tokenInstances) {
+			expect(err).to.be(null);
+			expect(tokenInstances).to.be.an('array');
+			expect(tokenInstances.length).to.equal(1);
+
+			client1.get('http://127.0.0.1:3000/api/users/validate-email?token=' + tokenInstances[0].token)
+				.redirects(0)
+				.end(function (err, res) {
+					if (err) {
+						console.log('errors: %j %j', err, res.body ? res.body : '');
+					}
+					expect(res.status).to.equal(302);
+					done();
+				});
+		});
+	});
+
+	it('should be able to logout account 1', function (done) {
+		client1.get('http://127.0.0.1:3000/api/users/logout')
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(err).to.be(null);
+				expect(res.status).to.equal(200);
+				expect(res.body.status).to.equal('ok');
 				done();
 			});
 	});
@@ -78,26 +117,79 @@ describe('friends', function () {
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: %j %j', err, res.body ? res.body.errors : '');
+					console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(err).to.be(null);
 				expect(res.status).to.equal(200);
 				expect(res.body.status).to.equal('ok');
+				id2 = res.body.result.id;
 				token2 = getCookie(res.headers['set-cookie'], 'access-token');
 				expect(token2).to.be.a('string');
 				done();
 			});
 	});
 
-	it('should be able to send password reset', function (done) {
-		client3.post('http://127.0.0.1:3000/api/users/password-reset')
+	it('should be able to validate account 2', function (done) {
+		app.db.getInstances('tokens', {
+			'userId': id2,
+			'type': 'validate'
+		}, function (err, tokenInstances) {
+			expect(err).to.be(null);
+			expect(tokenInstances).to.be.an('array');
+			expect(tokenInstances.length).to.equal(1);
+
+			client2.get('http://127.0.0.1:3000/api/users/validate-email?token=' + tokenInstances[0].token)
+				.redirects(0)
+				.end(function (err, res) {
+					if (err) {
+						console.log('errors: %j %j', err, res.body ? res.body : '');
+					}
+					expect(res.status).to.equal(302);
+					done();
+				});
+		});
+	});
+
+	it('should be able to logout account 2', function (done) {
+		client2.get('http://127.0.0.1:3000/api/users/logout')
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(err).to.be(null);
+				expect(res.status).to.equal(200);
+				expect(res.body.status).to.equal('ok');
+				done();
+			});
+	});
+
+	it('should be able to login account 2', function (done) {
+		client2.post('http://127.0.0.1:3000/api/users/login')
+			.type('form')
+			.send({
+				'email': 'mrhodes+2@myantisocial.net',
+				'password': 'Testing123'
+			})
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(err).to.be(null);
+				expect(res.status).to.equal(200);
+				expect(res.body.status).to.equal('ok');
+				done();
+			});
+	});
+
+	it('should be able to send password reset account 1', function (done) {
+		client1.post('http://127.0.0.1:3000/api/users/password-reset')
 			.type('form')
 			.send({
 				'email': 'mrhodes+1@myantisocial.net'
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: ', res.body.errors);
+					console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(err).to.be(null);
 				expect(res.status).to.equal(200);
@@ -106,29 +198,45 @@ describe('friends', function () {
 			});
 	});
 
-	it('should be able to logout', function (done) {
-		client1.get('http://127.0.0.1:3000/api/users/logout')
-			.end(function (err, res) {
-				if (err) {
-					console.log('errors: ', res.body.errors);
-				}
-				expect(err).to.be(null);
-				expect(res.status).to.equal(200);
-				expect(res.body.status).to.equal('ok');
-				done();
-			});
+	it('should be able to set new password with token account 1', function (done) {
+		app.db.getInstances('tokens', {
+			'userId': id1,
+			'type': 'reset'
+		}, function (err, tokenInstances) {
+			expect(err).to.be(null);
+			expect(tokenInstances).to.be.an('array');
+			expect(tokenInstances.length).to.equal(1);
+
+			var resetToken = tokenInstances[0].token;
+
+			client1.post('http://127.0.0.1:3000/api/users/password-set')
+				.type('form')
+				.send({
+					token: resetToken,
+					password: 'Testing1234'
+				})
+				.end(function (err, res) {
+					if (err) {
+						console.log('errors: %j %j', err, res.body ? res.body : '');
+					}
+					expect(err).to.be(null);
+					expect(res.status).to.equal(200);
+					expect(res.body.status).to.equal('ok');
+					done();
+				});
+		});
 	});
 
-	it('should be able to log in again', function (done) {
+	it('should be able to log in again account 1 after reset', function (done) {
 		client1.post('http://127.0.0.1:3000/api/users/login')
 			.type('form')
 			.send({
 				'email': 'mrhodes+1@myantisocial.net',
-				'password': 'Testing123'
+				'password': 'Testing1234'
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: ', res.body.errors);
+					console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(err).to.be(null);
 				expect(res.status).to.equal(200);

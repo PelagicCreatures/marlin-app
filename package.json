@@ -7,7 +7,8 @@
     "development": "NODE_ENV=development node bin/www",
     "production": "NODE_ENV=production node bin/www",
     "build": "webpack",
-    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose"
+    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose",
+    "test": "NODE_ENV=local DEBUG=antisocial-user* mocha tests/users.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

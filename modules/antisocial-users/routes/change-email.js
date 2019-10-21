@@ -58,7 +58,8 @@ module.exports = (usersApp) => {
 			},
 			function (user, doneToken) {
 				createToken(user, {
-					ttl: usersApp.options.EMAIL_CONFIRM_TTL
+					ttl: usersApp.options.EMAIL_CONFIRM_TTL,
+					type: 'validation'
 				}, function (err, token) {
 					usersApp.emit('sendEmailConfirmation', user, token);
 					doneToken(err);

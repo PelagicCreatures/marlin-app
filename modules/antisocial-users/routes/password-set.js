@@ -57,7 +57,8 @@ module.exports = (usersApp) => {
 			async.waterfall([
 				function findToken(cb) {
 					db.getInstances('tokens', {
-						'token': req.body.token
+						'token': req.body.token,
+						'type': 'reset'
 					}, function (err, tokenInstances) {
 						if (err) {
 							return cb(new VError(err, 'error reading token'));

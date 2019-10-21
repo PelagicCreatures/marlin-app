@@ -47,7 +47,8 @@ module.exports = (usersApp) => {
 				var user = userInstances[0];
 
 				createToken(user, {
-					ttl: usersApp.options.PASSWORD_RESET_TTL
+					ttl: usersApp.options.PASSWORD_RESET_TTL,
+					type: 'reset'
 				}, function (err, token) {
 					usersApp.emit('sendPasswordReset', user, token);
 					res.send({

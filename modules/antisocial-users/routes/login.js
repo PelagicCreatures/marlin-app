@@ -15,9 +15,12 @@ module.exports = (usersApp) => {
 	let passwordMatch = require('../lib/password-match.js');
 
 	usersApp.router.post('/login',
-		check('email').isEmail(),
+		check('email')
+		.not().isEmpty()
+		.isEmail(),
 
 		check('password')
+		.not().isEmpty()
 		.custom(value => !/\s/.test(value)).withMessage('No spaces are allowed in the password')
 		.isLength({
 			min: 8

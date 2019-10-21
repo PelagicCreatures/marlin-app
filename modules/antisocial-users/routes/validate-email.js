@@ -17,15 +17,17 @@ module.exports = (usersApp) => {
 			return res.status(422).json({
 				status: 'error',
 				errors: [{
-					msg: 'token are required'
+					msg: 'token is required'
 				}]
 			});
 		}
 
 		async.waterfall([
 			function findToken(cb) {
+				debug('finding validation token');
 				db.getInstances('tokens', {
-					'token': req.query.token
+					'token': req.query.token,
+					'type': 'validate'
 				}, function (err, tokenInstances) {
 					if (err) {
 						return cb(new VError(err, 'error reading token'));
@@ -43,6 +45,7 @@ module.exports = (usersApp) => {
 				});
 			},
 			function readUser(token, cb) {
+				debug('reading user for token');
 				db.getInstances('users', {
 					'id': token.userId
 				}, function (err, userInstances) {
@@ -57,6 +60,7 @@ module.exports = (usersApp) => {
 				});
 			},
 			function saveValidated(token, user, cb) {
+				debug('saving user validated');
 				db.updateInstance('users', user.id, {
 					'validated': true,
 					'email': user.pendingEmail ? user.pendingEmail : user.email,
@@ -69,6 +73,7 @@ module.exports = (usersApp) => {
 				});
 			},
 			function deleteToken(token, user, cb) {
+				debug('deleting token');
 				db.deleteInstance('tokens', token.id, function (err) {
 					if (err) {
 						return cb(new VError(err, 'could not delete token'));

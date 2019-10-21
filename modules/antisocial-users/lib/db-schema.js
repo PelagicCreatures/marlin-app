@@ -66,6 +66,9 @@ module.exports = function (db) {
 		},
 		'lastaccess': {
 			type: 'datetime'
+		},
+		'type': {
+			type: 'text'
 		}
 	}, [
 		'ENGINE=InnoDB',

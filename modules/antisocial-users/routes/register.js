@@ -17,18 +17,20 @@ module.exports = (usersApp) => {
 	// create a new user
 	usersApp.router.post('/register',
 
-		check('email').isEmail(),
+		check('email')
+		.not().isEmpty()
+		.isEmail(),
 
 		check('name').optional()
 		.trim(),
 
 		check('username')
-		.not()
-		.isEmpty()
+		.not().isEmpty()
 		.trim()
 		.withMessage('username is required'),
 
 		check('password')
+		.not().isEmpty()
 		.custom(value => !/\s/.test(value)).withMessage('No spaces are allowed in the password')
 		.isLength({
 			min: 8
@@ -41,14 +43,6 @@ module.exports = (usersApp) => {
 		function (req, res) {
 
 			debug('/register', req.body);
-
-			if (req.body.email.match(/\.in$/) || req.body.email.match(/@freemaillink|@mail-click|@mail-point|@cloud-mail|@mail-space|@mail-group/)) {
-				return res.status(422).json({
-					status: 'error',
-					flashLevel: 'danger',
-					flashMessage: 'Registration failed, bad request.'
-				});
-			}
 
 			var errors = validationResult(req);
 			if (!errors.isEmpty()) {
@@ -118,7 +112,8 @@ module.exports = (usersApp) => {
 				},
 				function (user, loginToken, cb) {
 					createToken(user, {
-						ttl: usersApp.options.EMAIL_CONFIRM_TTL
+						ttl: usersApp.options.EMAIL_CONFIRM_TTL,
+						type: 'validate'
 					}, function (err, token) {
 						usersApp.emit('sendEmailConfirmation', user, token);
 						cb(err, user, loginToken);
