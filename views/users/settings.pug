@@ -3,15 +3,19 @@ extends ../wrapper
 block content
 	.page-header
 		h2 
+			a(href="/users/home")
+				i.material-icons arrow_back_ios
+				
 			<i class="material-icons">person</i> 
 			= user.username + ' settings'
 
+	nav.mdc-list
 
-	p
+	.mdc-list-item
 		a(href="/users/change-email") Change Email Address
 
-	p
+	.mdc-list-item
 		a(href="/users/change-password") Change Password
 
-	p
+	.mdc-list-item
 		a(href="/users/subscription") Subscription

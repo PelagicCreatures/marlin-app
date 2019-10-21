@@ -13,7 +13,7 @@ module.exports = function mount(userAPI) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/user-home', {
+		res.render('users/home', {
 			user: req.antisocialUser,
 			title: 'User Home',
 			flash: req.query.flash
@@ -24,7 +24,7 @@ module.exports = function mount(userAPI) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/user-settings', {
+		res.render('users/settings', {
 			user: req.antisocialUser
 		});
 	});
@@ -36,7 +36,7 @@ module.exports = function mount(userAPI) {
 			}
 			return res.redirect('/users/home');
 		}
-		res.render('users/user-reg', {});
+		res.render('users/register', {});
 	});
 
 	router.get('/users/login', getUserForRequestMiddleware(userAPI), function (req, res) {
@@ -46,28 +46,28 @@ module.exports = function mount(userAPI) {
 			}
 			return res.redirect('/users/home');
 		}
-		res.render('users/user-login', {});
+		res.render('users/login', {});
 	});
 
 	router.get('/users/change-email', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/user-change-email', {});
+		res.render('users/change-email', {});
 	});
 
 	router.get('/users/change-password', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/user-change-password', {});
+		res.render('users/change-password', {});
 	});
 
 	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (req.antisocialUser) {
 			return res.sendStatus(401).send('Already logged in.');
 		}
-		res.render('users/user-password-reset', {});
+		res.render('users/password-reset', {});
 	});
 
 	router.get('/users/password-set', getUserForRequestMiddleware(userAPI), function (req, res) {
@@ -104,7 +104,7 @@ module.exports = function mount(userAPI) {
 					error: err.message
 				});
 			}
-			res.render('users/user-password-set', {
+			res.render('users/password-set', {
 				token: req.query.token
 			});
 		});

@@ -89,7 +89,6 @@ describe('friends', function () {
 			});
 	});
 
-	/*
 	it('should be able to send password reset', function (done) {
 		client3.post('http://127.0.0.1:3000/api/users/password-reset')
 			.type('form')
@@ -139,8 +138,6 @@ describe('friends', function () {
 				done();
 			});
 	});
-
-	*/
 });
 
 function getCookie(headers, id) {

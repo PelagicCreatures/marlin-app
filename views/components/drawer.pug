@@ -1,10 +1,4 @@
 aside#nav-drawer.drawer-top.mdc-drawer.mdc-drawer--dismissible
-	.mdc-drawer__header.hidden-logged-out
-		#user-drawer-header.mdc-drawer__header-content.text-center(data-hijax="true")
-			div
-				if user
-					a.nav-item(href="/users/home")= user.username
-
 	.mdc-drawer__content
 		nav.mdc-list
 			.hidden-logged-in
@@ -16,9 +10,13 @@ aside#nav-drawer.drawer-top.mdc-drawer.mdc-drawer--dismissible
 					|  Login
 
 			.hidden-logged-out
-				a.nav-item.mdc-list-item(href="/users/settings" data-toggle="tooltip" title="Your Settings." data-placement="bottom")
-					i.material-icons settings_applications
-					|  Settings
+				if user
+					a.nav-item.mdc-list-item(href="/users/home")
+						i.material-icons.mdc-list-item__graphic person
+						span.mdc-list-item__text= user.username
+				a.nav-item.mdc-list-item(href="/users/settings")
+					i.material-icons.mdc-list-item__graphic settings_applications
+					span.mdc-list-item__text Settings
 				a.nav-item.mdc-list-item(href="#" data-jsclass="logoutController") Logout
 
 .mdc-drawer-scrim
