@@ -63,7 +63,7 @@ const userAPI = require('./modules/antisocial-users/index')(userOptions, app, db
 
 require('./lib/user-events')(userAPI);
 
-app.use('/', require('./routes/index'));
+app.use('/', require('./routes/index')(userAPI));
 app.use('/', require('./routes/user-pages')(userAPI));
 
 // catch 404 and forward to error handler

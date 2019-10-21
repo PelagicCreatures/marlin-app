@@ -4,6 +4,8 @@ var expect = require('expect.js');
 var uuid = require('uuid');
 var async = require('async');
 
+// TODO user set password, set email, revalidate after set email
+
 describe('users', function () {
 	this.timeout(50000);
 
