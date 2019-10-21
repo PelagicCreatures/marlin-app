@@ -7,14 +7,28 @@ body
 	margin:0
 	padding:0
 	overscroll-behavior: none
+	background-color:#eee;
+	background-image:url(/images/square_bg_big.png);
+	background-attachment: fixed;
 
 a
 	color: #333
+
+h1,h2,h3,h4
+	margin-top: 0
 
 .top-margin
 	margin-top: 64px
 	.screen-xsmall &
 		margin-top: 56px
+
+.page-content
+	background-color: white
+	min-height: calc(80vh - 200px)
+	padding:1em
+	.not-screen-xsmall &
+		margin-left:2em
+		margin-right:2em
 
 .drawer-top
 	top: 64px
@@ -73,7 +87,7 @@ button#submitter
 .reg-form-container
 	max-width: 516px
 	.reg-form
-		border: thin solid #eee
+		background-color:white
 		border-radius: 4px
 		padding: 1em
 		.mdc-text-field

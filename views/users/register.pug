@@ -2,7 +2,7 @@ extends ../wrapper
 
 block content
 	.reg-form-container.centered
-		h2 <i class="material-icons">person_add</i> User Registration 
+		h2 <i class="material-icons">person_add</i>  User Registration 
 	
 		form.form.form-validation(action="/api/users/register" method="POST" data-jsclass="formValidator,formController" data-submitter="#submitter")
 				
@@ -58,6 +58,7 @@ block content
 		
 		
 				section.form-group.pull-right
+					a.mdc-button(href="/") Cancel
 					button#submitter.mdc-button.mdc-button--raised(disabled) Sign Up
 					
 				.ajax-errors

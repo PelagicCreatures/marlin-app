@@ -5,99 +5,101 @@ block content
 		h2
 			a(href="/users/settings")
 				i.material-icons arrow_back_ios
-			| Subscription
+			|  Subscription
+			
+	.page-content
+
+		- var canSubscribe = true
+
+		- var cancelled = false
+
+
+		if stripe && stripe.subscriptions
+			
+			if !stripe.subscriptions.data.length
+				p You have no active subscription.
+
+			each subscription in stripe.subscriptions.data
+				- var start = subscription.created ? new moment(subscription.created * 1000).format('MM/DD/YYYY') : '';
+				- var period_start = subscription.current_period_start ? new moment(subscription.current_period_start * 1000).format('MM/DD/YYYY') : '';
+				- var period_end = subscription.current_period_end ? new moment(subscription.current_period_end * 1000).format('MM/DD/YYYY') : '';
+				- var ended = subscription.ended_at ? new moment(subscription.ended_at * 1000).format('MM/DD/YYYY') : '';
 				
-	- var canSubscribe = true
+				if subscription.cancel_at_period_end
+					- ended = period_end;
+					- cancelled = true;
+				
+				- var end = ended ? ' <strong class="highlighted"> will cancel on ' + ended + '</strong>' : '';
 
-	- var cancelled = false
-
-
-	if stripe && stripe.subscriptions
+				p!= 'Started on <strong>' + start + '</strong>' + ' current period <strong>' + period_start + '</strong> through <strong>' + period_end + '</strong>' + end
 		
-		if !stripe.subscriptions.data.length
-			p You have no active subscription.
+				if paymentMethod
+					p!= 'Your current <strong>' + paymentMethod.card.brand + '</strong> card ends with <strong>' + paymentMethod.card.last4 + '</strong> and expires on <strong>' + paymentMethod.card.exp_month + '/' + paymentMethod.card.exp_year + '</strong>'
+					
+			if stripe.subscriptions.data.length && !cancelled
+				- canSubscribe = false
+				p
+					a(href="#" data-jsclass="ajaxButton" data-endpoint='/api/users/subscription-cancel' data-method="GET" data-redirect="/users/subscription") Click Here 
+					|  to cancel your subscription at end of current period.
+					
+			.flextable(data-jsclass="flexTable" data-break="screen-xsmall")
+				ul
+					li Description
+					li Start
+					li End
+					li Amount
+					li Paid
+				ul
 
-		each subscription in stripe.subscriptions.data
-			- var start = subscription.created ? new moment(subscription.created * 1000).format('MM/DD/YYYY') : '';
-			- var period_start = subscription.current_period_start ? new moment(subscription.current_period_start * 1000).format('MM/DD/YYYY') : '';
-			- var period_end = subscription.current_period_end ? new moment(subscription.current_period_end * 1000).format('MM/DD/YYYY') : '';
-			- var ended = subscription.ended_at ? new moment(subscription.ended_at * 1000).format('MM/DD/YYYY') : '';
-			
-			if subscription.cancel_at_period_end
-				- ended = period_end;
-				- cancelled = true;
-			
-			- var end = ended ? ' <strong class="highlighted"> will cancel on ' + ended + '</strong>' : '';
+					if (upcoming && upcoming.lines && upcoming.lines.data.length) 
+						each line in upcoming.lines.data
 
-			p!= 'Started on <strong>' + start + '</strong>' + ' current period <strong>' + period_start + '</strong> through <strong>' + period_end + '</strong>' + end
-	
-			if paymentMethod
-				p!= 'Your current <strong>' + paymentMethod.card.brand + '</strong> card ends with <strong>' + paymentMethod.card.last4 + '</strong> and expires on <strong>' + paymentMethod.card.exp_month + '/' + paymentMethod.card.exp_year + '</strong>'
-				
-		if stripe.subscriptions.data.length && !cancelled
-			- canSubscribe = false
-			p
-				a(href="#" data-jsclass="ajaxButton" data-endpoint='/api/users/subscription-cancel' data-method="GET" data-redirect="/users/subscription") Click Here 
-				|  to cancel your subscription at end of current period.
-				
-		.flextable(data-jsclass="flexTable" data-break="screen-xsmall")
-			ul
-				li Description
-				li Start
-				li End
-				li Amount
-				li Paid
-			ul
-
-				if (upcoming && upcoming.lines && upcoming.lines.data.length) 
-					each line in upcoming.lines.data
-
-						- var date = new moment(upcoming.created * 1000).format('MM/DD/YYYY')
-						- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
-						- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
-						- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
-						- var amount = line.amount / 100
-						- var description = line.plan ? line.plan.name : line.description
-
-						li
-							= date
-							ul
-								li Next bill
-								li= startdate
-								li= enddate
-								li
-								li
-			
-				if (invoices && invoices.data && invoices.data.length) 
-					each invoice in invoices.data
-						each line in invoice.lines.data
-							- var date = new moment(invoice.created * 1000).format('MM/DD/YYYY')
+							- var date = new moment(upcoming.created * 1000).format('MM/DD/YYYY')
 							- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
 							- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
 							- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
 							- var amount = line.amount / 100
-							- var description = line.description
-							- var paid = invoice.paid ? '<i class="material-icons" >check_circle</i>' : ''
+							- var description = line.plan ? line.plan.name : line.description
 
 							li
 								= date
 								ul
-									li= description
+									li Next bill
 									li= startdate
 									li= enddate
-									li= amount.toFixed(2)
-									li!= paid
+									li
+									li
+				
+					if (invoices && invoices.data && invoices.data.length) 
+						each invoice in invoices.data
+							each line in invoice.lines.data
+								- var date = new moment(invoice.created * 1000).format('MM/DD/YYYY')
+								- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
+								- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
+								- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
+								- var amount = line.amount / 100
+								- var description = line.description
+								- var paid = invoice.paid ? '<i class="material-icons" >check_circle</i>' : ''
 
-	if canSubscribe
-		section.button-bar
-			| Subscribe: 
-			button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_YEARLY)
-				span.mdc-button-label Yearly $10
-			button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_MONTHLY)
-				span.mdc-button-label Monthly $1
+								li
+									= date
+									ul
+										li= description
+										li= startdate
+										li= enddate
+										li= amount.toFixed(2)
+										li!= paid
 
-	#error-message
-	
+		if canSubscribe
+			section.button-bar
+				| Subscribe: 
+				button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_YEARLY)
+					span.mdc-button-label Yearly $10
+				button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_MONTHLY)
+					span.mdc-button-label Monthly $1
+
+		#error-message
+		
 	// sometimes handy for debugging stripe objects
 		p Stripe
 		pre= JSON.stringify(stripe, null, 2)

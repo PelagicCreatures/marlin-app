@@ -9,13 +9,15 @@ block content
 			<i class="material-icons">person</i> 
 			= user.username + ' settings'
 
-	nav.mdc-list
+	.page-content
 
-	.mdc-list-item
-		a(href="/users/change-email") Change Email Address
+		nav.mdc-list
 
-	.mdc-list-item
-		a(href="/users/change-password") Change Password
+		.mdc-list-item
+			a(href="/users/change-email") Change Email Address
 
-	.mdc-list-item
-		a(href="/users/subscription") Subscription
+		.mdc-list-item
+			a(href="/users/change-password") Change Password
+
+		.mdc-list-item
+			a(href="/users/subscription") Subscription

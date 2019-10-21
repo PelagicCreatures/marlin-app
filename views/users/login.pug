@@ -2,7 +2,7 @@ extends ../wrapper
 
 block content
 	.reg-form-container.centered
-		h2 <i class="material-icons">person</i> User Login 
+		h2 <i class="material-icons">person</i>  User Login 
 		
 		form.form.form-validation(action="/api/users/login" method="POST" data-jsclass="formValidator,formController" data-submitter="#submitter")
 			.reg-form.clear-fix.mdc-elevation--z1
@@ -25,6 +25,7 @@ block content
 						.validation-help.mdc-text-field-helper-text--persistent
 
 				section.form-group.pull-right
+					a.mdc-button(href="/") Cancel
 					button#submitter.mdc-button.mdc-button--raised(disabled) Login
 					
 				.ajax-errors
