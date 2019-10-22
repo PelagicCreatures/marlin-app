@@ -133,6 +133,7 @@ var flashAjaxStatus = (level, message) => {
 
 var progressBar = (show) => {
 	if (show) {
+		$('body').addClass('wait');
 		if (linearProgressTimer) {
 			clearTimeout(linearProgressTimer);
 			linearProgressTimer = null;
@@ -143,6 +144,7 @@ var progressBar = (show) => {
 		}, 500);
 	}
 	else {
+		$('body').removeClass('wait');
 		if (linearProgressTimer) {
 			clearTimeout(linearProgressTimer);
 			linearProgressTimer = null;
