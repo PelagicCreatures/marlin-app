@@ -25,15 +25,22 @@ a
 h1,h2,h3,h4
 	margin-top: 0
 
+// ajax calls add this class to the body while loading
 .wait
 	cursor: wait!important
 	a
 		cursor: wait!important
 
+// room for nav bar
 .top-margin
 	margin-top: 64px
 	.screen-xsmall &
 		margin-top: 56px
+
+.drawer-top
+	top: 64px
+	.screen-xsmall &
+		top: 56px
 
 .page-content
 	background-color: white
@@ -43,14 +50,11 @@ h1,h2,h3,h4
 		margin-left:2em
 		margin-right:2em
 
-.drawer-top
-	top: 64px
-	.screen-xsmall &
-		top: 56px
-
+// color for active items such a nav bar notifications icon
 .highlight
 	color:$darker-accent
-	
+
+// dreaded red dot item count
 .badge
 	font-size:12px
 	height:18px
@@ -64,13 +68,16 @@ h1,h2,h3,h4
 	padding-left:4px
 	padding-right:4px
 
+// section separator
 section
 	margin: .5rem 0
 
+// bar with multiple buttons add right margin between buttons
 .button-bar
-	button:not(:last-child)
+	.mdc-button:not(:last-child)
 		margin-right:1em
 
+// clear floats
 .clear-fix
 	&::after
 		display: block
@@ -85,6 +92,7 @@ section
 
 .center
 	text-align:center
+
 .centered
 	margin: 0 auto
 
@@ -106,15 +114,13 @@ h2
 	i
 		font-size:18px
 		vertical-align: text-bottom
+
 .ajax-message
 	color: blue
 .ajax-message-error
 	color: red
 .ajax-message-success
 	color: $darker-accent
-
-button#submitter
-	margin-left: 1em;
 
 // form layout and geometry
 
