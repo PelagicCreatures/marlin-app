@@ -12,14 +12,14 @@ const {
 
 module.exports = (usersApp) => {
 
-	debug('mounting users API /change-password');
+	debug('mounting users API /password-change');
 
 	let db = usersApp.db;
 
 	const saltAndHash = require('../lib/salt-and-hash')(usersApp);
 	const passwordMatch = require('../lib/password-match.js');
 
-	usersApp.router.post('/change-password',
+	usersApp.router.post('/password-change',
 		getUserForRequestMiddleware(usersApp),
 
 		check('oldpassword')
@@ -42,7 +42,7 @@ module.exports = (usersApp) => {
 
 		function (req, res) {
 
-			debug('/change-password', req.body);
+			debug('/password-change', req.body);
 
 			var currentUser = req.antisocialUser;
 			if (!currentUser) {

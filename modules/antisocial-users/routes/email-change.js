@@ -12,15 +12,15 @@ const {
 
 module.exports = (usersApp) => {
 
-	debug('mounting users API /change-email');
+	debug('mounting users API /email-change');
 
 	let db = usersApp.db;
 
 	let createToken = require('../lib/create-token.js')(usersApp);
 
-	usersApp.router.post('/change-email', getUserForRequestMiddleware(usersApp), check('email').isEmail(), function (req, res) {
+	usersApp.router.post('/email-change', getUserForRequestMiddleware(usersApp), check('email').isEmail(), function (req, res) {
 
-		debug('/change-email', req.body);
+		debug('/email-change', req.body);
 
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {
@@ -59,7 +59,7 @@ module.exports = (usersApp) => {
 			function (user, doneToken) {
 				createToken(user, {
 					ttl: usersApp.options.EMAIL_CONFIRM_TTL,
-					type: 'validation'
+					type: 'validate'
 				}, function (err, token) {
 					usersApp.emit('sendEmailConfirmation', user, token);
 					doneToken(err);

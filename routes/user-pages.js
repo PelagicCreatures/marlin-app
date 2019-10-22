@@ -39,6 +39,21 @@ module.exports = function mount(userAPI) {
 		res.render('users/register', {});
 	});
 
+	router.get('/users/validate', getUserForRequestMiddleware(userAPI), function (req, res) {
+		if (req.antisocialUser && req.antisocialUser.validated) {
+			if (req.headers['x-digitopia-hijax']) {
+				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
+			}
+			return res.redirect('/users/home');
+		}
+
+		res.render('users/email-validate', {
+			user: req.antisocialUser,
+			token: req.query.token,
+			flash: !req.query.token ? 'Error: Missing email validation token' : ''
+		});
+	});
+
 	router.get('/users/login', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (req.antisocialUser) {
 			if (req.headers['x-digitopia-hijax']) {
@@ -49,20 +64,20 @@ module.exports = function mount(userAPI) {
 		res.render('users/login', {});
 	});
 
-	router.get('/users/change-email', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/email-change', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/change-email', {
+		res.render('users/email-change', {
 			user: req.antisocialUser
 		});
 	});
 
-	router.get('/users/change-password', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/password-change', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-		res.render('users/change-password', {
+		res.render('users/password-change', {
 			user: req.antisocialUser
 		});
 	});

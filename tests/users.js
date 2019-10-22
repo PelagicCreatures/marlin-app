@@ -4,7 +4,7 @@ var expect = require('expect.js');
 var uuid = require('uuid');
 var async = require('async');
 
-// TODO user set password, set email, revalidate after set email
+// TODO negative coverage for login, reg, validate etc.
 
 describe('users', function () {
 	this.timeout(50000);
@@ -83,13 +83,16 @@ describe('users', function () {
 			expect(tokenInstances).to.be.an('array');
 			expect(tokenInstances.length).to.equal(1);
 
-			client1.get('http://127.0.0.1:3000/api/users/validate-email?token=' + tokenInstances[0].token)
-				.redirects(0)
-				.end(function (err, res) {
+			client1.post('http://127.0.0.1:3000/api/users/email-validate')
+				.type('form')
+				.send({
+					token: tokenInstances[0].token
+				}).end(function (err, res) {
 					if (err) {
 						console.log('errors: %j %j', err, res.body ? res.body : '');
 					}
-					expect(res.status).to.equal(302);
+					expect(res.status).to.equal(200);
+					expect(res.body.status).to.equal('ok');
 					done();
 				});
 		});
@@ -140,13 +143,17 @@ describe('users', function () {
 			expect(tokenInstances).to.be.an('array');
 			expect(tokenInstances.length).to.equal(1);
 
-			client2.get('http://127.0.0.1:3000/api/users/validate-email?token=' + tokenInstances[0].token)
-				.redirects(0)
+			client2.get('http://127.0.0.1:3000/api/users/email-validate')
+				.type('form')
+				.send({
+					token: tokenInstances[0].token
+				})
 				.end(function (err, res) {
 					if (err) {
 						console.log('errors: %j %j', err, res.body ? res.body : '');
 					}
-					expect(res.status).to.equal(302);
+					expect(res.status).to.equal(200);
+					expect(res.body.status).to.equal('ok');
 					done();
 				});
 		});
@@ -247,6 +254,65 @@ describe('users', function () {
 				expect(token1).to.be.a('string');
 				done();
 			});
+	});
+
+	it('should be able to change password when logged in', function (done) {
+		client1.post('http://127.0.0.1:3000/api/users/password-change')
+			.type('form')
+			.send({
+				'oldpassword': 'Testing1234',
+				'password': 'Testing123'
+			})
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(err).to.be(null);
+				expect(res.status).to.equal(200);
+				expect(res.body.status).to.equal('ok');
+				done();
+			});
+	});
+
+	it('should be able to change email when logged in', function (done) {
+		client1.post('http://127.0.0.1:3000/api/users/email-change')
+			.type('form')
+			.send({
+				'email': 'mrhodes+11@myantisocial.net'
+			})
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(err).to.be(null);
+				expect(res.status).to.equal(200);
+				expect(res.body.status).to.equal('ok');
+				done();
+			});
+	});
+
+	it('should be able to validate account 1 after email change', function (done) {
+		app.db.getInstances('tokens', {
+			'userId': id1,
+			'type': 'validate'
+		}, function (err, tokenInstances) {
+			expect(err).to.be(null);
+			expect(tokenInstances).to.be.an('array');
+			expect(tokenInstances.length).to.equal(1);
+
+			client1.get('http://127.0.0.1:3000/api/users/email-validate')
+				.type('form')
+				.send({
+					token: tokenInstances[0].token
+				}).end(function (err, res) {
+					if (err) {
+						console.log('errors: %j %j', err, res.body ? res.body : '');
+					}
+					expect(res.status).to.equal(200);
+					expect(res.body.status).to.equal('ok');
+					done();
+				});
+		});
 	});
 });
 

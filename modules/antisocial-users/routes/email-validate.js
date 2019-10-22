@@ -3,21 +3,34 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 
 const {
-	validateToken
+	validateToken, getUserForRequestMiddleware
 } = require('../lib/get-user-for-request-middleware');
+
 
 module.exports = (usersApp) => {
 
-	debug('mounting users API /validate-email');
+	debug('mounting users API /email-validate');
 
 	let db = usersApp.db;
 
-	usersApp.router.get('/validate-email', function (req, res) {
-		if (!req.query.token) {
-			return res.status(422).json({
+	usersApp.router.post('/email-validate', getUserForRequestMiddleware(usersApp), function (req, res) {
+		if (!req.body.token) {
+			return res.json({
 				status: 'error',
+				flashLevel: 'danger',
+				flashMessage: 'Email validation failed',
 				errors: [{
 					msg: 'token is required'
+				}]
+			});
+		}
+
+		// user is already logged in and validated
+		if (req.antisocialUser && req.antisocialUser.validated) {
+			return res.json({
+				status: 'error',
+				errors: [{
+					msg: 'Your account has already been activated.'
 				}]
 			});
 		}
@@ -26,14 +39,15 @@ module.exports = (usersApp) => {
 			function findToken(cb) {
 				debug('finding validation token');
 				db.getInstances('tokens', {
-					'token': req.query.token,
+					'token': req.body.token,
 					'type': 'validate'
 				}, function (err, tokenInstances) {
 					if (err) {
 						return cb(new VError(err, 'error reading token'));
 					}
+
 					if (!tokenInstances || tokenInstances.length !== 1) {
-						return cb(new VError('Validation code was not found or has expired, please select "resend" to check your email address and get a new code.'));
+						return cb(new VError('Validation code was not found or has expired.'));
 					}
 
 					validateToken(db, tokenInstances[0], function (err) {
@@ -82,11 +96,22 @@ module.exports = (usersApp) => {
 				});
 			}
 		], function (err, user) {
-			let redirect = req.query.redirect ? req.query.redirect : '/users/home';
 			if (err) {
-				return res.redirect(redirect + '?flash=' + encodeURIComponent(err.message));
+				return res.json({
+					status: 'error',
+					flashLevel: 'error',
+					flashMessage: 'Email validation failed',
+					errors: [{
+						msg: err.message
+					}]
+				});
 			}
-			res.redirect(redirect + '?flash=' + encodeURIComponent('Your account is now activated!'));
+
+			return res.json({
+				status: 'ok',
+				flashLevel: 'info',
+				flashMessage: 'Email validated'
+			});
 		});
 	});
 };

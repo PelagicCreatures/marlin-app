@@ -124,7 +124,7 @@ function formValidator(elem, options) {
 
 				if (validation === 'float') {
 					if (val && !val.match(/^[0-9\.]+$/)) {
-						errors.push('Must be a valid amount');
+						errors.push('Must be a valid floating point number');
 					}
 				}
 
@@ -142,8 +142,18 @@ function formValidator(elem, options) {
 				}
 
 				if (validation === 'password') {
-					if (val && !(val.match(/[0-9]+/) && val.match(/[A-Za-z]+/))) {
-						errors.push('Must contain at least one number, one letter');
+					let e = []
+					if (val && !(val.match(/[0-9]/))) {
+						e.push('one number');
+					}
+					if (val && !(val.match(/[a-z]/))) {
+						e.push('one lowercase letter');
+					}
+					if (val && !(val.match(/[A-Z]/))) {
+						e.push('one uppercase letter')
+					}
+					if (e.length) {
+						errors.push('Must contain ' + e.join(', '));
 					}
 				}
 
@@ -209,13 +219,11 @@ function formValidator(elem, options) {
 		}
 
 		if (input.data('min-length') && val.length < input.data('min-length')) {
-			errors.push('Must be at least ' + input.data('min-length') +
-				' characters long');
+			errors.push('Must be at least ' + input.data('min-length') + ' characters long');
 		}
 
 		if (input.data('max-length') && val.length > input.data('max-length')) {
-			errors.push('Must be less than ' + input.data('max-length') +
-				' characters long');
+			errors.push('Must be less than ' + input.data('max-length') + ' characters long');
 		}
 
 		if (input.data('min') && val < input.data('min')) {

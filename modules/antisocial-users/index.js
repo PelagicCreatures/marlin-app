@@ -39,11 +39,11 @@ module.exports = (options, app, db) => {
 	require('./routes/register.js')(usersApp);
 	require('./routes/login.js')(usersApp);
 	require('./routes/logout.js')(usersApp);
-	require('./routes/change-email.js')(usersApp);
-	require('./routes/change-password.js')(usersApp);
+	require('./routes/email-change.js')(usersApp);
+	require('./routes/email-validate.js')(usersApp);
+	require('./routes/password-change.js')(usersApp);
 	require('./routes/password-reset.js')(usersApp);
 	require('./routes/password-set.js')(usersApp);
-	require('./routes/validate-email.js')(usersApp);
 	if (process.env.STRIPE_SECRET) {
 		require('./routes/subscription-cancel.js')(usersApp);
 		require('./routes/stripe-webhook.js')(usersApp);
