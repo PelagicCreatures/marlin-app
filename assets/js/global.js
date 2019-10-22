@@ -68,6 +68,11 @@ var boot = () => {
 	}).ajaxStop(function () {
 		progressBar(false);
 	});
+
+	$(document).on('click', '.show-notifications-button', (e) => {
+		$(e.target).toggleClass('highlight');
+		$('#alerts').toggleClass('open');
+	});
 }
 
 const cookieOptions = {

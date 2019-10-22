@@ -6,18 +6,15 @@ block content
 			a(href="/users/home")
 				i.material-icons arrow_back_ios
 				
-			<i class="material-icons">person</i> 
-			= user.username + ' settings'
+			i.material-icons person
+			= ' ' + user.username + ' settings'
 
 	.page-content
 
 		nav.mdc-list
 
-		.mdc-list-item
-			a(href="/users/email-change") Change Email Address
+			a.mdc-list-item(href="/users/email-change") Change Email Address
 
-		.mdc-list-item
-			a(href="/users/password-change") Change Password
+			a.mdc-list-item(href="/users/password-change") Change Password
 
-		.mdc-list-item
-			a(href="/users/subscription") Subscription
+			a.mdc-list-item(href="/users/subscription") Subscription

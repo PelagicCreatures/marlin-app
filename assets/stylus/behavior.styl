@@ -2,6 +2,11 @@
 
 $darker-accent= #95c200;
 
+quick()
+	transition-property: all
+	transition-duration: .25s
+	transition-timing-function: ease
+
 
 *, *::before, *::after
 	box-sizing: border-box
@@ -42,6 +47,22 @@ h1,h2,h3,h4
 	top: 64px
 	.screen-xsmall &
 		top: 56px
+
+.highlight
+	color:$darker-accent
+	
+.badge
+	font-size:12px
+	height:18px
+	border-radius(8px)
+	background-color:red
+	color:white
+	position:absolute
+	top:10px
+	right:10px
+	padding:2px
+	padding-left:4px
+	padding-right:4px
 
 section
 	margin: .5rem 0
@@ -196,8 +217,25 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		i
 			font-size: 10em
 
-/* flextable */
+/* alerts slide-down */
+#alerts
+	quick()
+	position:fixed
+	top: -100%
+	right:0px
+	width: 60vw
+	max-width: 300px
+	height: calc(100vh - 64px)
+	background-color:white
+	.screen-xsmall &
+		height: calc(100vh - 56px)
+	&.open
+		top:64px
+		.screen-xsmall &
+			top:56px
 
+
+/* flextable */
 .flextable
 	display:none
 	table
