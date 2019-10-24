@@ -45,7 +45,9 @@ module.exports = (usersApp) => {
 			async.waterfall([
 				function (cb) {
 					db.getInstances('users', {
-						'email': req.body.email
+						where: {
+							'email': req.body.email
+						}
 					}, function (err, userInstances) {
 						if (err) {
 							return cb(err);

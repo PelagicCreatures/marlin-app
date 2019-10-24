@@ -99,7 +99,9 @@ module.exports = function mount(userAPI) {
 		async.series([
 			function findToken(cb) {
 				userAPI.db.getInstances('tokens', {
-					'token': req.query.token
+					where: {
+						'token': req.query.token
+					}
 				}, function (err, tokenInstances) {
 					if (err) {
 						return cb(new VError(err, 'error reading token'));

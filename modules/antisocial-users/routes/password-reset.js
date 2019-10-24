@@ -28,11 +28,15 @@ module.exports = (usersApp) => {
 		}
 
 		db.getInstances('users', {
-			'email': req.body.email
+			where: {
+				'email': req.body.email
+			}
 		}, function (err, token) {
 
 			db.getInstances('users', {
-				'email': req.body.email
+				where: {
+					'email': req.body.email
+				}
 			}, function (err, userInstances) {
 				if (err) {
 					return res.status(500).json({

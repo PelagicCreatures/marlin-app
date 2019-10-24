@@ -1,80 +1,75 @@
+const Sequelize = require('sequelize');
+
 module.exports = function (db) {
 	db.defineTable('users', {
 		'id': {
-			type: 'id',
-			mySQLOpts: ['NOT NULL', 'PRIMARY KEY']
+			type: Sequelize.UUID,
+			allowNull: false,
+			primaryKey: true,
+			defaultValue: Sequelize.UUIDV4
 		},
 		'name': {
-			type: 'string'
+			type: Sequelize.STRING,
 		},
 		'username': {
-			type: 'string',
-			mySQLOpts: ['NOT NULL', 'UNIQUE KEY']
+			type: Sequelize.STRING,
+			unique: true,
+			allowNull: false
 		},
 		'email': {
-			type: 'string',
-			mySQLOpts: ['NOT NULL', 'UNIQUE KEY']
+			type: Sequelize.STRING,
+			unique: true,
+			allowNull: false
 		},
 		'password': {
-			type: 'string',
-			mySQLOpts: ['NOT NULL']
+			type: Sequelize.STRING,
+			unique: true,
+			allowNull: false,
 		},
 		'validated': {
-			type: 'boolean'
-		},
-		'created': {
-			type: 'datetime'
+			type: Sequelize.INTEGER
 		},
 		'stripeCustomer': {
-			type: 'string'
+			type: Sequelize.STRING
 		},
 		'stripeSubscription': {
-			type: 'string'
+			type: Sequelize.STRING
 		},
 		'stripeStatus': {
-			type: 'string'
+			type: Sequelize.STRING
 		},
 		'pendingEmail': {
-			type: 'string',
-			mySQLOpts: ['UNIQUE KEY']
+			type: Sequelize.STRING,
+			unique: true,
+			allowNull: true
 		}
-	}, [
-		'ENGINE=InnoDB',
-		'DEFAULT CHARSET=utf8'
-	]);
+	});
 
 	db.defineTable('tokens', {
 		'id': {
-			type: 'id',
-			mySQLOpts: ['NOT NULL', 'PRIMARY KEY']
+			type: Sequelize.UUID,
+			allowNull: false,
+			primaryKey: true,
+			defaultValue: Sequelize.UUIDV4
 		},
 		'userId': {
-			type: 'id',
-			mySQLOpts: ['NOT NULL']
+			type: Sequelize.UUID,
+			allowNull: false
 		},
 		'token': {
-			type: 'token',
-			mySQLOpts: ['NOT NULL', 'UNIQUE KEY']
+			type: Sequelize.STRING,
+			unique: true,
+			allowNull: false
 		},
 		'ttl': {
-			type: 'string',
-			mySQLType: 'int',
-			mySQLOpts: ['NOT NULL']
-		},
-		'created': {
-			type: 'datetime'
+			type: Sequelize.INTEGER,
+			allowNull: false
 		},
 		'lastaccess': {
-			type: 'datetime'
+			type: Sequelize.DATE
 		},
 		'type': {
-			type: 'text'
+			type: Sequelize.STRING
 		}
-	}, [
-		'ENGINE=InnoDB',
-		'DEFAULT CHARSET=utf8'
-	]);
-
-	//console.log(db.getCreateTable('users'));
-	//console.log(db.getCreateTable('tokens'));
+	});
 };

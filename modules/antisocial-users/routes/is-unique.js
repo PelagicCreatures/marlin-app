@@ -26,7 +26,9 @@ module.exports = (usersApp) => {
 
 		var currentUser = req.antisocialUser;
 
-		db.getInstances('users', query, function (err, userInstances) {
+		db.getInstances('users', {
+			where: query
+		}, function (err, userInstances) {
 			if (err) {
 				let e = new WError(err, 'error reading users');
 				return res.send({

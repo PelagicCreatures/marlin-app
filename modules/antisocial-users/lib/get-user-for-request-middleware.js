@@ -30,8 +30,10 @@ function getUserForRequestMiddleware(userAPI) {
 		debug('getAuthenticatedUser found token in header or cookies', token);
 
 		db.getInstances('tokens', {
-			'token': token,
-			'type': 'access'
+			where: {
+				token: token,
+				type: 'access'
+			}
 		}, function (err, tokenInstances) {
 			if (err) {
 				debug('getAuthenticatedUser error finding token', err.message);
@@ -59,7 +61,9 @@ function getUserForRequestMiddleware(userAPI) {
 				}
 
 				db.getInstances('users', {
-					'id': tokenInstances[0].userId
+					where: {
+						'id': tokenInstances[0].userId
+					}
 				}, function (err, userInstances) {
 					if (err) {
 						return next();

@@ -42,8 +42,10 @@ module.exports = (usersApp) => {
 			function findToken(cb) {
 				debug('finding validation token');
 				db.getInstances('tokens', {
-					'token': req.body.token,
-					'type': 'validate'
+					where: {
+						'token': req.body.token,
+						'type': 'validate'
+					}
 				}, function (err, tokenInstances) {
 					if (err) {
 						return cb(new VError(err, 'error reading token'));
@@ -64,7 +66,9 @@ module.exports = (usersApp) => {
 			function readUser(token, cb) {
 				debug('reading user for token');
 				db.getInstances('users', {
-					'id': token.userId
+					where: {
+						'id': token.userId
+					}
 				}, function (err, userInstances) {
 					if (err) {
 						return cb(new VError('error reading user'));

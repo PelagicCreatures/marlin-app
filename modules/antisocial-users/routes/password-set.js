@@ -60,8 +60,10 @@ module.exports = (usersApp) => {
 			async.waterfall([
 				function findToken(cb) {
 					db.getInstances('tokens', {
-						'token': req.body.token,
-						'type': 'reset'
+						where: {
+							'token': req.body.token,
+							'type': 'reset'
+						}
 					}, function (err, tokenInstances) {
 						if (err) {
 							return cb(new VError(err, 'error reading token'));
@@ -80,7 +82,9 @@ module.exports = (usersApp) => {
 				},
 				function readUser(token, cb) {
 					db.getInstances('users', {
-						'id': token.userId
+						where: {
+							'id': token.userId
+						}
 					}, function (err, userInstances) {
 						if (err) {
 							return cb(new VError('error reading user'));

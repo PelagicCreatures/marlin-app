@@ -110,7 +110,9 @@ module.exports = (usersApp) => {
 						};
 					}
 
-					usersApp.db.getInstances('users', query, function (err, userInstances) {
+					usersApp.db.getInstances('users', {
+						where: query
+					}, function (err, userInstances) {
 						if (err) {
 							return cb(err);
 						}

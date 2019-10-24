@@ -71,7 +71,7 @@ var boot = () => {
 
 	$(document).on('click', '.show-notifications-button', (e) => {
 		$(e.target).toggleClass('highlight');
-		$('#alerts').toggleClass('open');
+		$('#user-alerts').toggleClass('open');
 	});
 }
 

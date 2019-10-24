@@ -41,7 +41,7 @@ app.use(express.urlencoded({
 app.use(cookieParser('SeCretDecdrrnG'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-var MYSQLdbHandler = require('./modules/antisocial-users/lib/db-mysql');
+var dbHandler = require('./modules/antisocial-users/lib/db-sequelize');
 
 var dbOptions = {
   host: process.env.DB_HOST ? process.env.DB_HOST : 'localhost',
@@ -51,7 +51,7 @@ var dbOptions = {
   charset: 'utf8',
 };
 
-let db = new MYSQLdbHandler(dbOptions);
+let db = new dbHandler(dbOptions);
 
 require('./modules/antisocial-users/lib/db-schema')(db);
 
