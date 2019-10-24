@@ -12,6 +12,9 @@ module.exports = (usersApp) => {
 	let db = usersApp.db;
 
 	usersApp.router.get('/is-unique', getUserForRequestMiddleware(usersApp), function (req, res) {
+
+		debug('/is-unique', req.query);
+
 		var f = req.query.field;
 
 		if ((f !== 'username' && f !== 'email') || !req.query.value) {

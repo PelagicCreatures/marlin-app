@@ -15,7 +15,6 @@ module.exports = function mount(userAPI) {
 		}
 		res.render('users/home', {
 			user: req.antisocialUser,
-			title: 'User Home',
 			flash: req.query.flash
 		});
 	});

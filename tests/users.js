@@ -35,11 +35,31 @@ describe('users', function () {
 		}, 1000);
 	});
 
+	it('should not be able to post empty register payload', function (done) {
+		client1.post('http://127.0.0.1:3000/api/users/register')
+			.type('form')
+			.send({
+				'email': '',
+				'password': '',
+				'username': ''
+			})
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(res.status).to.equal(422);
+				expect(res.body.errors).to.be.an('array');
+				done();
+			});
+	});
+
 	it('should not be able to post invalid register payload', function (done) {
 		client1.post('http://127.0.0.1:3000/api/users/register')
 			.type('form')
 			.send({
-				'password': 'test with spaces'
+				'email': 'invalid email',
+				'password': 'test with spaces',
+				'username': 'invalid username'
 			})
 			.end(function (err, res) {
 				if (err) {
@@ -143,7 +163,7 @@ describe('users', function () {
 			expect(tokenInstances).to.be.an('array');
 			expect(tokenInstances.length).to.equal(1);
 
-			client2.get('http://127.0.0.1:3000/api/users/email-validate')
+			client2.post('http://127.0.0.1:3000/api/users/email-validate')
 				.type('form')
 				.send({
 					token: tokenInstances[0].token
@@ -168,6 +188,22 @@ describe('users', function () {
 				expect(err).to.be(null);
 				expect(res.status).to.equal(200);
 				expect(res.body.status).to.equal('ok');
+				done();
+			});
+	});
+
+	it('should not be able to login account 2 w/bad password', function (done) {
+		client2.post('http://127.0.0.1:3000/api/users/login')
+			.type('form')
+			.send({
+				'email': 'mrhodes+2@myantisocial.net',
+				'password': 'Testing123bad'
+			})
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(res.status).to.equal(401);
 				done();
 			});
 	});
@@ -300,7 +336,7 @@ describe('users', function () {
 			expect(tokenInstances).to.be.an('array');
 			expect(tokenInstances.length).to.equal(1);
 
-			client1.get('http://127.0.0.1:3000/api/users/email-validate')
+			client1.post('http://127.0.0.1:3000/api/users/email-validate')
 				.type('form')
 				.send({
 					token: tokenInstances[0].token

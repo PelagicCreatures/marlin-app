@@ -18,27 +18,25 @@ module.exports = (usersApp) => {
 	usersApp.router.post('/register',
 
 		check('email')
-		.not().isEmpty()
+		.not().isEmpty().withMessage('required')
 		.isEmail(),
 
 		check('name').optional()
 		.trim(),
 
 		check('username')
-		.not().isEmpty()
-		.trim()
-		.withMessage('username is required'),
+		.not().isEmpty().withMessage('required')
+		.matches('^[a-zA-Z0-9-]+$').withMessage('only numbers letters and dash'),
 
 		check('password')
-		.not().isEmpty()
-		.custom(value => !/\s/.test(value)).withMessage('No spaces are allowed in the password')
+		.not().isEmpty().withMessage('required')
+		.custom(value => !/\s/.test(value)).withMessage('no spaces')
 		.isLength({
 			min: 8
 		})
-		.withMessage('password must be at least 8 characters')
-		.matches('[0-9]').withMessage('password must have at least one number')
-		.matches('[a-z]').withMessage('password must have at least one lowercase character')
-		.matches('[A-Z]').withMessage('password must have at least one uppercase character'),
+		.matches('[0-9]').withMessage('at least one number')
+		.matches('[a-z]').withMessage('at least one lowercase character')
+		.matches('[A-Z]').withMessage('at least one uppercase character'),
 
 		function (req, res) {
 
@@ -50,7 +48,7 @@ module.exports = (usersApp) => {
 					.json({
 						status: 'error',
 						flashLevel: 'danger',
-						flashMessage: 'Registration failed, bad request.',
+						flashMessage: 'failed, bad request.',
 						errors: errors.array()
 					});
 			}

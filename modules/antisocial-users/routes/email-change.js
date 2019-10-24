@@ -38,7 +38,7 @@ module.exports = (usersApp) => {
 				.json({
 					status: 'error',
 					flashLevel: 'danger',
-					flashMessage: 'Registration failed, bad request.',
+					flashMessage: 'failed, bad request.',
 					errors: errors.array()
 				});
 		}

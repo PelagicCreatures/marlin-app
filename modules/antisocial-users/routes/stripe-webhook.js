@@ -9,15 +9,29 @@ module.exports = (usersApp) => {
 	debug('mounting users API /stripe-webhook');
 
 	usersApp.router.post('/stripe-webhook', function (req, res) {
-		var hook = req.body.event ? JSON.parse(req.body.event) : req.body;
+		var hook;
+		try {
+			hook = req.body.event ? JSON.parse(req.body.event) : req.body;
+		}
+		catch (e) {
+			return res.sendStatus(401);
+		}
 
 		//console.log('webhook: %j', hook.id);
 
 		var theEvent;
 
+		if (!hook || !hook.id) {
+			return res.sendStatus(401);
+		}
+
 		stripe.events.retrieve(hook.id, function (err, event) {
 			if (err) {
 				return res.status(401).send(err);
+			}
+
+			if (!event) {
+				return res.sendStatus(401);
 			}
 
 			theEvent = event;

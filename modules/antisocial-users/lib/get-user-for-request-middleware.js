@@ -49,11 +49,13 @@ function getUserForRequestMiddleware(userAPI) {
 				return next();
 			}
 
-			debug('token: %j', tokenInstances[0]);
-
 			validateToken(db, tokenInstances[0], function (err) {
 				if (err) {
-					return next(err);
+					res.clearCookie('access-token', {
+						'path': '/',
+						'signed': true
+					});
+					return next();
 				}
 
 				db.getInstances('users', {
@@ -68,6 +70,10 @@ function getUserForRequestMiddleware(userAPI) {
 
 					req.antisocialToken = tokenInstances[0];
 					req.antisocialUser = userInstances[0];
+
+					res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate, no-cache=Set-Cookie');
+					res.header('Expires', '-1');
+					res.header('Pragma', 'no-cache');
 
 					// if we use subscriptions manage the 'subscriber' cookie
 					if (process.env.STRIPE_SECRET) {
@@ -97,13 +103,14 @@ function validateToken(db, token, cb) {
 	var now = Date.now();
 	var accessed = new Date(token.lastaccess).getTime();
 	var elapsedSeconds = (now - accessed) / 1000;
-	debug('validToken elapsed: %s ttl: %s', elapsedSeconds, token.ttl);
 	if (elapsedSeconds < token.ttl) {
+		debug('validateToken valid elapsed: %s ttl: %s', elapsedSeconds, token.ttl);
 		touchToken(db, token, function (err) {
 			cb(err);
 		});
 	}
 	else {
+		debug('validateToken expired elapsed: %s ttl: %s', elapsedSeconds, token.ttl);
 		db.deleteInstance('tokens', token.id, function (err) {
 			if (err) {
 				return cb(new VError(err, 'token is expired'));
@@ -115,7 +122,6 @@ function validateToken(db, token, cb) {
 
 // update lastaccess for rolling ttl
 function touchToken(db, token, cb) {
-	debug('touchToken %j', token);
 	var now = Date.now();
 	var accessed = new Date(token.lastaccess).getTime();
 	var elapsedSeconds = (now - accessed) / 1000;
@@ -125,12 +131,15 @@ function touchToken(db, token, cb) {
 		return setImmediate(cb);
 	}
 
+	debug('touchToken elapsed: %s', elapsedSeconds);
+
 	db.updateInstance('tokens', token.id, {
 		'lastaccess': new Date()
-	}, function (err) {
+	}, function (err, updated) {
 		if (err) {
 			cb(new VError(err, 'touchToken failed'));
 		}
+		debug('touchToken %j', updated);
 		cb();
 	});
 }

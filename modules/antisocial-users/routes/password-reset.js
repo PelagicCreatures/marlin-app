@@ -13,17 +13,23 @@ module.exports = (usersApp) => {
 	let createToken = require('../lib/create-token.js')(usersApp);
 
 	usersApp.router.post('/password-reset', check('email').isEmail(), function (req, res) {
+
+		debug('/password-reset', req.body);
+
+		var errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(422)
+				.json({
+					status: 'error',
+					flashLevel: 'danger',
+					flashMessage: 'failed, bad request.',
+					errors: errors.array()
+				});
+		}
+
 		db.getInstances('users', {
 			'email': req.body.email
 		}, function (err, token) {
-			var errors = validationResult(req);
-			if (!errors.isEmpty()) {
-				return res.status(422)
-					.json({
-						status: 'error',
-						errors: errors.array()
-					});
-			}
 
 			db.getInstances('users', {
 				'email': req.body.email

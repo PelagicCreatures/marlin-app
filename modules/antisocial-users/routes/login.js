@@ -20,16 +20,18 @@ module.exports = (usersApp) => {
 		.isEmail(),
 
 		check('password')
-		.not().isEmpty()
-		.custom(value => !/\s/.test(value)).withMessage('No spaces are allowed in the password')
+		.not().isEmpty().withMessage('required')
+		.custom(value => !/\s/.test(value)).withMessage('no spaces')
 		.isLength({
 			min: 8
-		}).withMessage('password must be at least 8 characters')
-		.matches('[0-9]').withMessage('password must contain a number')
-		.matches('[a-z]').withMessage('password must have at least one lowercase character')
-		.matches('[A-Z]').withMessage('password must have at least one uppercase character'),
+		})
+		.matches('[0-9]').withMessage('at least one number')
+		.matches('[a-z]').withMessage('at least one lowercase character')
+		.matches('[A-Z]').withMessage('at least one uppercase character'),
 
 		function (req, res) {
+
+			debug('/login', req.body);
 
 			var errors = validationResult(req);
 			if (!errors.isEmpty()) {

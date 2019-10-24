@@ -12,6 +12,8 @@ module.exports = (usersApp) => {
 
 	usersApp.router.get('/logout', getUserForRequestMiddleware(usersApp), function (req, res) {
 
+		debug('/logout');
+
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {
 			return res.status(401).json({

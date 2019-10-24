@@ -14,6 +14,9 @@ module.exports = (usersApp) => {
 	let db = usersApp.db;
 
 	usersApp.router.post('/email-validate', getUserForRequestMiddleware(usersApp), function (req, res) {
+
+		debug('/email-validate', req.body);
+
 		if (!req.body.token) {
 			return res.json({
 				status: 'error',

@@ -11,6 +11,9 @@ module.exports = (usersApp) => {
 	var stripe = require('stripe')(process.env.STRIPE_SECRET);
 
 	usersApp.router.get('/subscription-cancel', getUserForRequestMiddleware(usersApp), function (req, res) {
+
+		console.log('/subscription-cancel');
+
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {
 			return res.status(401).json({
