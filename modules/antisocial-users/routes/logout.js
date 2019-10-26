@@ -39,7 +39,7 @@ module.exports = (usersApp) => {
 				'signed': true
 			}).send({
 				'status': 'ok',
-				'didLogut': true
+				'didLogout': true
 			});
 		});
 	});

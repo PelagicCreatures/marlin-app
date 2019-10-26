@@ -18,6 +18,6 @@ aside#nav-drawer.drawer-top.mdc-drawer.mdc-drawer--dismissible
 				a.nav-item.mdc-list-item(href="/users/settings")
 					i.material-icons.mdc-list-item__graphic settings_applications
 					span.mdc-list-item__text Settings
-				a.nav-item.mdc-list-item(href="#" data-jsclass="logoutController") Logout
+				a.nav-item.mdc-list-item(href="#" data-jsclass="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Logout?" data-endpoint='/api/users/logout' data-method="get" data-no-hijax="true" data-redirect="/users/login" ) Logout
 
 .mdc-drawer-scrim

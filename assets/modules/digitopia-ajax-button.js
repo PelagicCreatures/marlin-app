@@ -8,7 +8,7 @@ function ajaxButton(elem, options) {
 	this.element = $(elem);
 	var self = this;
 	self.endpoint = self.element.data('endpoint');
-	self.redirect = self.element.data('redirect') ? self.element.data('redirect') : '/users/subscription';
+	self.redirect = self.element.data('redirect') ? self.element.data('redirect') : '/users/home';
 	self.method = self.element.data('method') ? self.element.data('method') : 'POST';
 	self.confirm = self.element.data('confirm') ? self.element.data('confirm') : false;
 	self.confirmPrompt = self.element.data('confirm-prompt') ? self.element.data('confirm-prompt') : 'Are you sure?';
@@ -60,6 +60,16 @@ function ajaxButton(elem, options) {
 			.done(function (data, textStatus, jqXHR) {
 				var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel;
 				var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage;
+				var loggedIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didLogin;
+				var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout;
+
+				if (loggedIn) {
+					didLogIn();
+				}
+
+				if (loggedOut) {
+					didLogOut();
+				}
 
 				if (data.status === 'ok') {
 					flashAjaxStatus('success', flashMessage);
