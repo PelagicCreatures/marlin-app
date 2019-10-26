@@ -44,6 +44,7 @@ module.exports = (options, app, db) => {
 	require('./routes/password-change.js')(usersApp);
 	require('./routes/password-reset.js')(usersApp);
 	require('./routes/password-set.js')(usersApp);
+	require('./routes/token-delete.js')(usersApp);
 	if (process.env.STRIPE_SECRET) {
 		require('./routes/subscription-cancel.js')(usersApp);
 		require('./routes/stripe-webhook.js')(usersApp);

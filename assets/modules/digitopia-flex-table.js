@@ -13,7 +13,9 @@ function flexTable(elem, options) {
 
 	this.start = function () {
 		this.element.on('DigitopiaScaleChanged', function (e, scale) {
-			self.draw(scale);
+			if (e.target === this) {
+				self.draw(scale);
+			}
 		});
 	};
 
@@ -70,6 +72,7 @@ function flexTable(elem, options) {
 
 		$(this.element).html(html);
 		$(this.element).show();
+		didInjectContent(this.element);
 	}
 }
 $.fn.flexTable = GetJQueryPlugin('flexTable', flexTable);

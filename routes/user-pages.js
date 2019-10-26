@@ -141,12 +141,13 @@ module.exports = function mount(userAPI) {
 				type: 'access'
 			},
 			order: [
-				['createdAt', 'ASC']
+				['createdAt', 'DESC']
 			]
 		}, function (err, tokenInstances) {
 			res.render('users/tokens', {
 				user: req.antisocialUser,
-				tokens: tokenInstances
+				tokens: tokenInstances,
+				currentToken: req.antisocialToken.token
 			});
 		});
 	});

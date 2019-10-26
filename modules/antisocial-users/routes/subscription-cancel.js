@@ -18,8 +18,10 @@ module.exports = (usersApp) => {
 		if (!currentUser) {
 			return res.status(401).json({
 				status: 'error',
+				flashLevel: 'danger',
+				flashMessage: 'Subscription cancel failed',
 				errors: [{
-					msg: 'must be logged in'
+					msg: 'Must be logged in'
 				}]
 			});
 		}
@@ -31,7 +33,14 @@ module.exports = (usersApp) => {
 				},
 				function (err, confirmation) {
 					if (err) {
-						console.log('/users/subscription-cancel failed ', err);
+						return res.status(500).send({
+							'status': 'error',
+							'flashLevel': 'danger',
+							'flashMessage': 'Subscription cancel failed',
+							'errors': [
+								err.message
+							]
+						});
 					}
 					res.send({
 						'status': 'ok',

@@ -162,8 +162,8 @@ var progressBar = (show) => {
 
 // call when you inject content into the DOM programatically
 var didInjectContent = (element) => {
-	$('#document-body').trigger('DigitopiaInstantiate');
-	$('#document-body').data('digitopiaHijax').hijaxLinks(element);
+	$('body').trigger('DigitopiaInstantiate');
+	$('body').data('digitopiaHijax').hijaxLinks(element);
 	instantiateMaterialDesignElements(element);
 }
 

@@ -15,9 +15,16 @@ block content
 				li Created
 				li Last Access
 				li Last Login IP Address
+				li Currrent
+				li 
 			ul
 				for token in tokens
 					li= token.createdAt
 						ul
 							li= token.lastaccess
 							li= token.ip
+							li!= currentToken === token.token ? '<i class="material-icons">check</i>' : ''
+							li
+								if currentToken !== token.token
+									a(href="#" data-jsclass="ajaxButton" data-endpoint='/api/users/token-delete?token='+token.id data-method="GET" data-no-hijax="true" data-redirect="/users/tokens")
+										<i class="material-icons">delete</i>
