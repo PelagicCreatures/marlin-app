@@ -130,6 +130,27 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
+	router.get('/users/tokens', getUserForRequestMiddleware(userAPI), function (req, res) {
+		if (!req.antisocialUser) {
+			return res.redirect('/users/login');
+		}
+
+		userAPI.db.getInstances('tokens', {
+			where: {
+				userId: req.antisocialUser.id,
+				type: 'access'
+			},
+			order: [
+				['createdAt', 'ASC']
+			]
+		}, function (err, tokenInstances) {
+			res.render('users/tokens', {
+				user: req.antisocialUser,
+				tokens: tokenInstances
+			});
+		});
+	});
+
 	router.get('/users/subscription', getUserForRequestMiddleware(userAPI), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.redirect('/users/login');

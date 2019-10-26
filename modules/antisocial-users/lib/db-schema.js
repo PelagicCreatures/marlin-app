@@ -70,6 +70,9 @@ module.exports = function (db) {
 		},
 		'type': {
 			type: Sequelize.STRING
+		},
+		'ip': {
+			type: Sequelize.STRING
 		}
 	});
 };

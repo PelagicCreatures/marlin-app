@@ -2,6 +2,7 @@ module.exports = function (grunt) {
 
 	var jsFiles = [
 		'working/assets/*.js',
+		'working/templates/*.js',
 		'assets/js/*.js',
 		//'modules/digitopia/dist/js/digitopia.js',
 	];

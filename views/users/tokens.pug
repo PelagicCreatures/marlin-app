@@ -1,0 +1,23 @@
+extends ../wrapper
+
+block content
+	.page-header
+		h2 
+			a(href="/users/home")
+				i.material-icons arrow_back_ios
+				
+			i.material-icons lock
+			= ' access history'
+
+	.page-content
+		.flextable(data-jsclass="flexTable" data-break="screen-small")
+			ul
+				li Created
+				li Last Access
+				li Last Login IP Address
+			ul
+				for token in tokens
+					li= token.createdAt
+						ul
+							li= token.lastaccess
+							li= token.ip

@@ -36,7 +36,7 @@ function flexTable(elem, options) {
 
 		var html = '';
 		if (self.breakOn.indexOf(scale) === -1) {
-			var html = '<table class="table table-bordered flextable-table"><tr  class="flextable-row"><th class="flextable-header"></th>';
+			var html = '<table class="table table-bordered flextable-table"><tr class="flextable-row">';
 			for (var h = 0; h < head.length; h++) {
 				html += '<th class="flextable-header">' + $(head[h]).html() + '</th>';
 			}
@@ -60,7 +60,7 @@ function flexTable(elem, options) {
 				var cols = $(rows[r]).children('li');
 				for (var c = 0; c < cols.length; c++) {
 					html += '<tr class="flextable-row">';
-					html += '<td class="flextable-header">' + $(head[c]).html() + '</td>';
+					html += '<td class="flextable-header">' + $(head[c + 1]).html() + '</td>';
 					html += '<td class="flextable-cell">' + $(cols[c]).html() + '</td>';
 					html += '</tr>'
 				}

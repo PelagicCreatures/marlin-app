@@ -7,12 +7,13 @@ module.exports = (usersApp) => {
 	function createToken(user, options, done) {
 		var guid = uid(usersApp.options.DEFAULT_TOKEN_LEN);
 		usersApp.db.newInstance('tokens', {
-			'userId': user.id,
-			'token': guid,
-			'ttl': options.ttl ? options.ttl : usersApp.options.DEFAULT_TTL,
-			'lastaccess': new Date(),
-			'created': new Date(),
-			'type': options.type ? options.type : 'access'
+			userId: user.id,
+			token: guid,
+			ttl: options.ttl ? options.ttl : usersApp.options.DEFAULT_TTL,
+			lastaccess: new Date(),
+			created: new Date(),
+			type: options.type ? options.type : 'access',
+			ip: options && options.ip ? options.ip : null
 		}, function (err, user) {
 			if (err) {
 				var e = new VError(err, 'Could not create token');

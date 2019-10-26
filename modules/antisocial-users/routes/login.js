@@ -42,6 +42,15 @@ module.exports = (usersApp) => {
 					});
 			}
 
+			var ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
+
+			if (Object.prototype.toString.call(ip) === '[object Array]') {
+				ip = ip[0];
+			}
+			else {
+				ip = ip.split(', ')[0];
+			}
+
 			async.waterfall([
 				function (cb) {
 					db.getInstances('users', {
@@ -75,7 +84,9 @@ module.exports = (usersApp) => {
 					});
 				},
 				function (user, cb) {
-					createToken(user, {}, function (err, token) {
+					createToken(user, {
+						ip: ip
+					}, function (err, token) {
 						cb(err, user, token);
 					});
 				}

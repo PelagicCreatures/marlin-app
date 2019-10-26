@@ -34,6 +34,7 @@ This repository is a boilerplate app that includes many common functions of a re
 	* tests - mocha testing suite
 	* views - pug templates for pages
 		* components - reusable page components
+		* shared - client/server shared templates
 		* users - user pages
 		wrapper.pug - html wrapper
 	app.js - express app
@@ -58,6 +59,11 @@ STRIPE_PUBLIC:
 STRIPE_SECRET:
 STRIPE_YEARLY:
 STRIPE_MONTHLY:
+
+### client side pug
+```
+pug --client --no-debug --pretty --out working/templates --name pugTemplate  views/shared/test.pug
+```
 
 ### Testing stripe webook (stripe cli https://github.com/stripe/stripe-cli)
 stripe listen --forward-to localhost:3000/api/users/stripe-webhook

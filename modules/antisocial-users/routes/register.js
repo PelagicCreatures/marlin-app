@@ -53,6 +53,15 @@ module.exports = (usersApp) => {
 					});
 			}
 
+			var ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
+
+			if (Object.prototype.toString.call(ip) === '[object Array]') {
+				ip = ip[0];
+			}
+			else {
+				ip = ip.split(', ')[0];
+			}
+
 			async.waterfall([
 				function captcha(cb) {
 					if (!process.env.RECAPTCHA_SECRET) {
@@ -61,15 +70,6 @@ module.exports = (usersApp) => {
 
 					if (!req.body['g-recaptcha-response']) {
 						return cb(new VError('missing required information'));
-					}
-
-					var ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
-
-					if (Object.prototype.toString.call(ip) === '[object Array]') {
-						ip = ip[0];
-					}
-					else {
-						ip = ip.split(', ')[0];
 					}
 
 					var recaptchaURL = 'https://www.google.com/recaptcha/api/siteverify?';
