@@ -17,8 +17,10 @@ module.exports = function (grunt) {
 		'assets/stylus/*.styl'
 	];
 
+	var watchfiles = ['views/shared/*.pug']
+
 	var allFiles = [];
-	allFiles = allFiles.concat(jsFiles, cssFiles, stylusFiles);
+	allFiles = allFiles.concat(watchfiles, jsFiles, cssFiles, stylusFiles);
 
 	var copyCommand = [{
 		expand: true,
@@ -50,6 +52,9 @@ module.exports = function (grunt) {
 		jsDistDir: 'public/dist/js/',
 		cssDistDir: 'public/dist/css/',
 		pkg: grunt.file.readJSON('package.json'),
+		exec: {
+			pug: 'pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  views/shared/confirm-dialog.pug'
+		},
 		copy: {
 			main: {
 				files: copyCommand
@@ -101,7 +106,7 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			files: allFiles,
-			tasks: ['copy', 'stylus', 'concat']
+			tasks: ['exec', 'copy', 'stylus', 'concat']
 		}
 	});
 
@@ -111,8 +116,10 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-terser');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-exec');
 
 	grunt.registerTask('default', [
+		'exec',
 		'copy',
 		'stylus',
 		'concat',
@@ -121,6 +128,7 @@ module.exports = function (grunt) {
 	]);
 
 	grunt.registerTask('devel', [
+		'exec',
 		'copy',
 		'stylus',
 		'concat',

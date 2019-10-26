@@ -1,0 +1,12 @@
+aside#confirm-dialog.mdc-dialog(role="alertdialog")
+	.mdc-dialog__container
+		.mdc-dialog__surface
+				h2.mdc-dialog__title= title
+				.mdc-dialog__content
+					p= prompt
+				footer.mdc-dialog__actions
+					button.mdc-button.mdc-dialog__button(data-mdc-dialog-action="cancel")
+						.mdc-button__label Cancel
+					button.mdc-button.mdc-dialog__button(data-mdc-dialog-action="accept" data-mdc-dialog-button-default)
+						.mdc-button__label Continue
+	.mdc-dialog__scrim

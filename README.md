@@ -63,6 +63,8 @@ STRIPE_MONTHLY:
 ### client side pug
 ```
 pug --client --no-debug --pretty --out working/templates --name pugTemplate  views/shared/test.pug
+
+pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  views/shared/confirm-dialog.pug
 ```
 
 ### Testing stripe webook (stripe cli https://github.com/stripe/stripe-cli)

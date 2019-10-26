@@ -10,11 +10,38 @@ function ajaxButton(elem, options) {
 	self.endpoint = self.element.data('endpoint');
 	self.redirect = self.element.data('redirect') ? self.element.data('redirect') : '/users/subscription';
 	self.method = self.element.data('method') ? self.element.data('method') : 'POST';
-
+	self.confirm = self.element.data('confirm') ? self.element.data('confirm') : false;
+	self.confirmPrompt = self.element.data('confirm-prompt') ? self.element.data('confirm-prompt') : 'Are you sure?';
 	self.start = function () {
 		self.element.on('click', function (e) {
 			e.preventDefault();
-			self.doIt();
+
+			if (self.confirm) {
+				let html = confirmDialogTemplate({
+					title: 'Please Confirm',
+					prompt: self.confirmPrompt
+				});
+
+				$('#ephemeral').append($(html));
+
+				let dialog = App.MDC.MDCDialog.attachTo(document.querySelector(self.confirm));
+				$(self.confirm).data('mdc-dialog', dialog);
+
+				dialog.listen('MDCDialog:closed', function (e) {
+					$('body').removeClass('modal-open');
+					if (e.detail.action === 'accept') {
+						self.doIt();
+					}
+
+					dialog.destroy();
+					$('#ephemeral').empty();
+				});
+				$('body').addClass('modal-open');
+				dialog.open();
+			}
+			else {
+				self.doIt();
+			}
 		});
 	};
 
@@ -45,7 +72,6 @@ function ajaxButton(elem, options) {
 				}
 				else {
 					flashAjaxStatus(flashLevel, flashMessage);
-					self.submitter.attr("disabled", false);
 				}
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
@@ -65,7 +91,6 @@ function ajaxButton(elem, options) {
 					}
 				}
 				flashAjaxStatus('error', message);
-				self.submitter.attr("disabled", false);
 			});
 	};
 };
