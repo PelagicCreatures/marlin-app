@@ -18,9 +18,7 @@ module.exports = (usersApp) => {
 		if (!currentUser) {
 			return res.status(401).json({
 				status: 'error',
-				errors: [{
-					msg: 'must be logged in'
-				}]
+				errors: ['must be logged in']
 			});
 		}
 

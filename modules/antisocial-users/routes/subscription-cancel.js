@@ -20,9 +20,7 @@ module.exports = (usersApp) => {
 				status: 'error',
 				flashLevel: 'danger',
 				flashMessage: 'Subscription cancel failed',
-				errors: [{
-					msg: 'Must be logged in'
-				}]
+				errors: ['Must be logged in']
 			});
 		}
 

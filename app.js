@@ -27,7 +27,6 @@ app.use(csp({
     'mediaSrc': ['\'self\''],
     'imgSrc': ['\'self\'', 'data:'],
     'sandbox': ['allow-forms', 'allow-scripts', 'allow-same-origin'],
-    'reportUri': '/csp-violation',
     'objectSrc': ['\'none\''],
     'upgradeInsecureRequests': false
   },
@@ -63,10 +62,6 @@ app.locals.options = {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({
-  extended: false
-}));
 app.use(cookieParser('SeCretDecdrrnG'));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -95,19 +90,14 @@ require('./lib/user-events')(userAPI);
 app.use('/', require('./routes/index')(userAPI));
 app.use('/', require('./routes/user-pages')(userAPI));
 
-var bodyParser = require('body-parser');
-app.use(bodyParser.json({
-  type: ['json', 'application/csp-report']
-}));
+app.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
 
-app.post('/csp-violation', (req, res) => {
-  if (req.body) {
-    console.log('CSP Violation: ', req.body)
-  }
-  else {
-    console.log('CSP Violation: No data received!')
-  }
-  res.status(204).end()
+  // handle CSRF token errors here
+  res.status(403).send({
+    status: 'error',
+    errors: ['invalid csrf']
+  });
 });
 
 // catch 404 and forward to error handler

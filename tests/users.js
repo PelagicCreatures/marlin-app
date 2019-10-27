@@ -37,12 +37,12 @@ describe('users', function () {
 
 	it('should not be able to post empty register payload', function (done) {
 		client1.put('http://127.0.0.1:3000/api/users/register')
-			.type('form')
 			.send({
 				'email': '',
 				'password': '',
 				'username': ''
 			})
+			.set('Accept', 'application/json')
 			.end(function (err, res) {
 				if (err) {
 					console.log('errors: %j %j', err, res.body ? res.body : '');
@@ -55,7 +55,7 @@ describe('users', function () {
 
 	it('should not be able to post invalid register payload', function (done) {
 		client1.put('http://127.0.0.1:3000/api/users/register')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'email': 'invalid email',
 				'password': 'test with spaces',
@@ -73,7 +73,7 @@ describe('users', function () {
 
 	it('should be able to create account 1', function (done) {
 		client1.put('http://127.0.0.1:3000/api/users/register')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'name': 'user one',
 				'username': 'user-one',
@@ -101,12 +101,12 @@ describe('users', function () {
 				'type': 'validate'
 			}
 		}, function (err, tokenInstances) {
-			expect(err).to.be(null);
-			expect(tokenInstances).to.be.an('array');
-			expect(tokenInstances.length).to.equal(1);
+			if (err || !tokenInstances || !tokenInstances.length) {
+				return done('could not read validate token');
+			}
 
 			client1.patch('http://127.0.0.1:3000/api/users/email-validate')
-				.type('form')
+				.set('Accept', 'application/json')
 				.send({
 					token: tokenInstances[0].token
 				}).end(function (err, res) {
@@ -135,7 +135,7 @@ describe('users', function () {
 
 	it('should be able to create account 2', function (done) {
 		client2.put('http://127.0.0.1:3000/api/users/register')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'name': 'user two',
 				'username': 'user-two',
@@ -163,12 +163,12 @@ describe('users', function () {
 				'type': 'validate'
 			}
 		}, function (err, tokenInstances) {
-			expect(err).to.be(null);
-			expect(tokenInstances).to.be.an('array');
-			expect(tokenInstances.length).to.equal(1);
+			if (err || !tokenInstances || !tokenInstances.length) {
+				return done('could not read validate token');
+			}
 
 			client2.patch('http://127.0.0.1:3000/api/users/email-validate')
-				.type('form')
+				.set('Accept', 'application/json')
 				.send({
 					token: tokenInstances[0].token
 				})
@@ -198,7 +198,7 @@ describe('users', function () {
 
 	it('should not be able to login account 2 w/bad password', function (done) {
 		client2.put('http://127.0.0.1:3000/api/users/login')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'email': 'mrhodes+2@myantisocial.net',
 				'password': 'Testing123bad'
@@ -214,7 +214,7 @@ describe('users', function () {
 
 	it('should be able to login account 2', function (done) {
 		client2.put('http://127.0.0.1:3000/api/users/login')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'email': 'mrhodes+2@myantisocial.net',
 				'password': 'Testing123'
@@ -232,7 +232,7 @@ describe('users', function () {
 
 	it('should be able to send password reset account 1', function (done) {
 		client1.patch('http://127.0.0.1:3000/api/users/password-reset')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'email': 'mrhodes+1@myantisocial.net'
 			})
@@ -254,16 +254,14 @@ describe('users', function () {
 				'type': 'reset'
 			}
 		}, function (err, tokenInstances) {
-			expect(err).to.be(null);
-			expect(tokenInstances).to.be.an('array');
-			expect(tokenInstances.length).to.equal(1);
-
-			var resetToken = tokenInstances[0].token;
+			if (err || !tokenInstances || !tokenInstances.length) {
+				return done('could not read validate token');
+			}
 
 			client1.patch('http://127.0.0.1:3000/api/users/password-set')
-				.type('form')
+				.set('Accept', 'application/json')
 				.send({
-					token: resetToken,
+					token: tokenInstances[0].token,
 					password: 'Testing1234'
 				})
 				.end(function (err, res) {
@@ -280,7 +278,7 @@ describe('users', function () {
 
 	it('should be able to log in again account 1 after reset', function (done) {
 		client1.put('http://127.0.0.1:3000/api/users/login')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'email': 'mrhodes+1@myantisocial.net',
 				'password': 'Testing1234'
@@ -300,7 +298,7 @@ describe('users', function () {
 
 	it('should be able to change password when logged in', function (done) {
 		client1.patch('http://127.0.0.1:3000/api/users/password-change')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'oldpassword': 'Testing1234',
 				'password': 'Testing123'
@@ -318,7 +316,7 @@ describe('users', function () {
 
 	it('should be able to change email when logged in', function (done) {
 		client1.patch('http://127.0.0.1:3000/api/users/email-change')
-			.type('form')
+			.set('Accept', 'application/json')
 			.send({
 				'email': 'mrhodes+11@myantisocial.net'
 			})
@@ -340,12 +338,12 @@ describe('users', function () {
 				'type': 'validate'
 			}
 		}, function (err, tokenInstances) {
-			expect(err).to.be(null);
-			expect(tokenInstances).to.be.an('array');
-			expect(tokenInstances.length).to.equal(1);
+			if (err || !tokenInstances || !tokenInstances.length) {
+				return done('could not read validate token');
+			}
 
 			client1.patch('http://127.0.0.1:3000/api/users/email-validate')
-				.type('form')
+				.set('Accept', 'application/json')
 				.send({
 					token: tokenInstances[0].token
 				}).end(function (err, res) {

@@ -3,8 +3,14 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 const request = require('request');
 const csrf = require('csurf');
+const express = require('express');
+
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	},
+	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 const {
 	check, validationResult
@@ -18,7 +24,7 @@ module.exports = (usersApp) => {
 	let createToken = require('../lib/create-token.js')(usersApp);
 
 	// create a new user
-	usersApp.router.put('/register', csrfProtection,
+	usersApp.router.put('/register', express.json(), csrfProtection,
 
 		check('email')
 		.not().isEmpty().withMessage('required')
@@ -126,9 +132,7 @@ module.exports = (usersApp) => {
 						status: 'error',
 						flashLevel: 'danger',
 						flashMessage: 'Registration failed',
-						errors: [{
-							msg: err.message
-						}]
+						errors: [err.message]
 					});
 				}
 

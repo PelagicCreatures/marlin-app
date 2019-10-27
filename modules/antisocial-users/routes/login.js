@@ -2,8 +2,14 @@ const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
+const express = require('express');
+
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	},
+	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 
 const {
@@ -18,7 +24,7 @@ module.exports = (usersApp) => {
 	let createToken = require('../lib/create-token.js')(usersApp);
 	let passwordMatch = require('../lib/password-match.js');
 
-	usersApp.router.put('/login', csrfProtection,
+	usersApp.router.put('/login', express.json(), csrfProtection,
 		check('email')
 		.not().isEmpty()
 		.isEmail(),
@@ -100,9 +106,7 @@ module.exports = (usersApp) => {
 						status: 'error',
 						flashLevel: 'danger',
 						flashMessage: 'Login failed',
-						errors: [{
-							msg: err.message
-						}]
+						errors: [err.message]
 					});
 				}
 

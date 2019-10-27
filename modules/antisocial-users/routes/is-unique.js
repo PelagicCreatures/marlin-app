@@ -1,5 +1,7 @@
 const debug = require('debug')('antisocial-user');
 const WError = require('verror').WError;
+const express = require('express');
+
 
 const {
 	getUserForRequestMiddleware
@@ -48,7 +50,7 @@ module.exports = (usersApp) => {
 		});
 	}
 
-	usersApp.router.post('/is-unique-email', getUserForRequestMiddleware(usersApp), function (req, res) {
+	usersApp.router.post('/is-unique-email', express.json(), getUserForRequestMiddleware(usersApp), function (req, res) {
 
 		debug('/is-unique-email', req.body);
 
@@ -59,7 +61,7 @@ module.exports = (usersApp) => {
 		check('email', req.body.value, req, res);
 	});
 
-	usersApp.router.post('/is-unique-username', getUserForRequestMiddleware(usersApp), function (req, res) {
+	usersApp.router.post('/is-unique-username', express.json(), getUserForRequestMiddleware(usersApp), function (req, res) {
 
 		debug('/is-unique-email', req.body);
 

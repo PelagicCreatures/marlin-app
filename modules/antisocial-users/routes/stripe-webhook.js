@@ -1,6 +1,8 @@
 const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
+const express = require('express');
+
 
 var stripe = require('stripe')(process.env.STRIPE_SECRET);
 
@@ -8,7 +10,7 @@ module.exports = (usersApp) => {
 
 	debug('mounting users API /stripe-webhook');
 
-	usersApp.router.post('/stripe-webhook', function (req, res) {
+	usersApp.router.post('/stripe-webhook', express.json(), function (req, res) {
 		var hook;
 		try {
 			hook = req.body.event ? JSON.parse(req.body.event) : req.body;

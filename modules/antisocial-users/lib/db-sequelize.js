@@ -25,7 +25,7 @@ class dbHandler extends EventEmitter {
 			define: {
 				engine: 'INNODB'
 			},
-			//logging: false
+			logging: false
 		});
 
 		var self = this;

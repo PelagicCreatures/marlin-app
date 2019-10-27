@@ -4,7 +4,10 @@ const async = require('async');
 const VError = require('verror').VError;
 const csrf = require('csurf');
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	}
 });
 
 const {

@@ -1,7 +1,13 @@
 const debug = require('debug')('antisocial-user');
 const csrf = require('csurf');
+const express = require('express');
+
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	},
+	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 const {
 	check, validationResult
@@ -15,7 +21,7 @@ module.exports = (usersApp) => {
 
 	let createToken = require('../lib/create-token.js')(usersApp);
 
-	usersApp.router.patch('/password-reset', csrfProtection, check('email').isEmail(), function (req, res) {
+	usersApp.router.patch('/password-reset', express.json(), csrfProtection, check('email').isEmail(), function (req, res) {
 
 		debug('/password-reset', req.body);
 
@@ -44,9 +50,7 @@ module.exports = (usersApp) => {
 				if (err) {
 					return res.status(500).json({
 						status: 'error',
-						errors: [{
-							msg: err.message
-						}]
+						errors: [err.message]
 					});
 				}
 

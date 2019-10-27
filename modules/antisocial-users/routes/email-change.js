@@ -2,8 +2,14 @@ const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
+const express = require('express');
+
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	},
+	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 
 const {
@@ -22,7 +28,7 @@ module.exports = (usersApp) => {
 
 	let createToken = require('../lib/create-token.js')(usersApp);
 
-	usersApp.router.patch('/email-change', getUserForRequestMiddleware(usersApp), csrfProtection, check('email').isEmail(), function (req, res) {
+	usersApp.router.patch('/email-change', express.json(), getUserForRequestMiddleware(usersApp), csrfProtection, check('email').isEmail(), function (req, res) {
 
 		debug('/email-change', req.body);
 
@@ -30,9 +36,7 @@ module.exports = (usersApp) => {
 		if (!currentUser) {
 			return res.status(401).json({
 				status: 'error',
-				errors: [{
-					msg: 'must be logged in'
-				}]
+				errors: ['must be logged in']
 			});
 		}
 
@@ -76,9 +80,7 @@ module.exports = (usersApp) => {
 					status: 'error',
 					flashLevel: 'danger',
 					flashMessage: 'Change Email failed',
-					errors: [{
-						msg: err.message
-					}]
+					errors: [err.message]
 				});
 			}
 

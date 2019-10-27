@@ -2,8 +2,14 @@ const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
+const express = require('express');
+
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	},
+	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 const {
 	validateToken
@@ -21,7 +27,7 @@ module.exports = (usersApp) => {
 
 	const saltAndHash = require('../lib/salt-and-hash')(usersApp);
 
-	usersApp.router.patch('/password-set', csrfProtection,
+	usersApp.router.patch('/password-set', express.json(), csrfProtection,
 
 		check('token').isLength({
 			min: 64
@@ -54,9 +60,7 @@ module.exports = (usersApp) => {
 				return res.status(422)
 					.json({
 						status: 'error',
-						errors: [{
-							msg: 'token is required'
-						}]
+						errors: ['token is required']
 					});
 			}
 
@@ -121,9 +125,7 @@ module.exports = (usersApp) => {
 				if (err) {
 					return res.status(401).json({
 						status: 'error',
-						errors: [{
-							msg: err.message
-						}]
+						errors: [err.message]
 					});
 				}
 				res.json({

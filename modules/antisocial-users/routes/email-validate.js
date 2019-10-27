@@ -2,8 +2,14 @@ const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
+const express = require('express');
+
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	},
+	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 const {
 	validateToken, getUserForRequestMiddleware
@@ -16,7 +22,7 @@ module.exports = (usersApp) => {
 
 	let db = usersApp.db;
 
-	usersApp.router.patch('/email-validate', getUserForRequestMiddleware(usersApp), csrfProtection, function (req, res) {
+	usersApp.router.patch('/email-validate', express.json(), getUserForRequestMiddleware(usersApp), csrfProtection, function (req, res) {
 
 		debug('/email-validate', req.body);
 
@@ -25,9 +31,7 @@ module.exports = (usersApp) => {
 				status: 'error',
 				flashLevel: 'danger',
 				flashMessage: 'Email validation failed',
-				errors: [{
-					msg: 'token is required'
-				}]
+				errors: ['token is required']
 			});
 		}
 
@@ -35,9 +39,7 @@ module.exports = (usersApp) => {
 		if (req.antisocialUser && req.antisocialUser.validated) {
 			return res.json({
 				status: 'error',
-				errors: [{
-					msg: 'Your account has already been activated.'
-				}]
+				errors: ['Your account has already been activated.']
 			});
 		}
 
@@ -111,9 +113,7 @@ module.exports = (usersApp) => {
 					status: 'error',
 					flashLevel: 'error',
 					flashMessage: 'Email validation failed',
-					errors: [{
-						msg: err.message
-					}]
+					errors: [err.message]
 				});
 			}
 

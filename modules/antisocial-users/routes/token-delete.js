@@ -1,5 +1,7 @@
 const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
+const express = require('express');
+
 const {
 	getUserForRequestMiddleware
 } = require('../lib/get-user-for-request-middleware');
@@ -8,16 +10,16 @@ module.exports = (usersApp) => {
 
 	debug('mounting users API /token-delete');
 
-	usersApp.router.delete('/token-delete', getUserForRequestMiddleware(usersApp), function (req, res) {
+	usersApp.router.delete('/token-delete', express.urlencoded({
+		extended: false
+	}), getUserForRequestMiddleware(usersApp), function (req, res) {
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {
 			return res.status(401).json({
 				status: 'error',
 				flashLevel: 'danger',
 				flashMessage: 'Token delete failed',
-				errors: [{
-					msg: 'must be logged in'
-				}]
+				errors: ['must be logged in']
 			});
 		}
 
@@ -36,9 +38,7 @@ module.exports = (usersApp) => {
 					status: 'error',
 					flashLevel: 'danger',
 					flashMessage: 'Token delete failed',
-					errors: [
-						err.message
-					]
+					errors: [err.message]
 				});
 			}
 
@@ -47,9 +47,7 @@ module.exports = (usersApp) => {
 					status: 'error',
 					flashLevel: 'danger',
 					flashMessage: 'Token delete failed',
-					errors: [
-						'token not found'
-					]
+					errors: ['token not found']
 				});
 			}
 

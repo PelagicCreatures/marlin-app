@@ -2,8 +2,14 @@ const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
+const express = require('express');
+
 const csrfProtection = csrf({
-	cookie: true
+	cookie: {
+		signed: true,
+		httpOnly: true
+	},
+	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 const {
 	check, validationResult
@@ -22,7 +28,7 @@ module.exports = (usersApp) => {
 	const saltAndHash = require('../lib/salt-and-hash')(usersApp);
 	const passwordMatch = require('../lib/password-match.js');
 
-	usersApp.router.patch('/password-change', getUserForRequestMiddleware(usersApp), csrfProtection,
+	usersApp.router.patch('/password-change', express.json(), getUserForRequestMiddleware(usersApp), csrfProtection,
 
 		check('oldpassword')
 		.not().isEmpty().withMessage('required')
@@ -52,9 +58,7 @@ module.exports = (usersApp) => {
 			if (!currentUser) {
 				return res.status(401).json({
 					status: 'error',
-					errors: [{
-						msg: 'must be logged in'
-					}]
+					errors: ['must be logged in']
 				});
 			}
 
@@ -99,9 +103,7 @@ module.exports = (usersApp) => {
 						status: 'error',
 						flashLevel: 'danger',
 						flashMessage: 'Change Password failed',
-						errors: [{
-							msg: err.message
-						}]
+						errors: [err.message]
 					});
 				}
 

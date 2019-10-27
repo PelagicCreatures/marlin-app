@@ -36,10 +36,12 @@ function formController(elem, options) {
 
 	self.submit = function (data) {
 		$.ajax({
-				'method': self.method,
-				'url': self.endpoint,
-				'data': data,
-				'headers': {
+				method: self.method,
+				url: self.endpoint,
+				dataType: 'json',
+				contentType: 'application/json',
+				data: JSON.stringify(data),
+				headers: {
 					'x-digitopia-hijax': 'true'
 				}
 			})
@@ -80,7 +82,7 @@ function formController(elem, options) {
 							if (message) {
 								message += ', ';
 							}
-							message += jqXHR.responseJSON.errors[i].msg;
+							message += jqXHR.responseJSON.errors[i];
 						}
 					}
 					else {
