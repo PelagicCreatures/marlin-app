@@ -26,7 +26,7 @@ app.use(csp({
     'frameSrc': ['\'self\'', 'js.stripe.com'],
     'mediaSrc': ['\'self\''],
     'imgSrc': ['\'self\'', 'data:'],
-    'sandbox': ['allow-forms', 'allow-scripts', 'allow-same-origin'],
+    'sandbox': ['allow-forms', 'allow-scripts', 'allow-same-origin', 'allow-modals'],
     'objectSrc': ['\'none\''],
     'upgradeInsecureRequests': false
   },

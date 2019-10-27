@@ -277,12 +277,14 @@ function formValidator(elem, options) {
 			var endpoint = input.data('unique-endpoint');
 			input.data('last-val', getRealVal(input));
 			$.ajax({
-					'method': 'POST',
-					'url': endpoint,
-					'data': {
+					method: 'POST',
+					url: endpoint,
+					dataType: 'json',
+					contentType: 'application/json',
+					data: JSON.stringify({
 						value: getRealVal(input)
-					},
-					'headers': {
+					}),
+					headers: {
 						'x-digitopia-hijax': 'true'
 					}
 				})
@@ -307,12 +309,14 @@ function formValidator(elem, options) {
 			input.data('last-val', getRealVal(input));
 
 			$.ajax({
-					'method': 'POST',
-					'url': endpoint,
-					'data': {
+					method: 'POST',
+					url: endpoint,
+					dataType: 'json',
+					contentType: 'application/json',
+					data: JSON.stringify({
 						value: getRealVal(input)
-					},
-					'headers': {
+					}),
+					headers: {
 						'x-digitopia-hijax': 'true'
 					}
 				})
