@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
 module.exports = function (db) {
-	db.defineTable('users', {
+	let User = db.defineTable('users', {
 		'id': {
 			type: Sequelize.UUID,
 			allowNull: false,
@@ -45,16 +45,12 @@ module.exports = function (db) {
 		}
 	});
 
-	db.defineTable('tokens', {
+	let Token = db.defineTable('tokens', {
 		'id': {
 			type: Sequelize.UUID,
 			allowNull: false,
 			primaryKey: true,
 			defaultValue: Sequelize.UUIDV4
-		},
-		'userId': {
-			type: Sequelize.UUID,
-			allowNull: false
 		},
 		'token': {
 			type: Sequelize.STRING,
@@ -75,4 +71,9 @@ module.exports = function (db) {
 			type: Sequelize.STRING
 		}
 	});
+
+	User.hasMany(Token);
+	Token.belongsTo(User);
+
+	db.sync();
 };

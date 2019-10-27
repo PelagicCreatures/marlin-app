@@ -135,20 +135,16 @@ module.exports = function mount(userAPI) {
 			return res.redirect('/users/login');
 		}
 
-		userAPI.db.getInstances('tokens', {
-			where: {
-				userId: req.antisocialUser.id,
-				type: 'access'
-			},
-			order: [
-				['createdAt', 'DESC']
-			]
-		}, function (err, tokenInstances) {
+		req.antisocialUser.getTokens({
+			type: 'access'
+		}).then((tokens) => {
 			res.render('users/tokens', {
 				user: req.antisocialUser,
-				tokens: tokenInstances,
+				tokens: tokens,
 				currentToken: req.antisocialToken.token
 			});
+		}).catch(err => {
+			res.status(500);
 		});
 	});
 
@@ -194,6 +190,9 @@ module.exports = function mount(userAPI) {
 					}
 				],
 				function (err, customer, paymentMethod, upcoming, invoices) {
+					if (err) {
+						return res.status(500);
+					}
 					res.render('users/subscription', {
 						user: req.antisocialUser,
 						stripe: customer,

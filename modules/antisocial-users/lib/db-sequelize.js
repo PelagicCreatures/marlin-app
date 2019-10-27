@@ -25,7 +25,7 @@ class dbHandler extends EventEmitter {
 			define: {
 				engine: 'INNODB'
 			},
-			logging: false
+			//logging: false
 		});
 
 		var self = this;
@@ -46,19 +46,29 @@ class dbHandler extends EventEmitter {
 		});
 	}
 
-	defineTable(collectionName, schema, opts) {
-		debug('dbHandler.defineTable %s', collectionName);
-		this.tableDefs[collectionName] = this.sequelize.define(collectionName, schema, opts);
-		this.tableDefs[collectionName].sync();
+	defineTable(modelName, schema, opts) {
+		debug('dbHandler.defineTable %s', modelName);
+		this.tableDefs[modelName] = this.sequelize.define(modelName, schema, opts);
+
+		return this.tableDefs[modelName];
 	}
 
-	getTable(collectionName) {
-		return this.tableDefs[collectionName];
+	getModel(modelName) {
+		return this.tableDefs[modelName];
 	}
 
-	newInstance(collectionName, data, cb) {
-		debug('dbHandler.newInstance %s', collectionName);
-		this.tableDefs[collectionName].create(data)
+	sync(modelName) {
+		if (modelName) {
+			this.tableDefs[modelName].sync();
+		}
+		else {
+			this.sequelize.sync();
+		}
+	}
+
+	newInstance(modelName, data, cb) {
+		debug('dbHandler.newInstance %s', modelName);
+		this.tableDefs[modelName].create(data)
 			.then(function (instance) {
 				cb(null, instance);
 			})
@@ -67,10 +77,10 @@ class dbHandler extends EventEmitter {
 			});
 	}
 
-	getInstances(collectionName, query, cb) {
-		this.tableDefs[collectionName].findAll(query)
+	getInstances(modelName, query, cb) {
+		this.tableDefs[modelName].findAll(query)
 			.then(function (instances) {
-				debug('dbHandler.getInstances %s %j found: %s', collectionName, query, instances.length);
+				debug('dbHandler.getInstances %s %j found: %s', modelName, query, instances.length);
 
 				cb(null, instances);
 			})
@@ -79,9 +89,9 @@ class dbHandler extends EventEmitter {
 			});
 	}
 
-	updateInstance(collectionName, id, patch, cb) {
-		debug('dbHandler.updateInstance %s %s', collectionName, id);
-		this.tableDefs[collectionName].findOne({
+	updateInstance(modelName, id, patch, cb) {
+		debug('dbHandler.updateInstance %s %s', modelName, id);
+		this.tableDefs[modelName].findOne({
 				where: {
 					id: id
 				}
@@ -99,13 +109,13 @@ class dbHandler extends EventEmitter {
 					});
 			})
 			.catch(function (err) {
-				cb(new VError(err, 'updateInstance error ' + collectionName + ' id:' + id + ' not found'));
+				cb(new VError(err, 'updateInstance error ' + modelName + ' id:' + id + ' not found'));
 			});
 	}
 
-	deleteInstance(collectionName, id, cb) {
-		debug('dbHandler.deleteInstance %s %s', collectionName, id);
-		this.tableDefs[collectionName].findOne({
+	deleteInstance(modelName, id, cb) {
+		debug('dbHandler.deleteInstance %s %s', modelName, id);
+		this.tableDefs[modelName].findOne({
 				where: {
 					id: id
 				}
@@ -120,7 +130,7 @@ class dbHandler extends EventEmitter {
 					});
 			})
 			.catch(function (err) {
-				cb(new VError(err, 'deleteInstance error ' + collectionName + ' id:' + id + ' not found'));
+				cb(new VError(err, 'deleteInstance error ' + modelName + ' id:' + id + ' not found'));
 			});
 	}
 }
