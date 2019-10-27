@@ -10,7 +10,7 @@ module.exports = (usersApp) => {
 
 	let db = usersApp.db;
 
-	usersApp.router.get('/logout', getUserForRequestMiddleware(usersApp), function (req, res) {
+	usersApp.router.delete('/logout', getUserForRequestMiddleware(usersApp), function (req, res) {
 
 		debug('/logout');
 

@@ -8,7 +8,7 @@ module.exports = (usersApp) => {
 
 	debug('mounting users API /token-delete');
 
-	usersApp.router.get('/token-delete', getUserForRequestMiddleware(usersApp), function (req, res) {
+	usersApp.router.delete('/token-delete', getUserForRequestMiddleware(usersApp), function (req, res) {
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {
 			return res.status(401).json({

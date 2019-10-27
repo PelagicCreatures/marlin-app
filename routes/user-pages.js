@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const async = require('async');
 const VError = require('verror').VError;
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 
 const {
 	validateToken,
@@ -28,17 +32,19 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/register', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/register', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			if (req.headers['x-digitopia-hijax']) {
 				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
 			}
 			return res.redirect('/users/home');
 		}
-		res.render('users/register', {});
+		res.render('users/register', {
+			csrfToken: req.csrfToken()
+		});
 	});
 
-	router.get('/users/validate', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/validate', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
 		if (req.antisocialUser && req.antisocialUser.validated) {
 			if (req.headers['x-digitopia-hijax']) {
 				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
@@ -49,46 +55,53 @@ module.exports = function mount(userAPI) {
 		res.render('users/email-validate', {
 			user: req.antisocialUser,
 			token: req.query.token,
-			flash: !req.query.token ? 'Error: Missing email validation token' : ''
+			flash: !req.query.token ? 'Error: Missing email validation token' : '',
+			csrfToken: req.csrfToken()
 		});
 	});
 
-	router.get('/users/login', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/login', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			if (req.headers['x-digitopia-hijax']) {
 				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
 			}
 			return res.redirect('/users/home');
 		}
-		res.render('users/login', {});
+		res.render('users/login', {
+			csrfToken: req.csrfToken()
+		});
 	});
 
-	router.get('/users/email-change', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/email-change', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
 		res.render('users/email-change', {
-			user: req.antisocialUser
+			user: req.antisocialUser,
+			csrfToken: req.csrfToken()
 		});
 	});
 
-	router.get('/users/password-change', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/password-change', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
 		res.render('users/password-change', {
-			user: req.antisocialUser
+			user: req.antisocialUser,
+			csrfToken: req.csrfToken()
 		});
 	});
 
-	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			return res.sendStatus(401).send('Already logged in.');
 		}
-		res.render('users/password-reset', {});
+		res.render('users/password-reset', {
+			csrfToken: req.csrfToken()
+		});
 	});
 
-	router.get('/users/password-set', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/password-set', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			return res.sendStatus(401).send('Already logged in.');
 		}
@@ -125,7 +138,8 @@ module.exports = function mount(userAPI) {
 				});
 			}
 			res.render('users/password-set', {
-				token: req.query.token
+				token: req.query.token,
+				csrfToken: req.csrfToken()
 			});
 		});
 	});

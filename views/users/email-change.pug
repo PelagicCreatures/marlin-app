@@ -6,11 +6,12 @@ block content
 			i.material-icons mail_outline
 			|  Change Email Address
 		
-		form.form.form-validation(action="/api/users/email-change" method="POST" data-jsclass="formValidator,formController" data-submitter="#submitter")
+		form.form.form-validation(action="/api/users/email-change" method="PATCH" data-jsclass="formValidator,formController" data-submitter="#submitter")
+			input(type="hidden" name="_csrf" value= csrfToken)
 			.reg-form.clear-fix.mdc-elevation--z1
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(name="email" data-validate="required,email" data-unique-endpoint= "/api/users/is-unique?field=email")
+						input.mdc-text-field__input(name="email" data-validate="required,email" data-unique-endpoint="/api/users/is-unique-email")
 						label.mdc-floating-label New Email Address
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple

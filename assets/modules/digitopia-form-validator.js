@@ -276,20 +276,27 @@ function formValidator(elem, options) {
 			self.uniqueDebounce = undefined;
 			var endpoint = input.data('unique-endpoint');
 			input.data('last-val', getRealVal(input));
-			var delim = '?';
-			if (endpoint.match(/\?/)) {
-				delim = '&';
-			}
-			$.getJSON(endpoint + delim + 'value=' + encodeURIComponent(getRealVal(input)), function (data) {
-				if (data.found) {
-					input.data('last-unique', 1);
-					cb(null, ['Already exists']);
-				}
-				else {
-					input.removeData('last-unique');
-					cb(null);
-				}
-			});
+			$.ajax({
+					'method': 'POST',
+					'url': endpoint,
+					'data': {
+						value: getRealVal(input)
+					},
+					'headers': {
+						'x-digitopia-hijax': 'true'
+					}
+				})
+				.done(function (data, textStatus, jqXHR) {
+					if (data.found) {
+						input.data('last-unique', 1);
+						cb(null, ['Already exists']);
+					}
+					else {
+						input.removeData('last-unique');
+						cb(null);
+					}
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {});
 		}, 500);
 	};
 
@@ -298,22 +305,27 @@ function formValidator(elem, options) {
 			self.lookupDebounce = undefined;
 			var endpoint = input.data('lookup-endpoint');
 			input.data('last-val', getRealVal(input));
-			$.getJSON(endpoint + '?code=' + getRealVal(input), function (data) {
-				input.data('last-lookup', data);
-				if (!data.found || !data.found.length) {
-					cb(null, ['not found']);
-				}
-				else {
-					input.data('id', data);
-					var state = $('#document-body').data('modalController').getState();
-					if (!state.payload) {
-						state.payload = {};
+
+			$.ajax({
+					'method': 'POST',
+					'url': endpoint,
+					'data': {
+						value: getRealVal(input)
+					},
+					'headers': {
+						'x-digitopia-hijax': 'true'
 					}
-					state.payload[input.attr('name')] = data.found;
-					$('#document-body').data('modalController').setState(state);
-					cb(null);
-				}
-			});
+				})
+				.done(function (data, textStatus, jqXHR) {
+					input.data('last-lookup', data);
+					if (!data.found || !data.found.length) {
+						cb(null, ['not found']);
+					}
+					else {
+						cb(null);
+					}
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {});
 		}, 500);
 	};
 }

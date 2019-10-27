@@ -10,7 +10,7 @@ module.exports = (usersApp) => {
 
 	var stripe = require('stripe')(process.env.STRIPE_SECRET);
 
-	usersApp.router.get('/subscription-cancel', getUserForRequestMiddleware(usersApp), function (req, res) {
+	usersApp.router.delete('/subscription-cancel', getUserForRequestMiddleware(usersApp), function (req, res) {
 
 		console.log('/subscription-cancel');
 

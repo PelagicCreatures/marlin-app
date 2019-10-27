@@ -65,7 +65,7 @@ html
         .mdc-snackbar__label
     
     // expose app.locals.options to client side javascript gobal var 'appOptions'
-    script!= "var appOptions = " + JSON.stringify(options) + ';'
+    script(nonce= nonce)!= "var appOptions = " + JSON.stringify(options) + ';'
     
     if options.STRIPE_PUBLIC
       // stripe for subscriptions
@@ -80,7 +80,7 @@ html
     else
       script(src="/dist/js/userapp.js")
         
-    script.
+    script(nonce= nonce).
       boot();
       
     #ephemeral

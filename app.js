@@ -1,16 +1,46 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var uuid = require('uuid');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const uuid = require('uuid');
+const helmet = require('helmet');
 
-var app = express();
+const app = express();
+
+app.locals.nonce = uuid.v4();
+
+app.use(helmet());
+
+const csp = require('helmet-csp');
+
+app.use(csp({
+  'directives': {
+    'defaultSrc': ['\'self\''],
+    'connect-src': ['\'self\''],
+    'scriptSrc': ['\'self\'', 'js.stripe.com', '\'unsafe-eval\'', function (req, res) {
+      return '\'nonce-' + app.locals.nonce + '\'';
+    }],
+    'fontSrc': ['\'self\'', 'fonts.gstatic.com'],
+    'styleSrc': ['\'self\'', 'fonts.googleapis.com', '\'unsafe-inline\''],
+    'frameSrc': ['\'self\'', 'js.stripe.com'],
+    'mediaSrc': ['\'self\''],
+    'imgSrc': ['\'self\'', 'data:'],
+    'sandbox': ['allow-forms', 'allow-scripts', 'allow-same-origin'],
+    'reportUri': '/csp-violation',
+    'objectSrc': ['\'none\''],
+    'upgradeInsecureRequests': false
+  },
+  'loose': false,
+  'reportOnly': false,
+  'setAllHeaders': false,
+  'disableAndroid': false,
+  'browserSniff': false
+}));
 
 require('./config/' + app.get('env'))(app);
 
 app.locals.sitename = 'User App Boilerplate'
-app.locals.nonce = uuid.v4();
 app.locals.moment = require('moment');
 
 if (app.get('env') !== 'production') {
@@ -64,6 +94,21 @@ require('./lib/user-events')(userAPI);
 
 app.use('/', require('./routes/index')(userAPI));
 app.use('/', require('./routes/user-pages')(userAPI));
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({
+  type: ['json', 'application/csp-report']
+}));
+
+app.post('/csp-violation', (req, res) => {
+  if (req.body) {
+    console.log('CSP Violation: ', req.body)
+  }
+  else {
+    console.log('CSP Violation: No data received!')
+  }
+  res.status(204).end()
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

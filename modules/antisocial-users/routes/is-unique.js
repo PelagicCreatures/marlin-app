@@ -11,18 +11,10 @@ module.exports = (usersApp) => {
 
 	let db = usersApp.db;
 
-	usersApp.router.get('/is-unique', getUserForRequestMiddleware(usersApp), function (req, res) {
-
-		debug('/is-unique', req.query);
-
-		var f = req.query.field;
-
-		if ((f !== 'username' && f !== 'email') || !req.query.value) {
-			return res.sendStatus(400);
-		}
+	function check(f, v, req, res) {
 
 		var query = {};
-		query[f] = req.query.value;
+		query[f] = v;
 
 		var currentUser = req.antisocialUser;
 
@@ -54,5 +46,27 @@ module.exports = (usersApp) => {
 				found: true
 			});
 		});
+	}
+
+	usersApp.router.post('/is-unique-email', getUserForRequestMiddleware(usersApp), function (req, res) {
+
+		debug('/is-unique-email', req.body);
+
+		if (!req.body.value) {
+			return res.sendStatus(400);
+		}
+
+		check('email', req.body.value, req, res);
+	});
+
+	usersApp.router.post('/is-unique-username', getUserForRequestMiddleware(usersApp), function (req, res) {
+
+		debug('/is-unique-email', req.body);
+
+		if (!req.body.value) {
+			return res.sendStatus(400);
+		}
+
+		check('username', req.body.value, req, res);
 	});
 };

@@ -19,6 +19,7 @@ function formController(elem, options) {
 			e.preventDefault();
 			self.pleaseWait(true);
 			let data = self.element.serializeObject();
+			data['_csrf'] = self.element.find('[name="_csrf"]').val();
 			if (appOptions.RECAPTCHA_PUBLIC) {
 				grecaptcha.execute(appOptions.RECAPTCHA_PUBLIC, {
 					action: 'social'

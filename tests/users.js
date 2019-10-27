@@ -36,7 +36,7 @@ describe('users', function () {
 	});
 
 	it('should not be able to post empty register payload', function (done) {
-		client1.post('http://127.0.0.1:3000/api/users/register')
+		client1.put('http://127.0.0.1:3000/api/users/register')
 			.type('form')
 			.send({
 				'email': '',
@@ -54,7 +54,7 @@ describe('users', function () {
 	});
 
 	it('should not be able to post invalid register payload', function (done) {
-		client1.post('http://127.0.0.1:3000/api/users/register')
+		client1.put('http://127.0.0.1:3000/api/users/register')
 			.type('form')
 			.send({
 				'email': 'invalid email',
@@ -72,7 +72,7 @@ describe('users', function () {
 	});
 
 	it('should be able to create account 1', function (done) {
-		client1.post('http://127.0.0.1:3000/api/users/register')
+		client1.put('http://127.0.0.1:3000/api/users/register')
 			.type('form')
 			.send({
 				'name': 'user one',
@@ -105,7 +105,7 @@ describe('users', function () {
 			expect(tokenInstances).to.be.an('array');
 			expect(tokenInstances.length).to.equal(1);
 
-			client1.post('http://127.0.0.1:3000/api/users/email-validate')
+			client1.patch('http://127.0.0.1:3000/api/users/email-validate')
 				.type('form')
 				.send({
 					token: tokenInstances[0].token
@@ -121,7 +121,7 @@ describe('users', function () {
 	});
 
 	it('should be able to logout account 1', function (done) {
-		client1.get('http://127.0.0.1:3000/api/users/logout')
+		client1.delete('http://127.0.0.1:3000/api/users/logout')
 			.end(function (err, res) {
 				if (err) {
 					console.log('errors: %j %j', err, res.body ? res.body : '');
@@ -134,7 +134,7 @@ describe('users', function () {
 	});
 
 	it('should be able to create account 2', function (done) {
-		client2.post('http://127.0.0.1:3000/api/users/register')
+		client2.put('http://127.0.0.1:3000/api/users/register')
 			.type('form')
 			.send({
 				'name': 'user two',
@@ -167,7 +167,7 @@ describe('users', function () {
 			expect(tokenInstances).to.be.an('array');
 			expect(tokenInstances.length).to.equal(1);
 
-			client2.post('http://127.0.0.1:3000/api/users/email-validate')
+			client2.patch('http://127.0.0.1:3000/api/users/email-validate')
 				.type('form')
 				.send({
 					token: tokenInstances[0].token
@@ -184,7 +184,7 @@ describe('users', function () {
 	});
 
 	it('should be able to logout account 2', function (done) {
-		client2.get('http://127.0.0.1:3000/api/users/logout')
+		client2.delete('http://127.0.0.1:3000/api/users/logout')
 			.end(function (err, res) {
 				if (err) {
 					console.log('errors: %j %j', err, res.body ? res.body : '');
@@ -197,7 +197,7 @@ describe('users', function () {
 	});
 
 	it('should not be able to login account 2 w/bad password', function (done) {
-		client2.post('http://127.0.0.1:3000/api/users/login')
+		client2.put('http://127.0.0.1:3000/api/users/login')
 			.type('form')
 			.send({
 				'email': 'mrhodes+2@myantisocial.net',
@@ -213,7 +213,7 @@ describe('users', function () {
 	});
 
 	it('should be able to login account 2', function (done) {
-		client2.post('http://127.0.0.1:3000/api/users/login')
+		client2.put('http://127.0.0.1:3000/api/users/login')
 			.type('form')
 			.send({
 				'email': 'mrhodes+2@myantisocial.net',
@@ -231,7 +231,7 @@ describe('users', function () {
 	});
 
 	it('should be able to send password reset account 1', function (done) {
-		client1.post('http://127.0.0.1:3000/api/users/password-reset')
+		client1.patch('http://127.0.0.1:3000/api/users/password-reset')
 			.type('form')
 			.send({
 				'email': 'mrhodes+1@myantisocial.net'
@@ -260,7 +260,7 @@ describe('users', function () {
 
 			var resetToken = tokenInstances[0].token;
 
-			client1.post('http://127.0.0.1:3000/api/users/password-set')
+			client1.patch('http://127.0.0.1:3000/api/users/password-set')
 				.type('form')
 				.send({
 					token: resetToken,
@@ -279,7 +279,7 @@ describe('users', function () {
 	});
 
 	it('should be able to log in again account 1 after reset', function (done) {
-		client1.post('http://127.0.0.1:3000/api/users/login')
+		client1.put('http://127.0.0.1:3000/api/users/login')
 			.type('form')
 			.send({
 				'email': 'mrhodes+1@myantisocial.net',
@@ -299,7 +299,7 @@ describe('users', function () {
 	});
 
 	it('should be able to change password when logged in', function (done) {
-		client1.post('http://127.0.0.1:3000/api/users/password-change')
+		client1.patch('http://127.0.0.1:3000/api/users/password-change')
 			.type('form')
 			.send({
 				'oldpassword': 'Testing1234',
@@ -317,7 +317,7 @@ describe('users', function () {
 	});
 
 	it('should be able to change email when logged in', function (done) {
-		client1.post('http://127.0.0.1:3000/api/users/email-change')
+		client1.patch('http://127.0.0.1:3000/api/users/email-change')
 			.type('form')
 			.send({
 				'email': 'mrhodes+11@myantisocial.net'
@@ -344,7 +344,7 @@ describe('users', function () {
 			expect(tokenInstances).to.be.an('array');
 			expect(tokenInstances.length).to.equal(1);
 
-			client1.post('http://127.0.0.1:3000/api/users/email-validate')
+			client1.patch('http://127.0.0.1:3000/api/users/email-validate')
 				.type('form')
 				.send({
 					token: tokenInstances[0].token

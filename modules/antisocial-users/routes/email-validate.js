@@ -1,7 +1,10 @@
 const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
-
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 const {
 	validateToken, getUserForRequestMiddleware
 } = require('../lib/get-user-for-request-middleware');
@@ -13,7 +16,7 @@ module.exports = (usersApp) => {
 
 	let db = usersApp.db;
 
-	usersApp.router.post('/email-validate', getUserForRequestMiddleware(usersApp), function (req, res) {
+	usersApp.router.patch('/email-validate', getUserForRequestMiddleware(usersApp), csrfProtection, function (req, res) {
 
 		debug('/email-validate', req.body);
 

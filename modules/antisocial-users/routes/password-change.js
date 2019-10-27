@@ -1,7 +1,10 @@
 const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
-
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 const {
 	check, validationResult
 } = require('express-validator');
@@ -19,8 +22,7 @@ module.exports = (usersApp) => {
 	const saltAndHash = require('../lib/salt-and-hash')(usersApp);
 	const passwordMatch = require('../lib/password-match.js');
 
-	usersApp.router.post('/password-change',
-		getUserForRequestMiddleware(usersApp),
+	usersApp.router.patch('/password-change', getUserForRequestMiddleware(usersApp), csrfProtection,
 
 		check('oldpassword')
 		.not().isEmpty().withMessage('required')

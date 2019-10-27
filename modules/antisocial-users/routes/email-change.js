@@ -1,6 +1,10 @@
 const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 
 const {
 	check, validationResult
@@ -18,7 +22,7 @@ module.exports = (usersApp) => {
 
 	let createToken = require('../lib/create-token.js')(usersApp);
 
-	usersApp.router.post('/email-change', getUserForRequestMiddleware(usersApp), check('email').isEmail(), function (req, res) {
+	usersApp.router.patch('/email-change', getUserForRequestMiddleware(usersApp), csrfProtection, check('email').isEmail(), function (req, res) {
 
 		debug('/email-change', req.body);
 

@@ -7,7 +7,10 @@ block content
 		if flash
 			p.alert= flash
 		else
-			form.form.form-validation(action="/api/users/email-validate" method="POST" data-jsclass="formController" data-submitter="#submitter")
+			
+			form.form.form-validation(action="/api/users/email-validate" method="PATCH" data-jsclass="formController" data-submitter="#submitter")
+				input(type="hidden" name="_csrf" value= csrfToken)
+
 				input(type="hidden" name="token" value= token)
 				.reg-form.clear-fix.mdc-elevation--z1
 					section.form-group

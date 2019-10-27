@@ -1,7 +1,10 @@
 const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
-
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 const {
 	validateToken
 } = require('../lib/get-user-for-request-middleware');
@@ -18,7 +21,7 @@ module.exports = (usersApp) => {
 
 	const saltAndHash = require('../lib/salt-and-hash')(usersApp);
 
-	usersApp.router.post('/password-set',
+	usersApp.router.patch('/password-set', csrfProtection,
 
 		check('token').isLength({
 			min: 64

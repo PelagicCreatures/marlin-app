@@ -39,7 +39,7 @@ block content
 			if stripe.subscriptions.data.length && !cancelled
 				- canSubscribe = false
 				p
-					a(href="#" data-jsclass="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Cancel Subscription?" data-endpoint='/api/users/subscription-cancel' data-no-hijax="true" data-method="GET" data-redirect="/users/subscription") Click Here 
+					a(href="#" data-jsclass="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Cancel Subscription?" data-endpoint='/api/users/subscription-cancel' data-no-hijax="true" data-method="delete" data-redirect="/users/subscription") Click Here 
 					|  to cancel your subscription at end of current period.
 					
 			.flextable(data-jsclass="flexTable" data-break="screen-xsmall")

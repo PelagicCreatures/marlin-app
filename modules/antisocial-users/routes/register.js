@@ -2,7 +2,10 @@ const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
 const request = require('request');
-
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 const {
 	check, validationResult
 } = require('express-validator');
@@ -15,7 +18,7 @@ module.exports = (usersApp) => {
 	let createToken = require('../lib/create-token.js')(usersApp);
 
 	// create a new user
-	usersApp.router.post('/register',
+	usersApp.router.put('/register', csrfProtection,
 
 		check('email')
 		.not().isEmpty().withMessage('required')

@@ -1,6 +1,10 @@
 const VError = require('verror').VError;
 const debug = require('debug')('antisocial-user');
 const async = require('async');
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 
 const {
 	check, validationResult
@@ -14,7 +18,7 @@ module.exports = (usersApp) => {
 	let createToken = require('../lib/create-token.js')(usersApp);
 	let passwordMatch = require('../lib/password-match.js');
 
-	usersApp.router.post('/login',
+	usersApp.router.put('/login', csrfProtection,
 		check('email')
 		.not().isEmpty()
 		.isEmail(),

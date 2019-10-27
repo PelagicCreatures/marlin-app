@@ -1,5 +1,8 @@
 const debug = require('debug')('antisocial-user');
-
+const csrf = require('csurf');
+const csrfProtection = csrf({
+	cookie: true
+});
 const {
 	check, validationResult
 } = require('express-validator');
@@ -12,7 +15,7 @@ module.exports = (usersApp) => {
 
 	let createToken = require('../lib/create-token.js')(usersApp);
 
-	usersApp.router.post('/password-reset', check('email').isEmail(), function (req, res) {
+	usersApp.router.patch('/password-reset', csrfProtection, check('email').isEmail(), function (req, res) {
 
 		debug('/password-reset', req.body);
 
