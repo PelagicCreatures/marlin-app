@@ -20,7 +20,7 @@ module.exports = (usersApp) => {
 
 		var currentUser = req.antisocialUser;
 
-		db.getInstances('users', {
+		db.getInstances('User', {
 			where: query
 		}, function (err, userInstances) {
 			if (err) {

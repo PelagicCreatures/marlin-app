@@ -22,7 +22,7 @@ module.exports = (usersApp) => {
 			});
 		}
 
-		db.deleteInstance('tokens', req.antisocialToken.id, function (err) {
+		db.deleteInstance('Token', req.antisocialToken.id, function (err) {
 
 			if (process.env.STRIPE_SECRET) {
 				if (currentUser.stripeStatus === 'ok') {

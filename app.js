@@ -65,25 +65,32 @@ app.use(logger('dev'));
 app.use(cookieParser('SeCretDecdrrnG'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-var dbHandler = require('./modules/antisocial-users/lib/db-sequelize');
+var dbHandler = require('./lib/db-sequelize');
 
 var dbOptions = {
   host: process.env.DB_HOST ? process.env.DB_HOST : 'localhost',
-  user: process.env.DB_USER ? process.env.DB_USER : 'testuser',
+  username: process.env.DB_USER ? process.env.DB_USER : 'testuser',
   password: process.env.DB_PASSWD ? process.env.DB_PASSWD : 'testpassword',
-  db: process.env.DB_DBNAME ? process.env.DB_DBNAME : 'testusers',
-  charset: 'utf8',
+  database: process.env.DB_DBNAME ? process.env.DB_DBNAME : 'testusers',
+  dialect: "mysql",
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  },
+  define: {
+    engine: "INNODB",
+    charset: "utf8",
+    collate: "utf8_general_ci",
+    freezeTableName: true
+  }
 };
 
-let db = new dbHandler(dbOptions);
-
-require('./modules/antisocial-users/lib/db-schema')(db);
-
-app.db = db;
+app.db = new dbHandler(dbOptions);
 
 // set up and mount the user API
 let userOptions = {}
-const userAPI = require('./modules/antisocial-users/index')(userOptions, app, db);
+const userAPI = require('./modules/antisocial-users/index')(userOptions, app, app.db);
 
 require('./lib/user-events')(userAPI);
 

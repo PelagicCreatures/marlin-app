@@ -23,7 +23,7 @@ module.exports = (usersApp) => {
 			});
 		}
 
-		usersApp.db.getInstances('tokens', {
+		usersApp.db.getInstances('Token', {
 			where: {
 				userId: req.antisocialUser.id,
 				type: 'access',
@@ -51,7 +51,7 @@ module.exports = (usersApp) => {
 				});
 			}
 
-			usersApp.db.deleteInstance('tokens', tokenInstances[0].id, function (err) {
+			usersApp.db.deleteInstance('Token', tokenInstances[0].id, function (err) {
 				if (err) {
 					return res.status(500).send({
 						'status': 'error',

@@ -66,7 +66,7 @@ module.exports = (usersApp) => {
 
 			async.waterfall([
 				function findToken(cb) {
-					db.getInstances('tokens', {
+					db.getInstances('Token', {
 						where: {
 							'token': req.body.token,
 							'type': 'reset'
@@ -88,7 +88,7 @@ module.exports = (usersApp) => {
 					});
 				},
 				function readUser(token, cb) {
-					db.getInstances('users', {
+					db.getInstances('User', {
 						where: {
 							'id': token.userId
 						}
@@ -104,7 +104,7 @@ module.exports = (usersApp) => {
 					});
 				},
 				function savePassword(token, user, cb) {
-					db.updateInstance('users', user.id, {
+					db.updateInstance('User', user.id, {
 						'password': saltAndHash(req.body.password)
 					}, function (err, updated) {
 						if (err) {
@@ -114,7 +114,7 @@ module.exports = (usersApp) => {
 					});
 				},
 				function deleteToken(token, user, cb) {
-					db.deleteInstance('tokens', token.id, function (err) {
+					db.deleteInstance('Token', token.id, function (err) {
 						if (err) {
 							return cb(new VError(err, 'could not delete token'));
 						}

@@ -63,7 +63,7 @@ module.exports = (usersApp) => {
 
 			async.waterfall([
 				function (cb) {
-					db.getInstances('users', {
+					db.getInstances('User', {
 						where: {
 							'email': req.body.email
 						}

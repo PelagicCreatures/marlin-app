@@ -46,7 +46,7 @@ module.exports = (usersApp) => {
 		async.waterfall([
 			function findToken(cb) {
 				debug('finding validation token');
-				db.getInstances('tokens', {
+				db.getInstances('Token', {
 					where: {
 						'token': req.body.token,
 						'type': 'validate'
@@ -70,7 +70,7 @@ module.exports = (usersApp) => {
 			},
 			function readUser(token, cb) {
 				debug('reading user for token');
-				db.getInstances('users', {
+				db.getInstances('User', {
 					where: {
 						'id': token.userId
 					}
@@ -87,7 +87,7 @@ module.exports = (usersApp) => {
 			},
 			function saveValidated(token, user, cb) {
 				debug('saving user validated');
-				db.updateInstance('users', user.id, {
+				db.updateInstance('User', user.id, {
 					'validated': true,
 					'email': user.pendingEmail ? user.pendingEmail : user.email,
 					'pendingEmail': null
@@ -100,7 +100,7 @@ module.exports = (usersApp) => {
 			},
 			function deleteToken(token, user, cb) {
 				debug('deleting token');
-				db.deleteInstance('tokens', token.id, function (err) {
+				db.deleteInstance('Token', token.id, function (err) {
 					if (err) {
 						return cb(new VError(err, 'could not delete token'));
 					}

@@ -88,7 +88,7 @@ module.exports = (usersApp) => {
 					});
 				},
 				function (donePatch) {
-					db.updateInstance('users', currentUser.id, {
+					db.updateInstance('User', currentUser.id, {
 						'password': saltAndHash(req.body.password)
 					}, function (err, user) {
 						if (err) {

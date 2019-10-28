@@ -36,13 +36,13 @@ module.exports = (usersApp) => {
 				});
 		}
 
-		db.getInstances('users', {
+		db.getInstances('User', {
 			where: {
 				'email': req.body.email
 			}
 		}, function (err, token) {
 
-			db.getInstances('users', {
+			db.getInstances('User', {
 				where: {
 					'email': req.body.email
 				}

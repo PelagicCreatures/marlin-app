@@ -54,7 +54,7 @@ module.exports = (usersApp) => {
 		// patch user.pendingEmail, generate token, send validation email
 		async.waterfall([
 			function (donePatch) {
-				db.updateInstance('users', currentUser.id, {
+				db.updateInstance('User', currentUser.id, {
 					'pendingEmail': req.body.email,
 					'validated': false
 				}, function (err, user) {

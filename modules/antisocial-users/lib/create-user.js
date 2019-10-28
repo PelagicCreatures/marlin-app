@@ -6,7 +6,7 @@ module.exports = (usersApp) => {
 	function createUser(params, done) {
 		const saltAndHash = require('./salt-and-hash')(usersApp);
 
-		usersApp.db.newInstance('users', {
+		usersApp.db.newInstance('User', {
 			name: params.name,
 			username: params.username,
 			email: params.email,

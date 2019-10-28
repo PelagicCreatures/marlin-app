@@ -6,7 +6,7 @@ module.exports = (usersApp) => {
 
 	function createToken(user, options, done) {
 		var guid = uid(usersApp.options.DEFAULT_TOKEN_LEN);
-		usersApp.db.newInstance('tokens', {
+		usersApp.db.newInstance('Token', {
 			userId: user.id,
 			token: guid,
 			ttl: options.ttl ? options.ttl : usersApp.options.DEFAULT_TTL,

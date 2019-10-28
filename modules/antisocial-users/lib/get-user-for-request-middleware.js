@@ -29,7 +29,7 @@ function getUserForRequestMiddleware(userAPI) {
 
 		debug('getAuthenticatedUser found token in header or cookies', token);
 
-		db.getInstances('tokens', {
+		db.getInstances('Token', {
 			where: {
 				token: token,
 				type: 'access'
@@ -60,7 +60,7 @@ function getUserForRequestMiddleware(userAPI) {
 					return next();
 				}
 
-				db.getInstances('users', {
+				db.getInstances('User', {
 					where: {
 						'id': tokenInstances[0].userId
 					}
@@ -115,7 +115,7 @@ function validateToken(db, token, cb) {
 	}
 	else {
 		debug('validateToken expired elapsed: %s ttl: %s', elapsedSeconds, token.ttl);
-		db.deleteInstance('tokens', token.id, function (err) {
+		db.deleteInstance('Token', token.id, function (err) {
 			if (err) {
 				return cb(new VError(err, 'token is expired'));
 			}
@@ -137,7 +137,7 @@ function touchToken(db, token, cb) {
 
 	debug('touchToken elapsed: %s', elapsedSeconds);
 
-	db.updateInstance('tokens', token.id, {
+	db.updateInstance('Token', token.id, {
 		'lastaccess': new Date()
 	}, function (err, updated) {
 		if (err) {

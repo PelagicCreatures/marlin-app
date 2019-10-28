@@ -114,7 +114,7 @@ module.exports = function mount(userAPI) {
 
 		async.series([
 			function findToken(cb) {
-				userAPI.db.getInstances('tokens', {
+				userAPI.db.getInstances('Token', {
 					where: {
 						'token': req.query.token
 					}

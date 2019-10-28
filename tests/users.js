@@ -95,7 +95,7 @@ describe('users', function () {
 	});
 
 	it('should be able to validate account 1', function (done) {
-		app.db.getInstances('tokens', {
+		app.db.getInstances('Token', {
 			where: {
 				'userId': id1,
 				'type': 'validate'
@@ -157,7 +157,7 @@ describe('users', function () {
 	});
 
 	it('should be able to validate account 2', function (done) {
-		app.db.getInstances('tokens', {
+		app.db.getInstances('Token', {
 			where: {
 				'userId': id2,
 				'type': 'validate'
@@ -248,7 +248,7 @@ describe('users', function () {
 	});
 
 	it('should be able to set new password with token account 1', function (done) {
-		app.db.getInstances('tokens', {
+		app.db.getInstances('Token', {
 			where: {
 				'userId': id1,
 				'type': 'reset'
@@ -332,7 +332,7 @@ describe('users', function () {
 	});
 
 	it('should be able to validate account 1 after email change', function (done) {
-		app.db.getInstances('tokens', {
+		app.db.getInstances('Token', {
 			where: {
 				'userId': id1,
 				'type': 'validate'

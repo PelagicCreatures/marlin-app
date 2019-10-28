@@ -112,7 +112,7 @@ module.exports = (usersApp) => {
 						};
 					}
 
-					usersApp.db.getInstances('users', {
+					usersApp.db.getInstances('User', {
 						where: query
 					}, function (err, userInstances) {
 						if (err) {
@@ -139,7 +139,7 @@ module.exports = (usersApp) => {
 					}
 				},
 				function patchUser(user, cb) {
-					usersApp.db.updateInstance('users', user.id, patch, function (err) {
+					usersApp.db.updateInstance('User', user.id, patch, function (err) {
 						if (err) {
 							cb(new VError(err, 'webhook patchUser failed'));
 						}
