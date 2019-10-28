@@ -28,7 +28,7 @@ function stripeClientCheckout(elem) {
 						quantity: 1
 					}],
 					customerEmail: self.email,
-					clientReferenceId: self.userID,
+					clientReferenceId: self.userID.toString(),
 					successUrl: window.location.protocol + '//' + self.host + '/users/subscription',
 					cancelUrl: window.location.protocol + '//' + self.host + '/users/subscription',
 				})

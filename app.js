@@ -18,9 +18,11 @@ app.locals.nonce = uuid.v4();
 app.locals.moment = require('moment');
 
 // Content Security Profile for browser
-const csp = require('helmet-csp');
-app.use(helmet());
-app.use(csp(config.cspOptions));
+if (config.cspOptions && config.cspOptions.directives) {
+  const csp = require('helmet-csp');
+  app.use(helmet());
+  app.use(csp(config.cspOptions));
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
