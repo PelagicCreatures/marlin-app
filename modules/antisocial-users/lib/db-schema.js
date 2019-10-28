@@ -1,6 +1,20 @@
 const Sequelize = require('sequelize');
 
 module.exports = function (db) {
+	let Role = db.defineTable('roles', {
+		'id': {
+			type: Sequelize.UUID,
+			allowNull: false,
+			primaryKey: true,
+			defaultValue: Sequelize.UUIDV4
+		},
+		'description': {
+			type: Sequelize.STRING,
+			allowNull: false,
+			unique: true
+		}
+	});
+
 	let User = db.defineTable('users', {
 		'id': {
 			type: Sequelize.UUID,
@@ -74,6 +88,28 @@ module.exports = function (db) {
 
 	User.hasMany(Token);
 	Token.belongsTo(User);
+	User.belongsToMany(Role, {
+		through: 'UserRole'
+	});
+	Role.belongsToMany(User, {
+		through: 'UserRole'
+	});
 
-	db.sync();
+	db.sequelize.sync().then(() => {
+		let seedRoles = [{
+			description: 'Superuser'
+		}, {
+			description: 'Admin'
+		}, {
+			description: 'Registered User'
+		}];
+
+		Role.bulkCreate(seedRoles, {
+			validate: true
+		}).then(() => {
+			console.log('roles created');
+		}).catch((err) => {
+			console.log('failed to create roles. Already seeded?');
+		});
+	});
 };
