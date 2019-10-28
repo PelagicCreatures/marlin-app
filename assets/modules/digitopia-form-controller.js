@@ -20,8 +20,8 @@ function formController(elem, options) {
 			self.pleaseWait(true);
 			let data = self.element.serializeObject();
 			data['_csrf'] = self.element.find('[name="_csrf"]').val();
-			if (appOptions.RECAPTCHA_PUBLIC) {
-				grecaptcha.execute(appOptions.RECAPTCHA_PUBLIC, {
+			if (publicOptions.RECAPTCHA_PUBLIC) {
+				grecaptcha.execute(publicOptions.RECAPTCHA_PUBLIC, {
 					action: 'social'
 				}).then(function (token) {
 					data['g-recaptcha-response'] = token;

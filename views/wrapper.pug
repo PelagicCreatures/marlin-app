@@ -64,16 +64,16 @@ html
       .mdc-snackbar__surface
         .mdc-snackbar__label
     
-    // expose app.locals.options to client side javascript gobal var 'appOptions'
-    script(nonce= nonce)!= "var appOptions = " + JSON.stringify(options) + ';'
+    // expose app.locals.publicOptions to client side javascript gobal var 'publicOptions'
+    script(nonce= nonce)!= "var publicOptions = " + JSON.stringify(publicOptions) + ';'
     
-    if options.STRIPE_PUBLIC
+    if publicOptions.STRIPE_PUBLIC
       // stripe for subscriptions
       script(src="https://js.stripe.com/v3/")
       
-    if options.RECAPTCHA_PUBLIC
+    if publicOptions.RECAPTCHA_PUBLIC
       // CAPTCHA for forms
-      script(src="https://www.google.com/recaptcha/api.js?render=" + options.RECAPTCHA_PUBLIC)
+      script(src="https://www.google.com/recaptcha/api.js?render=" + publicOptions.RECAPTCHA_PUBLIC)
     
     if env === 'production'
       script(src="/dist/js/userapp.min.js")

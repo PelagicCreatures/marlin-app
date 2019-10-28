@@ -8,99 +8,53 @@ const helmet = require('helmet');
 
 const app = express();
 
+// setup configuration from config file for environment
+let config = require('./config/' + app.get('env'))(app);
+
+// app.locals properties are exposed to pug templates
+app.locals.sitename = config.siteName;
+app.locals.publicOptions = config.publicOptions;
 app.locals.nonce = uuid.v4();
-
-app.use(helmet());
-
-const csp = require('helmet-csp');
-
-app.use(csp({
-  'directives': {
-    'defaultSrc': ['\'self\''],
-    'connect-src': ['\'self\''],
-    'scriptSrc': ['\'self\'', 'js.stripe.com', '\'unsafe-eval\'', function (req, res) {
-      return '\'nonce-' + app.locals.nonce + '\'';
-    }],
-    'fontSrc': ['\'self\'', 'fonts.gstatic.com'],
-    'styleSrc': ['\'self\'', 'fonts.googleapis.com', '\'unsafe-inline\''],
-    'frameSrc': ['\'self\'', 'js.stripe.com'],
-    'mediaSrc': ['\'self\''],
-    'imgSrc': ['\'self\'', 'data:'],
-    'sandbox': ['allow-forms', 'allow-scripts', 'allow-same-origin', 'allow-modals'],
-    'objectSrc': ['\'none\''],
-    'upgradeInsecureRequests': false
-  },
-  'loose': false,
-  'reportOnly': false,
-  'setAllHeaders': false,
-  'disableAndroid': false,
-  'browserSniff': false
-}));
-
-require('./config/' + app.get('env'))(app);
-
-app.locals.sitename = 'User App Boilerplate'
 app.locals.moment = require('moment');
 
-if (app.get('env') !== 'production') {
-  app.locals.pretty = true;
-}
-
-// options for client side javascript & pug templates
-// in templates exposed as 'options.xxxx',
-// in JS exposed as 'appOptions.xxxx'
-// WARNING: NO PRIVATE INFO should be in app.locals.options
-app.locals.options = {
-  PUBLIC_HOST: process.env.PUBLIC_HOST,
-  RECAPTCHA_PUBLIC: process.env.RECAPTCHA_PUBLIC,
-  STRIPE_PUBLIC: process.env.STRIPE_PUBLIC,
-  STRIPE_YEARLY: process.env.STRIPE_YEARLY,
-  STRIPE_MONTHLY: process.env.STRIPE_MONTHLY
-}
+// Content Security Profile for browser
+const csp = require('helmet-csp');
+app.use(helmet());
+app.use(csp(config.cspOptions));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+if (app.get('env') !== 'production') {
+  app.locals.pretty = true;
+}
+
+// http logs
 app.use(logger('dev'));
+
+// parse cookies in all routes
 app.use(cookieParser('SeCretDecdrrnG'));
+
+// deliver static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// setup DB (sequalize) & load models
 var dbHandler = require('./lib/db-sequelize');
-
-var dbOptions = {
-  host: process.env.DB_HOST ? process.env.DB_HOST : 'localhost',
-  username: process.env.DB_USER ? process.env.DB_USER : 'testuser',
-  password: process.env.DB_PASSWD ? process.env.DB_PASSWD : 'testpassword',
-  database: process.env.DB_DBNAME ? process.env.DB_DBNAME : 'testusers',
-  dialect: "mysql",
-  pool: {
-    max: 5,
-    min: 0,
-    idle: 10000
-  },
-  define: {
-    engine: "INNODB",
-    charset: "utf8",
-    collate: "utf8_general_ci",
-    freezeTableName: true
-  }
-};
-
-app.db = new dbHandler(dbOptions);
+app.db = new dbHandler(config.dbOptions);
 
 // set up and mount the user API
-let userOptions = {}
-const userAPI = require('./modules/antisocial-users/index')(userOptions, app, app.db);
+const userAPI = require('./modules/antisocial-users/index')(config.userOptions, app, app.db);
 
+// set up user event handlers
 require('./lib/user-events')(userAPI);
 
+// UI
 app.use('/', require('./routes/index')(userAPI));
 app.use('/', require('./routes/user-pages')(userAPI));
 
+// error response for bad _csrf in forms
 app.use(function (err, req, res, next) {
   if (err.code !== 'EBADCSRFTOKEN') return next(err)
-
-  // handle CSRF token errors here
   res.status(403).send({
     status: 'error',
     errors: ['invalid csrf']

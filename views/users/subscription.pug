@@ -94,9 +94,9 @@ block content
 		if canSubscribe
 			section.button-bar
 				| Subscribe: 
-				button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_YEARLY)
+				button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= publicOptions.STRIPE_PUBLIC data-host= publicOptions.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= publicOptions.STRIPE_YEARLY)
 					span.mdc-button-label Yearly $10
-				button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= options.STRIPE_PUBLIC data-host= options.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= options.STRIPE_MONTHLY)
+				button.mdc-button.mdc-button--raised(data-jsclass="stripeClientCheckout" data-stripe-pk= publicOptions.STRIPE_PUBLIC data-host= publicOptions.PUBLIC_HOST data-user-id= user.id data-email= user.email data-plan= publicOptions.STRIPE_MONTHLY)
 					span.mdc-button-label Monthly $1
 
 		#error-message
