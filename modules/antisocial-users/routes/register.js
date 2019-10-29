@@ -10,7 +10,7 @@ const csrfProtection = csrf({
 		signed: true,
 		httpOnly: true
 	},
-	ignoreMethods: process.env.testing ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
+	ignoreMethods: process.env.TESTING ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 const {
 	check, validationResult

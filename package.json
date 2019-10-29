@@ -8,7 +8,7 @@
     "production": "NODE_ENV=production node bin/www",
     "build": "webpack",
     "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose",
-    "test": "NODE_ENV=local DEBUG=antisocial-user* testing=true mocha tests/users.js"
+    "test": "NODE_ENV=local DEBUG=antisocial-user* TESTING=true mocha tests/users.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -69,6 +69,7 @@
     "postcss-loader": "^3.0.0",
     "sass-loader": "^8.0.0",
     "sequelize-cli": "^5.5.1",
+    "sqlite3": "^4.1.0",
     "superagent": "^5.1.0",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9",

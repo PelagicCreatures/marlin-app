@@ -1,56 +1,29 @@
 {
   "local": {
-    "username": "testuser",
-    "password": "testpassword",
-    "database": "testusers",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "pool": {
-      "max": 5,
-      "min": 0,
-      "idle": 10000
-    },
+    "dialect": "sqlite",
+    "storage": "working/database.sqlite",
     "define": {
-      "engine": "INNODB",
       "charset": "utf8",
-      "collate": "utf8_general_ci",
       "freezeTableName": true
-    }
+    },
+    "logging": false
   },
   "development": {
-    "username": "testuser",
-    "password": "testpassword",
-    "database": "testusers",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "pool": {
-      "max": 5,
-      "min": 0,
-      "idle": 10000
-    },
+    "dialect": "sqlite",
+    "storage": "working/database.sqlite",
     "define": {
-      "engine": "INNODB",
       "charset": "utf8",
-      "collate": "utf8_general_ci",
       "freezeTableName": true
-    }
+    },
+    "logging": false
   },
   "production": {
-    "username": "testuser",
-    "password": "testpassword",
-    "database": "testusers",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "pool": {
-      "max": 5,
-      "min": 0,
-      "idle": 10000
-    },
+    "dialect": "sqlite",
+    "storage": "working/database.sqlite",
     "define": {
-      "engine": "INNODB",
       "charset": "utf8",
-      "collate": "utf8_general_ci",
       "freezeTableName": true
-    }
+    },
+    "logging": false
   }
 }

@@ -1,8 +1,47 @@
 module.exports = function (app) {
 	console.log('env: local development');
 
+	// options for sequalize ORM database models
+	// use mysql if environment DB_DIALECT set to 'mysql', otherwise sqlite
+	let dbOptions = {};
+	if (process.env.DB_DIALECT === 'mysql') {
+		dbOptions = {
+			dialect: "mysql",
+			host: process.env.DB_HOST ? process.env.DB_HOST : 'localhost',
+			username: process.env.DB_USER ? process.env.DB_USER : 'testuser',
+			password: process.env.DB_PASSWD ? process.env.DB_PASSWD : 'testpassword',
+			database: process.env.DB_DBNAME ? process.env.DB_DBNAME : 'testusers',
+			pool: {
+				max: 5,
+				min: 0,
+				idle: 10000
+			},
+			define: {
+				engine: "INNODB",
+				charset: "utf8",
+				dialectOptions: {
+					collate: "utf8_general_ci"
+				},
+				freezeTableName: true
+			},
+			logging: false
+		}
+	}
+	else {
+		dbOptions = {
+			dialect: "sqlite",
+			storage: process.env.TESTING ? null : 'working/database.sqlite',
+			define: {
+				charset: "utf8",
+				freezeTableName: true
+			},
+			logging: false
+		}
+	}
+
 	let config = {
 		siteName: 'Boilerplate User Web App',
+
 		// options for client side javascript & pug templates
 		// in templates exposed as 'options.xxxx',
 		// in JS exposed as 'publicOptions.xxxx'
@@ -14,27 +53,13 @@ module.exports = function (app) {
 			STRIPE_YEARLY: process.env.STRIPE_YEARLY,
 			STRIPE_MONTHLY: process.env.STRIPE_MONTHLY
 		},
+
 		// override default options for antisocial user API (see modules/antisocial-users/index.js)
 		userOptions: {},
+
 		// options for sequalize ORM database models
-		dbOptions: {
-			host: process.env.DB_HOST ? process.env.DB_HOST : 'localhost',
-			username: process.env.DB_USER ? process.env.DB_USER : 'testuser',
-			password: process.env.DB_PASSWD ? process.env.DB_PASSWD : 'testpassword',
-			database: process.env.DB_DBNAME ? process.env.DB_DBNAME : 'testusers',
-			dialect: "mysql",
-			pool: {
-				max: 5,
-				min: 0,
-				idle: 10000
-			},
-			define: {
-				engine: "INNODB",
-				charset: "utf8",
-				collate: "utf8_general_ci",
-				freezeTableName: true
-			}
-		},
+		dbOptions: dbOptions,
+
 		// content security profile (helmet-csp module)
 		cspOptions: {
 			'directives': {
