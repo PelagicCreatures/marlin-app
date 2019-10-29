@@ -113,7 +113,9 @@ module.exports = (usersApp) => {
 					});
 				},
 				function (user, cb) {
-					createToken(user, {}, function (err, token) {
+					createToken(user, {
+						ip: ip
+					}, function (err, token) {
 						cb(err, user, token);
 					});
 				},

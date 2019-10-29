@@ -93,7 +93,7 @@ function ajaxButton(elem, options) {
 							if (message) {
 								message += ', ';
 							}
-							message += jqXHR.responseJSON.errors[i].msg;
+							message += jqXHR.responseJSON.errors[i];
 						}
 					}
 					else {

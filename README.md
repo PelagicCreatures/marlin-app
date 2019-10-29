@@ -53,6 +53,14 @@ got to http://localhost:3000 in your browser
 As you make changes in assets/ css and js grunt and webpach will recompile client side bundles.
 
 ### Environment Variables
+NODE_ENV:
+TESTING:
+DB_DIALECT:
+DB_HOST:
+DB_USER:
+DB_PASSWD:
+DB_DBNAME:
+PUBLIC_HOST:
 RECAPTCHA_PUBLIC:
 RECAPTCHA_SECRET:
 STRIPE_PUBLIC:

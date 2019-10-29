@@ -24,20 +24,29 @@ module.exports = (usersApp) => {
 
 		db.deleteInstance('Token', req.antisocialToken.id, function (err) {
 
+			if (err) {
+				return res.status(500).json({
+					status: 'error',
+					errors: [err.message]
+				});
+			}
+
 			if (process.env.STRIPE_SECRET) {
 				if (currentUser.stripeStatus === 'ok') {
 					res.clearCookie('subscriber', {
-						'path': '/'
+						path: '/'
 					});
 				}
 			}
 
 			res.clearCookie('access-token', {
-				'path': '/',
-				'signed': true
+				path: '/',
+				signed: true
 			}).send({
-				'status': 'ok',
-				'didLogout': true
+				status: 'ok',
+				flashLevel: 'info',
+				flashMessage: 'Bye.',
+				didLogout: true
 			});
 		});
 	});
