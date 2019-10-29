@@ -153,7 +153,9 @@ module.exports = function mount(userAPI) {
 		}
 
 		req.antisocialUser.getTokens({
-			type: 'access'
+			where: {
+				type: 'access'
+			}
 		}).then((tokens) => {
 			res.render('users/tokens', {
 				user: req.antisocialUser,
