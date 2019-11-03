@@ -40,7 +40,7 @@ module.exports = function (app) {
 				charset: "utf8",
 				freezeTableName: true
 			},
-			//logging: false
+			logging: false
 		}
 	}
 
