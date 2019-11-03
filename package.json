@@ -8,7 +8,7 @@
     "production": "NODE_ENV=production node bin/www",
     "build": "webpack",
     "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose",
-    "test": "NODE_ENV=local DEBUG=antisocial-user* TESTING=true mocha tests/users.js"
+    "test": "NODE_ENV=local DEBUG=antisocial-* TESTING=true mocha tests/users.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -27,6 +27,7 @@
     "moment": "^2.24.0",
     "morgan": "~1.9.0",
     "mysql2": "^1.7.0",
+    "node-cron": "^2.0.3",
     "pug": "2.0.0-beta11",
     "sequelize": "^5.21.1",
     "stripe": "^7.10.0",

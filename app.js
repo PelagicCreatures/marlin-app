@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const uuid = require('uuid');
 const helmet = require('helmet');
+const debug = require('debug')('antisocial-user');
 
 const app = express();
 
@@ -40,7 +41,7 @@ app.use(cookieParser('SeCretDecdrrnG'));
 // deliver static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// setup DB (sequalize) & load models
+// setup DB (sequelize) & load models
 var dbHandler = require('./lib/db-sequelize');
 app.db = new dbHandler(config.dbOptions);
 
@@ -78,5 +79,14 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// call asynchronous things that need to be stable before we can handle requests
+app.start = function (done) {
+  debug('starting app');
+  app.db.sync(() => {
+    debug('db sync done');
+    done();
+  });
+}
 
 module.exports = app;

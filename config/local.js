@@ -1,5 +1,7 @@
+const debug = require('debug')('antisocial-db');
+
 module.exports = function (app) {
-	console.log('env: local development');
+	debug('env: local development');
 
 	// options for sequalize ORM database models
 	// use mysql if environment DB_DIALECT set to 'mysql', otherwise sqlite
@@ -28,6 +30,9 @@ module.exports = function (app) {
 		}
 	}
 	else {
+		if (process.env.TESTING) {
+			debug('env.TESTING set, using sqlite memory db');
+		}
 		dbOptions = {
 			dialect: "sqlite",
 			storage: process.env.TESTING ? null : 'working/database.sqlite',
@@ -35,7 +40,7 @@ module.exports = function (app) {
 				charset: "utf8",
 				freezeTableName: true
 			},
-			logging: false
+			//logging: false
 		}
 	}
 

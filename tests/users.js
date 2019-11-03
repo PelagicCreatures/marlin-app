@@ -23,9 +23,11 @@ describe('users', function () {
 	before(function (done) {
 		var app = require('../app');
 		var http = require('http');
-		server = http.createServer(app);
-		var listener = server.listen(3000);
-		done();
+		app.start(() => {
+			server = http.createServer(app);
+			var listener = server.listen(3000);
+			done();
+		})
 	});
 
 	after(function (done) {

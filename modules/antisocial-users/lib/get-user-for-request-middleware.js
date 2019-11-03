@@ -1,5 +1,9 @@
 const debug = require('debug')('antisocial-user');
 const VError = require('verror').VError;
+var cron = require('node-cron');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 
 function getUserForRequestMiddleware(userAPI) {
 
@@ -104,17 +108,14 @@ function getUserForRequestMiddleware(userAPI) {
 
 // is the token valid?
 function validateToken(db, token, cb) {
-	var now = Date.now();
-	var accessed = new Date(token.lastaccess).getTime();
-	var elapsedSeconds = (now - accessed) / 1000;
-	if (elapsedSeconds < token.ttl) {
-		debug('validateToken valid elapsed: %s ttl: %s', elapsedSeconds, token.ttl);
+	let nowInSeconds = Math.round(new Date().getTime() / 1000);
+	if (token.expires > nowInSeconds) {
 		touchToken(db, token, function (err) {
 			cb(err);
 		});
 	}
 	else {
-		debug('validateToken expired elapsed: %s ttl: %s', elapsedSeconds, token.ttl);
+		debug('validateToken expired: %s %s', nowInSeconds, token.expires);
 		db.deleteInstance('Token', token.id, function (err) {
 			if (err) {
 				return cb(new VError(err, 'token is expired'));
@@ -137,8 +138,12 @@ function touchToken(db, token, cb) {
 
 	debug('touchToken elapsed: %s', elapsedSeconds);
 
+	let nowInSeconds = Math.round(new Date().getTime() / 1000);
+	let expires = nowInSeconds + token.ttl;
+
 	db.updateInstance('Token', token.id, {
-		'lastaccess': new Date()
+		'lastaccess': new Date(),
+		'expires': expires
 	}, function (err, updated) {
 		if (err) {
 			cb(new VError(err, 'touchToken failed'));
@@ -148,5 +153,29 @@ function touchToken(db, token, cb) {
 	});
 }
 
+function expireTokens(usersAPI) {
+	debug('starting token trash collection cron job');
+
+	cron.schedule('*/1 * * * *', function () {
+		let nowInSeconds = Math.round(new Date().getTime() / 1000);
+		let query = {
+			where: {
+				expires: {
+					[Op.lt]: nowInSeconds
+				}
+			}
+		};
+		debug('expireTokens query %j', query);
+		usersAPI.db.tableDefs['Token'].destroy(query)
+			.then((result) => {
+				debug('expireTokens %j', result);
+			})
+			.catch((err) => {
+				debug('expireTokens error %j', err);
+			});
+	});
+}
+
 module.exports.getUserForRequestMiddleware = getUserForRequestMiddleware;
 module.exports.validateToken = validateToken;
+module.exports.expireTokens = expireTokens;

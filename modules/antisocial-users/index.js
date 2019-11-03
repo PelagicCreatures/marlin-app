@@ -1,7 +1,12 @@
 const debug = require('debug')('antisocial-user');
 
+const {
+	expireTokens
+} = require('./lib/get-user-for-request-middleware');
+
+
 const defaults = {
-	DEFAULT_TTL: 1209600, // 2 weeks in seconds
+	DEFAULT_TTL: 3600 * 24 * 14, // 2 weeks in seconds
 	DEFAULT_SALT_ROUNDS: 10,
 	DEFAULT_TOKEN_LEN: 64,
 	PASSWORD_RESET_TTL: 3600 * 24 * 1, // 1 day
@@ -49,6 +54,8 @@ module.exports = (options, app, db) => {
 		require('./routes/subscription-cancel.js')(usersApp);
 		require('./routes/stripe-webhook.js')(usersApp);
 	}
+
+	expireTokens(usersApp);
 
 	debug('mounting users API on ' + usersApp.options.MOUNTPOINT);
 

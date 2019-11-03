@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.INTEGER,
       allowNull: false
     },
+    expires: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
     lastaccess: {
       type: Sequelize.DATE
     },
