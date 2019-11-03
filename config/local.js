@@ -52,6 +52,7 @@ module.exports = function (app) {
 		// in JS exposed as 'publicOptions.xxxx'
 		// WARNING: NO PRIVATE INFO should be in app.locals.publicOptions
 		publicOptions: {
+			COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
 			PUBLIC_HOST: process.env.PUBLIC_HOST,
 			RECAPTCHA_PUBLIC: process.env.RECAPTCHA_PUBLIC,
 			STRIPE_PUBLIC: process.env.STRIPE_PUBLIC,

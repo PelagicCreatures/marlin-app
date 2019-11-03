@@ -28,6 +28,7 @@ var boot = () => {
 			'enabled': true,
 			'disableScrollAnimation': true
 		},
+		cookieDomain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : null
 	};
 
 	$('body').digitopiaController(options);
@@ -77,7 +78,7 @@ var boot = () => {
 
 const cookieOptions = {
 	path: '/',
-	domain: document.location.hostname,
+	domain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : document.location.hostname,
 	expires: 365
 }
 

@@ -12,34 +12,43 @@ This repository is a boilerplate app that includes many common functions of a re
 	* User API (register, login, logout, email validation, password reset etc)
 	* ReCaptcha v3 for registration form
 	* Stripe for subscription plans
-	* css compiles from scss and/or stylus
+	* CSS compiles from SCSS and/or stylus
 	* client side javascript supports importing and transpiling EC6 modules using webpack and babel
+	* CSRF
+	* Content Security Protocol
 
 ### Project Directory Structure
-	* assets - source for client side js and css
-		* js - standard ES5 js modules
-		* modules - ES6 modules
-		* scss - scss source
-		* stylus - stylus source
-		app.js - webpack bundle app
-	* bin - express server
-	* modules - local node modules
-		* antisocial-users  - user API
-	* public - public files
-		* dist - compiled JS and CSS (managed by grunt)
-		* images
-	* routes - page routes
+	* assets/ - source for client side js and css
+		* js/ - standard ES5 js modules
+		* modules/ - ES6 modules
+		* scss/ - scss source
+		* stylus/ - stylus source
+		* app.js - webpack bundle app
+	* bin/ - express server
+	* config/
+	* lib/
+	* migrations/
+	* models/
+	* modules/ - local node modules
+		* antisocial-users/  - user API
+		* digitopia/ - client side controllers
+	* public/ - public files
+		* dist/ - compiled JS and CSS (managed by grunt)
+		* images/
+	* routes/ - page routes
 		* index.js - home page
 		* user-pages.js - user reg forms etc.
-	* tests - mocha testing suite
-	* views - pug templates for pages
-		* components - reusable page components
-		* shared - client/server shared templates
-		* users - user pages
+	* seeders/
+	* tests/ - mocha testing suite
+	* views/ - pug templates for pages
+		* components/ - reusable page components
+		* shared/ - client/server shared templates
+		* users/ - user pages
 		wrapper.pug - html wrapper
-	app.js - express app
-	gruntfile.js - grunt automation
-	webpack.config.js - webpack automation for ES6 and SCSS (material.io etc)
+	* working/
+	* app.js - express app
+	* gruntfile.js - grunt automation
+	* webpack.config.js - webpack automation for ES6 and SCSS (material.io etc)
 
 ## Development
 install mysql and create tables (see below)
@@ -60,6 +69,7 @@ DB_HOST:
 DB_USER:
 DB_PASSWD:
 DB_DBNAME:
+COOKIE_DOMAIN:
 PUBLIC_HOST:
 RECAPTCHA_PUBLIC:
 RECAPTCHA_SECRET:

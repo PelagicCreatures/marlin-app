@@ -41,7 +41,7 @@ module.exports = (usersApp) => {
 
 		function (req, res) {
 
-			debug('/login', req.body);
+			debug('/login');
 
 			var errors = validationResult(req);
 			if (!errors.isEmpty()) {
