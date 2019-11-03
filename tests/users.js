@@ -4,6 +4,8 @@ var expect = require('expect.js');
 var uuid = require('uuid');
 var async = require('async');
 
+const validateToken = require('../modules/antisocial-users/lib/get-user-for-request-middleware').validateToken;
+
 // TODO negative coverage for login, reg, validate etc.
 
 describe('users', function () {
@@ -37,6 +39,7 @@ describe('users', function () {
 		}, 1000);
 	});
 
+
 	it('should not be able to post empty register payload', function (done) {
 		client1.put('http://127.0.0.1:3000/api/users/register')
 			.send({
@@ -47,7 +50,7 @@ describe('users', function () {
 			.set('Accept', 'application/json')
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: %j %j', err, res.body ? res.body : '');
+					//console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(res.status).to.equal(422);
 				expect(res.body.errors).to.be.an('array');
@@ -65,7 +68,7 @@ describe('users', function () {
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: %j %j', err, res.body ? res.body : '');
+					//console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(res.status).to.equal(422);
 				expect(res.body.errors).to.be.an('array');
@@ -207,7 +210,7 @@ describe('users', function () {
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: %j %j', err, res.body ? res.body : '');
+					//console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(res.status).to.equal(401);
 				done();
@@ -358,6 +361,35 @@ describe('users', function () {
 				});
 		});
 	});
+
+	it('should be able to create a token that expires in 1 seconds', function (done) {
+		let ttl = 1;
+		app.db.newInstance('Token', {
+			token: uuid.v4(),
+			lastaccess: new Date(),
+			ttl: ttl,
+			expires: Math.round(new Date().getTime() / 1000) + ttl,
+			type: 'access'
+		}, function (err, token) {
+			if (err) {
+				return done(new Error('error creating token'));
+			}
+			validateToken(app.db, token, function (err) {
+				if (err) {
+					return done('error validating token', err);
+				}
+				setTimeout(() => {
+					validateToken(app.db, token, function (err) {
+						if (!err) {
+							return done(new Error('token ttl timeout validation failed'));
+						}
+						done();
+					});
+				}, (ttl + 1) * 1000);
+			});
+		});
+	});
+
 });
 
 function getCookie(headers, id) {

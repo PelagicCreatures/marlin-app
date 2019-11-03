@@ -2,7 +2,6 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 const uuid = require('uuid');
 const helmet = require('helmet');
 const debug = require('debug')('antisocial-user');
@@ -33,7 +32,10 @@ if (app.get('env') !== 'production') {
 }
 
 // http logs
-app.use(logger('dev'));
+if (config.LOGGER_LEVEL) {
+  const logger = require('morgan');
+  app.use(logger(config.LOGGER_LEVEL));
+}
 
 // parse cookies in all routes
 app.use(cookieParser('SeCretDecdrrnG'));

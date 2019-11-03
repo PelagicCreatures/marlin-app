@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "test": "NODE_ENV=local TESTING=true mocha tests/users.js",
     "debug": "NODE_ENV=local DEBUG=antisocial-* node --inspect bin/www",
     "development": "NODE_ENV=development node bin/www",
     "production": "NODE_ENV=production node bin/www",
     "build": "webpack",
-    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose",
-    "test": "NODE_ENV=local DEBUG=antisocial-* TESTING=true mocha tests/users.js"
+    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

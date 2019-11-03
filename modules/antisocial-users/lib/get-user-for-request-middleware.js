@@ -156,7 +156,7 @@ function touchToken(db, token, cb) {
 function expireTokens(usersAPI) {
 	debug('starting token trash collection cron job');
 
-	cron.schedule('*/1 * * * *', function () {
+	cron.schedule('0 */2 * * *', function () {
 		let nowInSeconds = Math.round(new Date().getTime() / 1000);
 		let query = {
 			where: {
