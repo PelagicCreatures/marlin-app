@@ -45,7 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // setup DB (sequelize) & load models
 var dbHandler = require('./lib/db-sequelize');
-app.db = new dbHandler(config.dbOptions);
+app.db = new dbHandler(app, config.dbOptions);
 
 // set up and mount the user API
 const userAPI = require('./modules/antisocial-users/index')(config.userOptions, app, app.db);

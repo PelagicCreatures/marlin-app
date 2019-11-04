@@ -26,7 +26,11 @@ module.exports = function (app) {
 				},
 				freezeTableName: true
 			},
-			logging: false
+			logging: false,
+			ADMIN: {
+				MOUNTPOINT: '/admin'
+			}
+
 		}
 	}
 	else {
@@ -40,7 +44,10 @@ module.exports = function (app) {
 				charset: "utf8",
 				freezeTableName: true
 			},
-			logging: false
+			logging: false,
+			ADMIN: {
+				MOUNTPOINT: '/admin'
+			}
 		}
 	}
 

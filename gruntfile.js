@@ -3,8 +3,7 @@ module.exports = function (grunt) {
 	var jsFiles = [
 		'working/assets/*.js',
 		'working/templates/*.js',
-		'assets/js/*.js',
-		//'modules/digitopia/dist/js/digitopia.js',
+		'assets/js/*.js'
 	];
 
 	var cssFiles = [
@@ -17,7 +16,7 @@ module.exports = function (grunt) {
 		'assets/stylus/*.styl'
 	];
 
-	var watchfiles = ['views/shared/*.pug']
+	var watchfiles = ['views/shared/*.pug', 'views/admin/*.pug']
 
 	var allFiles = [];
 	allFiles = allFiles.concat(watchfiles, jsFiles, cssFiles, stylusFiles);
