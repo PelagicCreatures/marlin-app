@@ -23,6 +23,8 @@ import formValidator from './modules/digitopia-form-validator.js'
 import stripeClientCheckout from './modules/digitopia-stripe-checkout.js'
 import ajaxButton from './modules/digitopia-ajax-button.js'
 import flexTable from './modules/digitopia-flex-table.js'
+import paginationController from './modules/digitopia-pagination-controller.js'
+import adminController from './modules/digitopia-admin-controller.js'
 
 export {
 	MDC,

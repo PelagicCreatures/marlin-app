@@ -1,0 +1,33 @@
+extends ../wrapper
+
+block content
+	.admin-form-container
+		.admin-form.clear-fix.mdc-elevation--z1
+			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id)
+				.page-header
+					h2
+						a(href= mountpoint + '/' + admin.name)
+							i.material-icons arrow_back_ios
+						= admin.name + ' table'
+						.pull-right
+							button.mdc-button.add-button
+								i.material-icons add_circle
+				.page-content
+					table
+						tr
+							td
+								= 'Row: '
+								em= row.id
+							td
+								.button-bar.pull-right
+									button.mdc-button.edit-button
+										i.material-icons edit
+									button.mdc-button.delete-button
+										i.material-icons delete_forever
+								
+
+						for property in admin.options.viewColumns
+							tr
+								td= property
+								td= row[property]
+						

@@ -142,7 +142,6 @@ h2
 	label
 		text-transform: uppercase
 
-
 // show/hide content bassed on login/subscriber status
 
 .have-account
@@ -271,3 +270,39 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 
 .not-screen-xsmall .flextable-row-header
 	text-align: center
+
+.admin
+	table
+		width: 100%
+		border: thin solid #dddddd
+		border-collapse: separate
+		*border-collapse: collapse
+		border-radius: 4px
+		border-left:0
+		border-spacing: 0
+		th,td
+			padding: .5em
+			border-left:thin solid #dddddd
+		th
+			border-bottom:thin solid #dddddd
+		tr:not(:last-child)
+			td
+				border-bottom:thin solid #dddddd
+
+.admin-form-container
+	max-width: 900px
+	.admin-form
+		background-color:white
+		border-radius: 4px
+		padding: 1em
+		.mdc-text-field
+			height: 56px
+			width: 100%
+		.form-group
+			position:relative
+			margin-top: 1em
+	.admin-form-footer
+		padding-top: 1em
+		text-transform: uppercase
+	label
+		text-transform: uppercase

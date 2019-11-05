@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const admin = require('../lib/admin');
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -11,23 +10,32 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true
 		},
 		textcolumn: {
-			type: Sequelize.STRING,
+			type: Sequelize.STRING(80),
 			allowNull: false,
 			unique: true,
 			isAlpha: true,
 			ADMIN: {
 				label: 'my label',
 				maxLength: 80,
-				inputClass: admin.types.text
+				inputType: 'text'
 			}
 		},
 		textareacolumn: {
-			type: Sequelize.STRING,
-			allowNull: false,
-			unique: true
+			type: Sequelize.TEXT,
+			allowNull: true,
+			unique: true,
+			ADMIN: {
+				maxLength: 2048,
+			}
 		}
 	}, {
-		modelName: 'admintest'
+		modelName: 'admintest',
+		ADMIN: {
+			listColumns: ['textcolumn'],
+			searchColumns: ['textcolumn'],
+			viewColumns: ['textcolumn', 'textareacolumn'],
+			editColumns: ['textcolumn', 'textareacolumn']
+		}
 	});
 
 	return AdminTest;

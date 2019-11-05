@@ -27,6 +27,9 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.STRING,
       unique: true,
       allowNull: false,
+      ADMIN: {
+        hidden: true
+      }
     },
     validated: {
       type: Sequelize.INTEGER
@@ -46,7 +49,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     }
   }, {
-    modelName: 'user'
+    modelName: 'user',
+    ADMIN: {
+      listColumns: ['email', 'username', 'validated'],
+      searchColumns: ['email'],
+    }
   });
 
   User.associate = function (models) {
