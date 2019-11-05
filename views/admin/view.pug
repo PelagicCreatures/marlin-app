@@ -30,4 +30,13 @@ block content
 							tr
 								td= property
 								td= row[property]
+					for assoc in admin.associations
+						p= assoc.as
+						if Object.prototype.toString.call(row[assoc.as]) === '[object Array]'
+							for rel in row[assoc.as]
+								a(href= mountpoint + '/' + assoc.target + '/' + rel.id)
+									li= JSON.stringify(rel)
+						else if row[assoc.as]
+							a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
+								li= JSON.stringify(row[assoc.as])
 						
