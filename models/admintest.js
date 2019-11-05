@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const admin = require('../lib/admin');
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -12,7 +13,13 @@ module.exports = (sequelize, DataTypes) => {
 		textcolumn: {
 			type: Sequelize.STRING,
 			allowNull: false,
-			unique: true
+			unique: true,
+			isAlpha: true,
+			ADMIN: {
+				label: 'my label',
+				maxLength: 80,
+				inputClass: admin.types.text
+			}
 		},
 		textareacolumn: {
 			type: Sequelize.STRING,
