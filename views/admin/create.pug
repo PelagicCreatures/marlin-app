@@ -4,28 +4,23 @@ block content
 
 	.admin-form-container
 		.admin-form.clear-fix.mdc-elevation--z1
-			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= mountpoint + '/' + admin.name)
+			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-redirect= mountpoint + '/' + admin.name)
 			
 				.page-header
 					h2
-						a(href= mountpoint + '/' + admin.name + '/' + row.id)
+						a(href= mountpoint + '/' + admin.name)
 							i.material-icons arrow_back_ios
-						= admin.name + ' table edit row ' + row.id
-						
-						.pull-right
-							button.mdc-button.delete-button
-								i.material-icons delete_forever
+						= admin.name + ' table create row'
 					
 				.page-content
 					form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
-
 						section
 							for property in admin.options.editColumns
 								!= admin.getColumn(property).getForm(row)
 
 						section.form-group.pull-right.button-bar
-							a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel
+							a.mdc-button(href= mountpoint + '/' + admin.name) Cancel
 							button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
 								span.mdc-button__label Save
 							
-						.ajax-errors
+					.ajax-errors

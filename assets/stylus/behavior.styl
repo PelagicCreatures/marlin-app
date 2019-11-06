@@ -101,6 +101,9 @@ section
 	overflow: hidden
 	text-overflow: ellipsis
 
+.full-width
+	width:100%
+
 // icon/text alignment
 h2
 	i
@@ -205,6 +208,15 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		&.touched
 			.validation-help
 				opacity:1
+
+	.mdc-select
+		.mdc-select__dropdown-icon
+			right: 48px
+		.input-ok-indicator
+			position: absolute
+			right: 12px
+			z-index: 1000
+			top: 12px
 
 // splash screen to cover js boot
 #splash

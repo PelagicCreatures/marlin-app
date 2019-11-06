@@ -27,15 +27,23 @@ module.exports = (sequelize, DataTypes) => {
 			ADMIN: {
 				maxLength: 2048,
 			}
+		},
+		lookupId: {
+			type: Sequelize.INTEGER,
+			references: {
+				model: "AdminTestLookup",
+				key: "id"
+			},
+			ADMIN: {
+				selectRelated: {
+					order: [
+						['description', 'ASC']
+					]
+				}
+			}
 		}
 	}, {
-		modelName: 'admintest',
-		ADMIN: {
-			listColumns: ['textcolumn'],
-			searchColumns: ['textcolumn'],
-			viewColumns: ['textcolumn', 'textareacolumn'],
-			editColumns: ['textcolumn', 'textareacolumn']
-		}
+		modelName: 'admintest'
 	});
 
 	return AdminTest;

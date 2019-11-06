@@ -204,6 +204,13 @@ var instantiateMaterialDesignElements = (element) => {
 		});
 	}
 
+	let selects = document.querySelectorAll('.mdc-select');
+	if (selects && selects.length) {
+		selects.forEach((element) => {
+			App.MDC.MDCSelect.attachTo(element);
+		});
+	}
+
 	let wantRipple = document.querySelectorAll('.mdc-fab,.mdc-button');
 	if (wantRipple && wantRipple.length) {
 		wantRipple.forEach((element) => {
