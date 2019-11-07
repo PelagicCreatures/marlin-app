@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     }
   }, {
-    modelName: 'role'
+    modelName: 'role',
+    ADMIN: {
+      listColumns: ['description']
+    }
   });
 
   Role.associate = function (models) {

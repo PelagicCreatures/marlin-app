@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultColumn: 'email',
       listColumns: ['email', 'username', 'validated'],
       searchColumns: ['email'],
+      isParentOf: ['UserRole']
     }
   });
 

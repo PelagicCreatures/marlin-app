@@ -1,13 +1,17 @@
 extends ../wrapper
 
 block content
+	- let back = mountpoint + '/' + admin.name;
+	if admin.options.parent
+		- back = mountpoint + '/' + admin.options.parent.table + '/' + row[admin.options.parent.fk]
 
 	.admin-form-container
 		.admin-form.clear-fix.mdc-elevation--z1
-			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= mountpoint + '/' + admin.name)
+			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
 			
 				.page-header
 					h2
+						
 						a(href= mountpoint + '/' + admin.name + '/' + row.id)
 							i.material-icons arrow_back_ios
 						= admin.name + ' table edit row ' + row.id
@@ -15,6 +19,8 @@ block content
 						.pull-right
 							button.mdc-button.delete-button
 								i.material-icons delete_forever
+					
+					//pre= JSON.stringify(admin.getOptions(),"",2)
 					
 				.page-content
 					form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")

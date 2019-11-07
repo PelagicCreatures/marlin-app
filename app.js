@@ -47,6 +47,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 var dbHandler = require('./lib/db-sequelize');
 app.db = new dbHandler(app, config.dbOptions);
 
+if (config.dbOptions.ADMIN) {
+  const admin = require("./lib/admin");
+  admin.mount(app, app.db, config.dbOptions.ADMIN);
+}
+
 // set up and mount the user API
 const userAPI = require('./modules/antisocial-users/index')(config.userOptions, app, app.db);
 
@@ -86,6 +91,7 @@ app.use(function (err, req, res, next) {
 app.start = function (done) {
   debug('starting app');
   app.db.sync(() => {
+    console.log('%j', app.db.sequelize);
     debug('db sync done');
     done();
   });

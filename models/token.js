@@ -36,7 +36,11 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'token',
     ADMIN: {
       defaultColumn: 'lastaccess',
-      listColumns: ['type', 'createdAt', 'lastaccess']
+      listColumns: ['type', 'ip', 'lastaccess'],
+      parent: {
+        table: 'User',
+        fk: 'userId'
+      }
     }
   });
 

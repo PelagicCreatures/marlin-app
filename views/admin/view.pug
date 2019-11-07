@@ -1,17 +1,24 @@
 extends ../wrapper
 
 block content
+	- let back = mountpoint + '/' + admin.name;
+	if admin.options.parent
+		- back = mountpoint + '/' + admin.options.parent.table + '/' + row[admin.options.parent.fk]
+
 	.admin-form-container
 		.admin-form.clear-fix.mdc-elevation--z1
-			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= mountpoint + '/' + admin.name)
+			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
 				.page-header
 					h2
-						a(href= mountpoint + '/' + admin.name)
+						a(href= back)
 							i.material-icons arrow_back_ios
 						= admin.name + ' table'
 						.pull-right
 							button.mdc-button.add-button
 								i.material-icons add_circle
+					
+					//pre= JSON.stringify(admin.options,"",2)
+
 				.page-content
 					table
 						tr
@@ -30,9 +37,9 @@ block content
 								tr
 									td= assoc.as
 									td
-										a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
-											//=JSON.stringify(adminTables[assoc.target].options)
-											= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
+										if row[assoc.as]
+											a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
+												= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
 											
 						for property in admin.options.viewColumns
 							tr
@@ -41,9 +48,9 @@ block content
 								
 					for assoc in admin.associations
 						if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
-							p= JSON.stringify(assoc)
+							// p= JSON.stringify(assoc)
 							p
-								button.mdc-button.add-button(data-target= assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
+								button.mdc-button.add-button(data-target= assoc.through ? assoc.through : assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
 									i.material-icons add_circle
 								
 								= assoc.as
