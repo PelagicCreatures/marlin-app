@@ -51,6 +51,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     modelName: 'user',
     ADMIN: {
+      defaultColumn: 'email',
       listColumns: ['email', 'username', 'validated'],
       searchColumns: ['email'],
     }

@@ -25,18 +25,32 @@ block content
 									button.mdc-button.delete-button
 										i.material-icons delete_forever
 								
-
+						for assoc in admin.associations
+							if assoc.relationship === 'BelongsTo'
+								tr
+									td= assoc.as
+									td
+										a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
+											//=JSON.stringify(adminTables[assoc.target].options)
+											= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
+											
 						for property in admin.options.viewColumns
 							tr
 								td= property
 								td= row[property]
+								
 					for assoc in admin.associations
-						p= assoc.as
-						if Object.prototype.toString.call(row[assoc.as]) === '[object Array]'
-							for rel in row[assoc.as]
-								a(href= mountpoint + '/' + assoc.target + '/' + rel.id)
-									li= JSON.stringify(rel)
-						else if row[assoc.as]
-							a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
-								li= JSON.stringify(row[assoc.as])
+						if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
+							p= JSON.stringify(assoc)
+							p
+								button.mdc-button.add-button(data-target= assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
+									i.material-icons add_circle
+								
+								= assoc.as
+								table
+									for rel in row[assoc.as]
+										tr
+											for property in adminTables[assoc.target].options.listColumns
+												td
+													a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[property]
 						

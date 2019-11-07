@@ -14,6 +14,8 @@ block content
 					
 				.page-content
 					form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
+						if fk
+							input(type="hidden" name= admin.name + '['+fk+']' value= belongsTo)
 						section
 							for property in admin.options.editColumns
 								!= admin.getColumn(property).getForm(row)

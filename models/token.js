@@ -33,7 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.STRING
     }
   }, {
-    modelName: 'token'
+    modelName: 'token',
+    ADMIN: {
+      defaultColumn: 'lastaccess',
+      listColumns: ['type', 'createdAt', 'lastaccess']
+    }
   });
 
   Token.associate = function (models) {

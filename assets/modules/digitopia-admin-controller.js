@@ -16,7 +16,17 @@ function adminController(elem, options) {
 	this.start = function () {
 		this.element.on('click', '.add-button', function (e) {
 			e.preventDefault();
-			loadPage(self.mountpoint + '/' + self.model + '/create')
+			let target = $(this).data('target');
+			if (target) {
+				let belongsTo = $(this).data('belongs-to');
+				let fk = $(this).data('fk');
+
+				loadPage(self.mountpoint + '/' + target + '/create?fk=' + fk + '&belongs-to=' + belongsTo)
+
+			}
+			else {
+				loadPage(self.mountpoint + '/' + self.model + '/create')
+			}
 		});
 
 		this.element.on('click', '.edit-button', function (e) {
