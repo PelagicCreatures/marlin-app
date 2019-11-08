@@ -49,7 +49,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     }
   }, {
-    modelName: 'user',
     ADMIN: {
       defaultColumn: 'email',
       listColumns: ['email', 'username', 'validated'],
@@ -57,6 +56,15 @@ module.exports = (sequelize, DataTypes) => {
       isParentOf: ['UserRole']
     }
   });
+
+  const UserRole = sequelize.define('UserRole', {
+    id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    }
+  }, {});
 
   User.associate = function (models) {
     User.hasMany(models.Token, {

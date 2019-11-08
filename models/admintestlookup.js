@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		modelName: 'admintestlookup',
+		ADMIN: {
+			defaultColumn: 'description'
+		}
 	});
 
 	AdminTestLookup.associate = function (models) {
