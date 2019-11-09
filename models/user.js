@@ -52,8 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     ADMIN: {
       defaultColumn: 'email',
       listColumns: ['email', 'username', 'validated'],
-      searchColumns: ['email'],
-      isParentOf: ['UserRole']
+      searchColumns: ['email']
     }
   });
 
@@ -63,8 +62,24 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
+    },
+    userId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+      allowNull: false,
+      ADMIN: {
+        hidden: true
+      }
     }
-  }, {});
+  }, {
+    timestamps: false,
+    ADMIN: {
+      parent: {
+        table: 'User',
+        fk: 'userId'
+      }
+    }
+  });
 
   User.associate = function (models) {
     User.hasMany(models.Token, {

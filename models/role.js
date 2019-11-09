@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     }
   }, {
-    modelName: 'role',
     ADMIN: {
+      defaultColumn: 'description',
       listColumns: ['description']
     }
   });

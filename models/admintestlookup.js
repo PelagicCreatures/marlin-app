@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false
 		}
 	}, {
-		modelName: 'admintestlookup',
+		timestamps: true,
 		ADMIN: {
 			defaultColumn: 'description'
 		}

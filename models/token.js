@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     token: {
       type: Sequelize.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      hidden: true
     },
     ttl: {
       type: Sequelize.INTEGER,
@@ -33,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.STRING
     }
   }, {
-    modelName: 'token',
     ADMIN: {
       defaultColumn: 'lastaccess',
       listColumns: ['type', 'ip', 'lastaccess'],

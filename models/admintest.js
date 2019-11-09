@@ -42,9 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		}
-	}, {
-		modelName: 'admintest'
-	});
+	}, {});
 
 	return AdminTest;
 };
