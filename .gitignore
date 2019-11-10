@@ -1,5 +1,6 @@
 public/dist
 public/digitopia
+public/uploads
 working
 node_modules
 *.env
