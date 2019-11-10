@@ -88,8 +88,8 @@ function adminController(elem, options) {
 					loadPage(redir);
 				}
 				else {
+					console.log(data);
 					self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>');
-					self.pleaseWait(false);
 				}
 			})
 	}

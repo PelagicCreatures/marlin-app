@@ -91,7 +91,6 @@ app.use(function (err, req, res, next) {
 app.start = function (done) {
   debug('starting app');
   app.db.sync(() => {
-    console.log('%j', app.db.sequelize);
     debug('db sync done');
     done();
   });
