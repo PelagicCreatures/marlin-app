@@ -1,4 +1,5 @@
 const debug = require('debug')('antisocial-db');
+const path = require('path');
 
 module.exports = function (app) {
 	debug('env: local development');
@@ -28,9 +29,9 @@ module.exports = function (app) {
 			},
 			logging: false,
 			ADMIN: {
-				MOUNTPOINT: '/admin'
+				MOUNTPOINT: '/admin',
+				UPLOAD_PATH: '/uploads'
 			}
-
 		}
 	}
 	else {
@@ -46,7 +47,8 @@ module.exports = function (app) {
 			},
 			logging: false,
 			ADMIN: {
-				MOUNTPOINT: '/admin'
+				MOUNTPOINT: '/admin',
+				UPLOAD_PATH: '/uploads'
 			}
 		}
 	}

@@ -22,8 +22,6 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		textareacolumn: {
 			type: Sequelize.TEXT,
-			allowNull: true,
-			unique: true,
 			ADMIN: {
 				maxLength: 2048,
 			}
@@ -40,6 +38,13 @@ module.exports = (sequelize, DataTypes) => {
 						['description', 'ASC']
 					]
 				}
+			}
+		},
+		profilePhoto: {
+			type: Sequelize.STRING(512),
+			ADMIN: {
+				inputType: 'image',
+				accepts: 'image/*'
 			}
 		}
 	}, {});

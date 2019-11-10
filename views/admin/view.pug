@@ -44,7 +44,7 @@ block content
 						for property in admin.options.viewColumns
 							tr
 								td= property
-								td= admin.getColumn(property).getValue(row)
+								td!= admin.getColumn(property).getValue(row)
 								
 					for assoc in admin.associations
 						if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
