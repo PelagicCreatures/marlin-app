@@ -35,40 +35,6 @@ block content
 									li.instance-select= row.id
 										ul
 											for col in admin.options.listColumns
-												li= row[col]
+												li!= admin.getColumn(col).getValue(row)
 						
-						if pagination.pages > 1
-							ul.pagination(data-jsclass="paginationController")
-								if pagination.prev != pagination.page
-									li
-										a(href="#{pagination.uri}&p=#{pagination.prev}")
-											i.material-icons keyboard_arrow_left
-								else
-									li.disabled
-										a(href="#")
-											i.material-icons keyboard_arrow_left
-										
-								li.disabled.pagination-elipsis-start
-									a(href="#")
-										i.material-icons more_horiz
-											
-								for p in pagination.pages
-									if p == pagination.page
-										li.active.pagination-page
-											a(href="#{pagination.uri}&p=#{p}")= p
-									else
-										li.pagination-page
-											a(href="#{pagination.uri}&p=#{p}")= p
-								
-								li.disabled.pagination-elipsis-end
-									a(href="#")
-										i.material-icons more_horiz
-
-								if pagination.next != pagination.page
-									li
-										a(href="#{pagination.uri}&p=#{pagination.next}")
-											i.material-icons keyboard_arrow_right
-								else
-									li
-										a(href="#")
-											i.material-icons keyboard_arrow_right
+						include pagination

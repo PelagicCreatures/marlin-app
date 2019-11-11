@@ -47,7 +47,11 @@ module.exports = (sequelize, DataTypes) => {
 				accepts: 'image/*'
 			}
 		}
-	}, {});
+	}, {
+		ADMIN: {
+			listColumns: ['textcolumn', 'profilePhoto', 'lookupId']
+		}
+	});
 
 	return AdminTest;
 };
