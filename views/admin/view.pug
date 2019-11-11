@@ -57,11 +57,10 @@ block content
 								table
 									for rel in row[assoc.as]
 										tr
-											for property in adminTables[assoc.target].options.listColumns
-												td
-													if rel.ADMIN
-														a(href= mountpoint + '/' + rel.ADMIN.through + '/' + rel.ADMIN.id)= rel[property]
+											td
+												if rel.ADMIN
+													a(href= mountpoint + '/' + rel.ADMIN.through + '/' + rel.ADMIN.id)= rel[adminTables[assoc.target].options.defaultColumn]
 
-													else
-														a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[property]
+												else
+													a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[adminTables[assoc.target].options.defaultColumn]
 						

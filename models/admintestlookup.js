@@ -22,7 +22,10 @@ module.exports = (sequelize, DataTypes) => {
 
 	AdminTestLookup.associate = function (models) {
 		AdminTestLookup.hasMany(models.AdminTest, {
-			foreignKey: 'lookupId'
+			foreignKey: {
+				name: 'lookupId',
+				allowNull: true
+			}
 		});
 	};
 

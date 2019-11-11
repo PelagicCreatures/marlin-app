@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		ADMIN: {
+			defaultColumn: 'textcolumn',
 			listColumns: ['textcolumn', 'profilePhoto', 'lookupId']
 		}
 	});
