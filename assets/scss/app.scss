@@ -50,6 +50,14 @@ $fa-font-path: "../../node_modules/@fortawesome/fontawesome-free/webfonts";
 	background-color: rgba(0,0,0,.5);
 }
 
+.mdc-text-field {
+	background-color: white!important;
+}
+
+.zmdc-floating-label {
+	transform: translateY(-50%) scale(0.75)!important;
+}
+
 a:focus {
 	outline:none;
 	text-decoration: none;

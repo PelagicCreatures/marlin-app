@@ -13,10 +13,6 @@ const csrfProtection = csrf({
 });
 
 const {
-	check, validationResult
-} = require('express-validator');
-
-const {
 	getUserForRequestMiddleware
 } = require('../lib/get-user-for-request-middleware');
 
@@ -28,7 +24,7 @@ module.exports = (usersApp) => {
 
 	let createToken = require('../lib/create-token.js')(usersApp);
 
-	usersApp.router.patch('/email-change', express.json(), getUserForRequestMiddleware(usersApp), csrfProtection, check('email').isEmail(), function (req, res) {
+	usersApp.router.patch('/email-change', express.json(), getUserForRequestMiddleware(usersApp), csrfProtection, function (req, res) {
 
 		debug('/email-change', req.body);
 
@@ -38,17 +34,6 @@ module.exports = (usersApp) => {
 				status: 'error',
 				errors: ['must be logged in']
 			});
-		}
-
-		var errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			return res.status(422)
-				.json({
-					status: 'error',
-					flashLevel: 'danger',
-					flashMessage: 'failed, bad request.',
-					errors: errors.array()
-				});
 		}
 
 		// patch user.pendingEmail, generate token, send validation email

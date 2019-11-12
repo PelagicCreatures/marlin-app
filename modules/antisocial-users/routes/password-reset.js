@@ -9,9 +9,7 @@ const csrfProtection = csrf({
 	},
 	ignoreMethods: process.env.TESTING ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
-const {
-	check, validationResult
-} = require('express-validator');
+
 
 module.exports = (usersApp) => {
 
@@ -21,20 +19,10 @@ module.exports = (usersApp) => {
 
 	let createToken = require('../lib/create-token.js')(usersApp);
 
-	usersApp.router.patch('/password-reset', express.json(), csrfProtection, check('email').isEmail(), function (req, res) {
+	usersApp.router.patch('/password-reset', express.json(), csrfProtection, function (req, res) {
 
 		debug('/password-reset', req.body);
 
-		var errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			return res.status(422)
-				.json({
-					status: 'error',
-					flashLevel: 'danger',
-					flashMessage: 'failed, bad request.',
-					errors: errors.array()
-				});
-		}
 
 		db.getInstances('User', {
 			where: {

@@ -1,18 +1,11 @@
-section.form-group
-	.mdc-text-field.mdc-text-field--with-trailing-icon.mdc-text-field--textarea
+.form-group
 		.uploadable-preview(data-name=columnName + '-preview')
 			if thumb
 				img(src= thumb)
-		input.mdc-text-field__input(type="hidden" data-name= columnName name= name value= value)
-		input.mdc-text-field__input(type="hidden" data-name= columnName + '-upload' name= uploadName)
+		input(type="hidden" data-name= columnName name= name value= value)
+		input(type="hidden" data-name= columnName + '-upload' name= uploadName)
 		input(type="hidden" data-name=columnName + '-width' name= widthName)
 		input(type="hidden" data-name=columnName + '-height' name= heightName)
-		input.uploadable-input(data-column-name= columnName data-jsclass="uploadableImage" data-target='[data-name=' + columnName + '-upload]' data-max-width=options.maxWidth data-max-height=options.maxHeight type="file" name= name + '-uploadable' accept= options.accepts)
-		.mdc-notched-outline
-			.mdc-notched-outline__leading
-			.mdc-notched-outline__notch
-				label.mdc-floating-label.mdc-floating-label--float-above= options.label
-			.mdc-notched-outline__trailing
-		.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
-	.mdc-text-field-helper-line
-		.validation-help.mdc-text-field-helper-text--persistent
+		input.uploadable-input(data-column-name= columnName data-jsclass="uploadableImage" data-target='[data-name=' + columnName + '-upload]' data-send-resized=(options.sendResized ? 'true': 'false') data-max-width=options.maxWidth data-max-height=options.maxHeight type="file" name= name + '-uploadable' accept= options.accepts)
+		.input-ok-indicator.material-icons check_circle
+		.validation-help

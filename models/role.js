@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     }
   }, {
+    timestamps: false,
     ADMIN: {
       defaultColumn: 'description',
       listColumns: ['description']

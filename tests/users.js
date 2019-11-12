@@ -201,6 +201,23 @@ describe('users', function () {
 			});
 	});
 
+	it('should not be able to login w/ bad payload', function (done) {
+		client2.put('http://127.0.0.1:3000/api/users/login')
+			.set('Accept', 'application/json')
+			.send({
+				'email': 'mrhodes+2myantisocial.net',
+				'password': 'Testing123bad',
+				'some': 'crap'
+			})
+			.end(function (err, res) {
+				if (err) {
+					console.log('errors: %j %j', err, res.body ? res.body : '');
+				}
+				expect(res.status).to.equal(422);
+				done();
+			});
+	});
+
 	it('should not be able to login account 2 w/bad password', function (done) {
 		client2.put('http://127.0.0.1:3000/api/users/login')
 			.set('Accept', 'application/json')

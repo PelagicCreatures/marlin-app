@@ -190,7 +190,10 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		position:relative
 
 	.input-ok-indicator
-		opacity:0
+		position:absolute
+		top: 7px
+		right: 7px
+		opacity: 0
 		color: $darker-accent!important
 
 	.input-ok
@@ -300,6 +303,9 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		th,td
 			padding: .5em
 			border-left:thin solid #dddddd
+			img
+				max-height: 200px
+				width:auto
 		th
 			border-bottom:thin solid #dddddd
 		tr:not(:last-child)
@@ -311,26 +317,33 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 	.admin-form
 		background-color:white
 		border-radius: 4px
-		padding: 1em
-		.mdc-text-field
-			height: 56px
+		padding: .5em
+		input[type="text"],textarea
+			font-size:1em
 			width: 100%
+			padding: .5em
+		select
+			margin-top: .5em
+			font-size: 1em
+			min-width: 80%
+		input[type="file"]
+			margin-top: .5em
+			font-size: 1em
 		.form-group
 			position:relative
-			margin-top: 1em
 	.admin-form-footer
 		padding-top: 1em
 		text-transform: uppercase
-	label
+	.label
+		vertical-align:top
+		text-align:right
+		padding-top:18px
 		text-transform: uppercase
 
-	.uploadable-input
-		margin: 20px
-		margin-left: 10px
-
 	.uploadable-preview
+		display:inline-block
 		img
-			height:36px
-			margin:10px
-	.none
-		display: none
+			height:100%
+			width:auto
+			margin-right:10px
+			vertical-align:middle

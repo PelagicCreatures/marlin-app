@@ -1,11 +1,4 @@
-section.form-group
-	.mdc-text-field.mdc-text-field--with-trailing-icon.mdc-text-field--textarea
-		textarea.mdc-text-field__input(name= name rows= options.rows cols= options.cols)= value
-		.mdc-notched-outline
-			.mdc-notched-outline__leading
-			.mdc-notched-outline__notch
-				label.mdc-floating-label= options.label
-			.mdc-notched-outline__trailing
-		.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
-	.mdc-text-field-helper-line
-		.validation-help.mdc-text-field-helper-text--persistent
+form-group
+	textarea(name= name rows= options.rows cols= options.cols)= value
+	.input-ok-indicator.material-icons check_circle
+	.validation-help.mdc-text-field-helper-text--persistent

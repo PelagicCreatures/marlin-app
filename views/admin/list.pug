@@ -35,6 +35,6 @@ block content
 									li.instance-select= row.id
 										ul
 											for col in admin.options.listColumns
-												li!= admin.getColumn(col).getValue(row)
+												li!= admin.getColumn(col).getDisplayValue(row)
 						
 						include pagination

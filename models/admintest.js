@@ -13,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: Sequelize.STRING(80),
 			allowNull: false,
 			unique: true,
-			isAlpha: true,
+			len: [1, 10],
+			isIn: [
+				['aaa', 'bbb']
+			],
 			ADMIN: {
 				label: 'my label',
 				maxLength: 80,
@@ -44,7 +47,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: Sequelize.STRING(512),
 			ADMIN: {
 				inputType: 'image',
-				accepts: 'image/*'
+				accepts: 'image/*',
+				//sendResized: true,
+				//maxWidth: 100,
+				//maxHeight: 100
 			}
 		}
 	}, {

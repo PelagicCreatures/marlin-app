@@ -52,7 +52,7 @@ module.exports = function (grunt) {
 		cssDistDir: 'public/dist/css/',
 		pkg: grunt.file.readJSON('package.json'),
 		exec: {
-			pug: 'pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  views/shared/confirm-dialog.pug'
+			pug: 'npx pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  views/shared/confirm-dialog.pug'
 		},
 		copy: {
 			main: {

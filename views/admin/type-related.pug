@@ -1,15 +1,10 @@
-section.form-group
-	.mdc-select.full-width
-		i.mdc-select__dropdown-icon
-		select.mdc-select__native-control(name= name)
-			option(value="") ---
-			for row in related
-				if row.id == value
-					option(value= row.id selected)= row.description
-				else
-					option(value= row.id)= row.description
-		label.mdc-floating-label= options.label
-		.input-ok-indicator.material-icons check_circle
-		.mdc-line-ripple
-	.mdc-text-field-helper-line
-		.validation-help.mdc-text-field-helper-text--persistent
+.form-group
+	select(name= name)
+		option(value="") ---
+		for row in related
+			if row.id == value
+				option(value= row.id selected)= row.description
+			else
+				option(value= row.id)= row.description
+	.input-ok-indicator.material-icons check_circle
+	.validation-help

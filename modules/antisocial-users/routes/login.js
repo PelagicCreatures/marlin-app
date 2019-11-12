@@ -4,6 +4,10 @@ const async = require('async');
 const csrf = require('csurf');
 const express = require('express');
 
+const {
+	validatePayload
+} = require('../../../lib/validator-extensions');
+
 const csrfProtection = csrf({
 	cookie: {
 		signed: true,
@@ -12,9 +16,6 @@ const csrfProtection = csrf({
 	ignoreMethods: process.env.TESTING ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
 
-const {
-	check, validationResult
-} = require('express-validator');
 
 module.exports = (usersApp) => {
 
@@ -24,126 +25,126 @@ module.exports = (usersApp) => {
 	let createToken = require('../lib/create-token.js')(usersApp);
 	let passwordMatch = require('../lib/password-match.js');
 
-	usersApp.router.put('/login', express.json(), csrfProtection,
-		check('email')
-		.not().isEmpty()
-		.isEmail(),
+	usersApp.router.put('/login', express.json(), csrfProtection, function (req, res) {
 
-		check('password')
-		.not().isEmpty().withMessage('required')
-		.custom(value => !/\s/.test(value)).withMessage('no spaces')
-		.isLength({
-			min: 8
-		})
-		.matches('[0-9]').withMessage('at least one number')
-		.matches('[a-z]').withMessage('at least one lowercase character')
-		.matches('[A-Z]').withMessage('at least one uppercase character'),
+		debug('/login');
 
-		function (req, res) {
+		let errors = validatePayload(req.body, {
+			email: {
+				notEmpty: true,
+				isEmail: true
+			},
+			password: {
+				notEmpty: true,
+				len: [8, 20],
+				isPassword: true
+			}
+		}, {
+			strict: true,
+			additionalProperties: ['_csrf']
+		});
 
-			debug('/login');
+		if (errors.length) {
+			return res
+				.status(422)
+				.json({
+					status: 'error',
+					errors: errors
+				});
+		}
 
-			var errors = validationResult(req);
-			if (!errors.isEmpty()) {
-				return res.status(422)
-					.json({
-						status: 'error',
-						errors: errors.array()
-					});
+		var ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
+
+		if (Object.prototype.toString.call(ip) === '[object Array]') {
+			ip = ip[0];
+		}
+		else {
+			ip = ip.split(', ')[0];
+		}
+
+		async.waterfall([
+			function (cb) {
+				db.getInstances('User', {
+					where: {
+						'email': req.body.email
+					}
+				}, function (err, userInstances) {
+					if (err) {
+						return cb(err);
+					}
+
+					if (!userInstances || userInstances.length !== 1) {
+						return cb(new VError('user not found'));
+					}
+
+					var user = userInstances[0];
+					cb(null, user);
+				});
+			},
+			function (user, cb) {
+				passwordMatch(req.body.password, user, function (err, isMatch) {
+					if (err) {
+						return cb(err);
+					}
+
+					if (!isMatch) {
+						return cb(new VError('password mismatch'));
+					}
+
+					cb(null, user);
+				});
+			},
+			function (user, cb) {
+				createToken(user, {
+					ip: ip
+				}, function (err, token) {
+					cb(err, user, token);
+				});
+			}
+		], function (err, user, token) {
+			if (err) {
+				return res.status(401).json({
+					status: 'error',
+					flashLevel: 'danger',
+					flashMessage: 'Login failed',
+					errors: [err.message]
+				});
 			}
 
-			var ip = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
-
-			if (Object.prototype.toString.call(ip) === '[object Array]') {
-				ip = ip[0];
-			}
-			else {
-				ip = ip.split(', ')[0];
-			}
-
-			async.waterfall([
-				function (cb) {
-					db.getInstances('User', {
-						where: {
-							'email': req.body.email
-						}
-					}, function (err, userInstances) {
-						if (err) {
-							return cb(err);
-						}
-
-						if (!userInstances || userInstances.length !== 1) {
-							return cb(new VError('user not found'));
-						}
-
-						var user = userInstances[0];
-						cb(null, user);
-					});
-				},
-				function (user, cb) {
-					passwordMatch(req.body.password, user, function (err, isMatch) {
-						if (err) {
-							return cb(err);
-						}
-
-						if (!isMatch) {
-							return cb(new VError('password mismatch'));
-						}
-
-						cb(null, user);
-					});
-				},
-				function (user, cb) {
-					createToken(user, {
-						ip: ip
-					}, function (err, token) {
-						cb(err, user, token);
+			// if we use subscriptions manage the 'subscriber' cookie
+			if (process.env.STRIPE_SECRET) {
+				if (user.stripeStatus === 'ok') {
+					res.cookie('subscriber', 1, {
+						'path': '/'
 					});
 				}
-			], function (err, user, token) {
-				if (err) {
-					return res.status(401).json({
-						status: 'error',
-						flashLevel: 'danger',
-						flashMessage: 'Login failed',
-						errors: [err.message]
-					});
-				}
-
-				// if we use subscriptions manage the 'subscriber' cookie
-				if (process.env.STRIPE_SECRET) {
-					if (user.stripeStatus === 'ok') {
-						res.cookie('subscriber', 1, {
+				else {
+					if (req.cookies.subscriber) {
+						res.clearCookie('subscriber', {
 							'path': '/'
 						});
 					}
-					else {
-						if (req.cookies.subscriber) {
-							res.clearCookie('subscriber', {
-								'path': '/'
-							});
-						}
-					}
 				}
+			}
 
-				res.cookie('access-token', token.token, {
-						'path': '/',
-						'maxAge': token.ttl * 1000,
-						'signed': true
-					})
-					.send({
-						'status': 'ok',
-						'flashLevel': 'success',
-						'flashMessage': 'Hello Again!',
-						'didLogin': true,
-						'result': {
-							'id': user.id,
-							'name': user.name,
-							'username': user.username,
-							'email': user.email,
-							'validated': user.validated
-						}
-					});
-			});
+			res.cookie('access-token', token.token, {
+					'path': '/',
+					'maxAge': token.ttl * 1000,
+					'signed': true
+				})
+				.send({
+					'status': 'ok',
+					'flashLevel': 'success',
+					'flashMessage': 'Hello Again!',
+					'didLogin': true,
+					'result': {
+						'id': user.id,
+						'name': user.name,
+						'username': user.username,
+						'email': user.email,
+						'validated': user.validated
+					}
+				});
 		});
+	});
 };

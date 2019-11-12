@@ -1,8 +1,4 @@
-section.form-group
-	.mdc-text-field.mdc-text-field--with-trailing-icon
-		input.mdc-text-field__input(name= name value= value)
-		label.mdc-floating-label= options.label
-		.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
-		.mdc-line-ripple
-	.mdc-text-field-helper-line
-		.validation-help.mdc-text-field-helper-text--persistent
+.form-group
+	input(type="text" name= name value= value data-validate= JSON.stringify(options.validate))
+	.input-ok-indicator.material-icons check_circle
+	.validation-help some text

@@ -9,8 +9,9 @@ function uploadableImage(elem) {
 	var self = this;
 
 	this.columnName = this.element.data('column-name');
-	this.maxHeight = this.element.data('max-height');
-	this.maxWidth = this.element.data('max-width');
+	this.maxHeight = this.element.data('max-height') ? this.element.data('max-height') : 36;
+	this.maxWidth = this.element.data('max-width') ? this.element.data('max-width') : 36;
+	this.sendResized = this.element.data('send-resized');
 	this.input = $(this.element.data('target'));
 
 	this.previewElement = $('[data-name="' + this.columnName + '-preview"]');
@@ -29,10 +30,11 @@ function uploadableImage(elem) {
 
 	this.processImage = function (file) {
 		var reader = new FileReader();
+
+		// make a thumbnail once data is loaded
 		reader.onload = function (readerEvent) {
 			var image = new Image();
 			image.onload = function (imageEvent) {
-				var max_size = 300;
 				var canvas = document.createElement('canvas');
 				var w = image.width,
 					h = image.height;
@@ -52,14 +54,28 @@ function uploadableImage(elem) {
 				canvas.height = h;
 				canvas.getContext('2d').drawImage(image, 0, 0, w, h);
 				var dataURL = canvas.toDataURL("image/jpeg", 1.0);
-				self.input.val(dataURL);
+				self.previewElement.empty().append('<img src="' + dataURL + '">');
 
-				self.widthElement.val(w);
-				self.heightElement.val(h);
+				if (self.sendResized) {
+					self.input.val(dataURL);
+					self.widthElement.val(w);
+					self.heightElement.val(h);
+				}
+				else {
+					self.widthElement.val(this.naturalWidth);
+					self.heightElement.val(this.naturalHeight);
+				}
 			}
+
+			// pipe the file data into the image
 			image.src = readerEvent.target.result;
-			self.previewElement.empty().append('<img src="' + readerEvent.target.result + '">');
+
+			if (!self.sendResized) {
+				self.input.val(readerEvent.target.result);
+			}
 		}
+
+		// start reading the file
 		reader.readAsDataURL(file);
 	}
 }

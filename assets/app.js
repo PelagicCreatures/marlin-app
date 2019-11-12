@@ -13,6 +13,7 @@ import jQuery from "jquery";
 import Cookies from "js-cookie";
 import async from "async";
 
+
 import {
 	GetJQueryPlugin, digitopiaController
 }

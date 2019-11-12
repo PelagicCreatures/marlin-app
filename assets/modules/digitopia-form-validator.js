@@ -4,6 +4,90 @@ import {
 }
 from '../../modules/digitopia/js/controller.js';
 
+import {
+	Validator,
+	getMessage
+}
+from '../../lib/validator-extensions.js';
+
+
+
+/*
+import _ from 'lodash';
+const Validator = _.cloneDeep(require('validator'));
+
+
+
+// validator extensions from sequelize
+let extensions = {
+	extend(name, fn) {
+			this[name] = fn;
+			return this;
+		},
+		notEmpty(str) {
+			return !str.match(/^[\s\t\r\n]*$/);
+		},
+		len(str, min, max) {
+			return this.isLength(str, min, max);
+		},
+		isUrl(str) {
+			return this.isURL(str);
+		},
+		isIPv6(str) {
+			return this.isIP(str, 6);
+		},
+		isIPv4(str) {
+			return this.isIP(str, 4);
+		},
+		notIn(str, values) {
+			return !this.isIn(str, values);
+		},
+		regex(str, pattern, modifiers) {
+			str += '';
+			if (Object.prototype.toString.call(pattern).slice(8, -1) !== 'RegExp') {
+				pattern = new RegExp(pattern, modifiers);
+			}
+			return str.match(pattern);
+		},
+		notRegex(str, pattern, modifiers) {
+			return !this.regex(str, pattern, modifiers);
+		},
+		isDecimal(str) {
+			return str !== '' && !!str.match(/^(?:-?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][+-]?(?:[0-9]+))?$/);
+		},
+		min(str, val) {
+			const number = parseFloat(str);
+			return isNaN(number) || number >= val;
+		},
+		max(str, val) {
+			const number = parseFloat(str);
+			return isNaN(number) || number <= val;
+		},
+		not(str, pattern, modifiers) {
+			return this.notRegex(str, pattern, modifiers);
+		},
+		contains(str, elem) {
+			return !!elem && str.includes(elem);
+		},
+		notContains(str, elem) {
+			return !this.contains(str, elem);
+		},
+		is(str, pattern, modifiers) {
+			return this.regex(str, pattern, modifiers);
+		},
+		notNull(str) {
+			return str !== null && str !== undefined;
+		},
+		isPassword(str) {
+			return this.is(str, '(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])', '')
+		}
+};
+
+_.forEach(extensions, (extend, key) => {
+	Validator[key] = extend;
+});
+*/
+
 function formValidator(elem, options) {
 	this.element = $(elem);
 	this.valid = false;
@@ -106,132 +190,25 @@ function formValidator(elem, options) {
 		var errors = [];
 
 		if (input.data('validate')) {
-			var validations = input.data('validate').split(',');
-			for (var i = 0; i < validations.length; i++) {
-				var validation = validations[i];
 
-				if (validation === 'required') {
-					if (!val) {
-						errors.push('Required');
-					}
-				}
+			var validations = input.data('validate');
 
-				if (validation === 'integer') {
-					if (val && val.match(/\D/)) {
-						errors.push('Must be an integer');
+			for (let test in validations) {
+				let opts = validations[test];
+				if (typeof opts === 'boolean') {
+					// no options
+					if (!Validator[test](val)) {
+						errors.push(getMessage(test));
 					}
-				}
-
-				if (validation === 'float') {
-					if (val && !val.match(/^[0-9\.]+$/)) {
-						errors.push('Must be a valid floating point number');
-					}
-				}
-
-				if (validation === 'url') {
-					if (val && !val.match(/localhost/) && !val.match(/(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi)) {
-						errors.push('Must be a valid url');
-					}
-				}
-
-				if (validation === 'email') {
-					var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-					if (val && !val.match(re)) {
-						errors.push('Must be an email address');
-					}
-				}
-
-				if (validation === 'password') {
-					let e = []
-					if (val && !(val.match(/[0-9]/))) {
-						e.push('one number');
-					}
-					if (val && !(val.match(/[a-z]/))) {
-						e.push('one lowercase letter');
-					}
-					if (val && !(val.match(/[A-Z]/))) {
-						e.push('one uppercase letter')
-					}
-					if (e.length) {
-						errors.push('Must contain ' + e.join(', '));
-					}
-				}
-
-				if (validation === 'cc-number') {
-					var cardType = $.payment.cardType(val);
-					input.closest('.form-group').find('.cc-brand').empty();
-					if (cardType) {
-						var img = '<img src="/images/icons/' + cardType + '.png">';
-						input.closest('.form-group').find('.cc-brand').html(img);
-					}
-					var isvalid = $.payment.validateCardNumber(val);
-					if (!isvalid) {
-						errors.push('Must be a valid cc number');
-					}
-				}
-
-				if (validation === 'cc-exp') {
-					var isvalid = $.payment.validateCardExpiry($(input).payment('cardExpiryVal'));
-					if (!isvalid) {
-						errors.push('Must be a valid expire date');
-					}
-				}
-
-				if (validation === 'cc-cvc') {
-					var cardnum = getRealVal(input.data('card-field'));
-					var cardType = $.payment.cardType(cardnum);
-					var isvalid = $.payment.validateCardCVC(val, cardType);
-					if (!isvalid) {
-						errors.push('Must be a valid cvc code');
-					}
-				}
-
-				// KLUDGE: markdown editor wraps markup in markdown code `<markup>`
-				if (validation === 'noEscapedAngle') {
-					if (val.match('`') || val.match('&lt;') || val.match('&gt;')) {
-						errors.push('Pasted HTML not allowed');
-					}
-				}
-			}
-		}
-
-		if (val && input.data('mask')) {
-			var mask = new RegExp(input.data('mask'));
-			if (!mask.exec(val)) {
-				if (input.data('mask-error-prompt')) {
-					errors.push(input.data('mask-error-prompt'));
 				}
 				else {
-					errors.push('Invalid characters');
+					let myopts = opts.slice();
+					myopts.unshift(val);
+					if (!Validator[test].apply(Validator, myopts)) {
+						errors.push(getMessage(test, opts));
+					}
 				}
 			}
-		}
-
-		if (input.data('options')) {
-			var options = input.data('options').split(',');
-			if (options.indexOf(val) === -1) {
-				errors.push('Must be one of: ' + input.data('options'));
-			}
-		}
-
-		if (input.data('length') && val.length !== input.data('length')) {
-			errors.push('Must be ' + input.data('length') + ' characters long');
-		}
-
-		if (input.data('min-length') && val.length < input.data('min-length')) {
-			errors.push('Must be at least ' + input.data('min-length') + ' characters long');
-		}
-
-		if (input.data('max-length') && val.length > input.data('max-length')) {
-			errors.push('Must be less than ' + input.data('max-length') + ' characters long');
-		}
-
-		if (input.data('min') && val < input.data('min')) {
-			errors.push('Minimum value ' + input.data('min'));
-		}
-
-		if (input.data('max') && val > input.data('max')) {
-			errors.push('Maximum value ' + input.data('max'));
 		}
 
 		if (input.data('match') && getRealVal(self.element.find(input.data('match'))) !== getRealVal(input)) {

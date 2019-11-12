@@ -24,10 +24,11 @@ block content
 					
 				.page-content
 					form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
-
-						section
+						table
 							for property in admin.options.editColumns
-								!= admin.getColumn(property).getForm(row)
+								tr
+									td.label= admin.getColumn(property).options.label
+									td.data!= admin.getColumn(property).getForm(row)
 
 						section.form-group.pull-right.button-bar
 							a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel
