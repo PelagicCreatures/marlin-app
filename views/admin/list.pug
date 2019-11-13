@@ -12,14 +12,31 @@ block content
 							button.mdc-button.add-button
 								i.material-icons add_circle
 								
-					//pre= JSON.stringify(admin.getOptions(),"",2)
+					// pre= JSON.stringify(admin.getOptions(),"",2)
 
 				.page-content
-					section
-						.input-group
-							input.form-control(type="text" name="q" value= q placeholder="Search " + admin.name)
-							span.input-group-btn
-								button.btn.btn-default.search-button(type="button") Go
+					if admin.options.searchColumns.length
+						if q
+							section
+								a.mdc-button.pull-right(href= mountpoint + '/' + admin.name)
+									span.mdc-button__label
+										i.material-icons close
+								!= '<em>Found '+pagination.count+' row(s) matching:</em> <strong>' + q + '</strong>'
+									
+						else
+							
+							section.search-form
+								.form-group
+									table
+										tr
+											td
+												input(type="text" name="q" placeholder="Search " + admin.name)
+											td
+												select(name="property")
+													for prop in admin.options.searchColumns
+														option(value= prop)= prop
+												button.mdc-button.mdc-button--raised.search-button
+													span.mdc-button__label Go
 
 					if !rows.length
 							section

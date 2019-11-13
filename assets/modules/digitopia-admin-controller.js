@@ -40,6 +40,14 @@ function adminController(elem, options) {
 			self.API('DELETE', endpoint);
 		});
 
+		this.element.on('click', '.search-button', function (e) {
+			let q = $(this).closest('.form-group').find('input[name="q"]').val();
+			let prop = $(this).closest('.form-group').find('select[name="property"]').val();
+			if (q && prop) {
+				loadPage(location.pathname + '?q=' + encodeURIComponent(q) + '&property=' + encodeURIComponent(prop));
+			}
+		});
+
 		this.element.on('click', '#submitter', function (e) {
 			e.preventDefault();
 			let endpoint = self.mountpoint + '/' + self.model;

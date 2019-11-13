@@ -9,14 +9,15 @@ function uploadableImage(elem) {
 	var self = this;
 
 	this.columnName = this.element.data('column-name');
-	this.maxHeight = this.element.data('max-height') ? this.element.data('max-height') : 36;
-	this.maxWidth = this.element.data('max-width') ? this.element.data('max-width') : 36;
+	this.maxHeight = this.element.data('max-height') ? this.element.data('max-height') : 200;
+	this.maxWidth = this.element.data('max-width') ? this.element.data('max-width') : 200;
 	this.sendResized = this.element.data('send-resized');
 	this.input = $(this.element.data('target'));
 
 	this.previewElement = $('[data-name="' + this.columnName + '-preview"]');
 	this.widthElement = $('[data-name="' + this.columnName + '-width"]');
 	this.heightElement = $('[data-name="' + this.columnName + '-height"]');
+	this.metadata = this.element.closest('.form-group').find('.metadata');
 
 	this.start = function () {
 		this.element.on('change', function (e) {
@@ -55,6 +56,7 @@ function uploadableImage(elem) {
 				canvas.getContext('2d').drawImage(image, 0, 0, w, h);
 				var dataURL = canvas.toDataURL("image/jpeg", 1.0);
 				self.previewElement.empty().append('<img src="' + dataURL + '">');
+				self.metadata.empty().html('<strong><em>New image</em></strong> w: <strong>' + this.naturalWidth + '</strong> h: <strong>' + this.naturalHeight + '</strong>');
 
 				if (self.sendResized) {
 					self.input.val(dataURL);

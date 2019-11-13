@@ -1,7 +1,12 @@
 .form-group
-		.uploadable-preview(data-name=columnName + '-preview')
-			if thumb
-				img(src= thumb)
+	.uploadable-preview(data-name=columnName + '-preview')
+		if thumb
+			!= thumb
+	.uploadable-form
+		p.metadata
+			if metadata
+				| type: <strong>#{metadata.type}</strong> w: <strong>#{metadata.width}</strong> h: <strong>#{metadata.height}</strong>
+			
 		input(type="hidden" data-name= columnName name= name value= value)
 		input(type="hidden" data-name= columnName + '-upload' name= uploadName)
 		input(type="hidden" data-name=columnName + '-width' name= widthName)
