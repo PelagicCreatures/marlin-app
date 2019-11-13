@@ -48,6 +48,17 @@ function adminController(elem, options) {
 			}
 			let method = self.id ? 'PUT' : 'POST';
 			let data = self.element.find('form').serializeObject();
+
+			// special case - serializeObject does not send false checkbox value but we need it for boolean switch
+			let checkboxes = self.element.find('.mdc-switch__native-control');
+			for (let i = 0; i < checkboxes.length; i++) {
+				let cb = checkboxes[i];
+				let n = $(cb).attr('name'); // field names are in the form table[column]
+				let p = n.match(/\[([^\]]+)\]/); // column is in p[1]
+				n = n.replace(p[0], '');
+				data[n][p[1]] = $(cb).is(':checked'); // sets data.table.column to true or false
+			}
+
 			self.API(method, endpoint, data);
 		});
 

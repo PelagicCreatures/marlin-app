@@ -12,11 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 		textcolumn: {
 			type: Sequelize.STRING(80),
 			allowNull: false,
-			unique: true,
 			len: [1, 10],
-			isIn: [
-				['aaa', 'bbb']
-			],
 			ADMIN: {
 				label: 'my label',
 				maxLength: 80,
@@ -25,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		textareacolumn: {
 			type: Sequelize.TEXT,
+			allowNull: true,
 			ADMIN: {
 				maxLength: 2048,
 			}
@@ -47,11 +44,11 @@ module.exports = (sequelize, DataTypes) => {
 			type: Sequelize.STRING(512),
 			ADMIN: {
 				inputType: 'image',
-				accepts: 'image/*',
-				//sendResized: true,
-				//maxWidth: 100,
-				//maxHeight: 100
+				accepts: 'image/*'
 			}
+		},
+		boolean: {
+			type: Sequelize.BOOLEAN
 		}
 	}, {
 		ADMIN: {

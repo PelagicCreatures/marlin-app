@@ -7,15 +7,15 @@ This repository is a boilerplate app that includes many common functions of a re
 	* Material Design Availability
 	* Responsive design
 	* HIJAXed pages
-	* Ajax forms and input validation
-	* Packaging automation
+	* Admin data editing UI suite built from data model (list, view, create, edit, delete)
 	* User API (register, login, logout, email validation, password reset etc)
-	* ReCaptcha v3 for registration form
+	* Ajax forms and input validation
 	* Stripe for subscription plans
+	* Packaging automation for client distribution using webpack (sass, ES6) and grunt
+	* ReCaptcha v3 support for registration
 	* CSS compiles from SCSS and/or stylus
-	* client side javascript supports importing and transpiling EC6 modules using webpack and babel
-	* CSRF
-	* Content Security Protocol
+	* CSRF protection support
+	* Content Security Protocol support
 
 ### Project Directory Structure
 	* assets/ - source for client side js and css

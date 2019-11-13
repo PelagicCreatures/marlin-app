@@ -21,10 +21,12 @@ block content
 					form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
 						if fk
 							input(type="hidden" name= admin.name + '['+fk+']' value= belongsTo)
-						section
+						table
 							for property in admin.options.editColumns
 								if property !== fk
-									!= admin.getColumn(property).getForm(row)
+									tr
+										td.label= admin.getColumn(property).options.label
+										td!= admin.getColumn(property).getForm(row)
 
 						section.form-group.pull-right.button-bar
 							a.mdc-button(href= mountpoint + '/' + admin.name) Cancel

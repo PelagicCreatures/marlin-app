@@ -43,6 +43,12 @@ import {
 from '@material/select';
 
 import {
+	MDCSwitch
+}
+from '@material/switch';
+
+
+import {
 	MDCTextFieldIcon
 }
 from '@material/textfield/icon';
@@ -80,5 +86,6 @@ export {
 	MDCFormField,
 	MDCCheckbox,
 	MDCSelect,
+	MDCSwitch,
 	MDCLinearProgress
 }

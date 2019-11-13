@@ -211,6 +211,13 @@ var instantiateMaterialDesignElements = (element) => {
 		});
 	}
 
+	let switches = document.querySelectorAll('.mdc-switch');
+	if (switches && switches.length) {
+		switches.forEach((element) => {
+			App.MDC.MDCSwitch.attachTo(element);
+		});
+	}
+
 	let wantRipple = document.querySelectorAll('.mdc-fab,.mdc-button');
 	if (wantRipple && wantRipple.length) {
 		wantRipple.forEach((element) => {
