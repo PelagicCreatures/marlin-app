@@ -67,7 +67,8 @@ function getUserForRequestMiddleware(userAPI) {
 				db.getInstances('User', {
 					where: {
 						'id': tokenInstances[0].userId
-					}
+					},
+					include: ['Roles']
 				}, function (err, userInstances) {
 					if (err) {
 						return next();
@@ -78,6 +79,40 @@ function getUserForRequestMiddleware(userAPI) {
 
 					req.antisocialToken = tokenInstances[0];
 					req.antisocialUser = userInstances[0];
+
+					if (req.antisocialUser.Roles) {
+						for (let i = 0; i < req.antisocialUser.Roles.length; i++) {
+							let role = req.antisocialUser.Roles[i];
+							if (role.description === 'admin') {
+								req.isAdmin = true;
+								res.cookie('admin', 1, {
+									'path': '/'
+								});
+							}
+							if (role.description === 'superuser') {
+								req.isSuperUser = true;
+								req.isAdmin = true;
+								res.cookie('admin', 1, {
+									'path': '/'
+								});
+								res.cookie('superuser', 1, {
+									'path': '/'
+								});
+							}
+						}
+
+						if (!req.isAdmin && req.cookies.admin) {
+							res.clearCookie('admin', {
+								'path': '/'
+							});
+						}
+
+						if (!req.isSuperUser && req.cookies.superuser) {
+							res.clearCookie('superuser', {
+								'path': '/'
+							});
+						}
+					}
 
 					res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate, no-cache=Set-Cookie');
 					res.header('Expires', '-1');

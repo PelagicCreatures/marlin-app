@@ -6,10 +6,8 @@ const {
 
 module.exports = function mount(userAPI) {
 
-  router.get('/', getUserForRequestMiddleware(userAPI), function (req, res, next) {
-    res.render('index', {
-      user: req.antisocialUser
-    });
+  router.get('/', function (req, res, next) {
+    res.render('index', {});
   });
 
   return router;

@@ -107,6 +107,20 @@ var checkSubscription = () => {
 	else {
 		$('body').removeClass('have-subscription').addClass('dont-have-subscription');
 	}
+
+	if (App.Cookies.get('admin')) {
+		$('body').removeClass('not-admin').addClass('is-admin')
+	}
+	else {
+		$('body').removeClass('is-admin').addClass('not-admin')
+	}
+
+	if (App.Cookies.get('superuser')) {
+		$('body').removeClass('not-superuser').addClass('is-superuser')
+	}
+	else {
+		$('body').removeClass('is-superuser').addClass('not-superuser')
+	}
 }
 
 var getAccessToken = () => {

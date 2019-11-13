@@ -41,6 +41,7 @@ function adminController(elem, options) {
 		});
 
 		this.element.on('click', '.search-button', function (e) {
+			e.preventDefault();
 			let q = $(this).closest('.form-group').find('input[name="q"]').val();
 			let prop = $(this).closest('.form-group').find('select[name="property"]').val();
 			if (q && prop) {

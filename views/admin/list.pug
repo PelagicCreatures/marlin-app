@@ -7,6 +7,8 @@ block content
 				
 				.page-header
 					h2
+						a(href= mountpoint + '/menu')
+							i.material-icons arrow_back_ios
 						= admin.name + ' table '
 						.pull-right
 							button.mdc-button.add-button
@@ -26,17 +28,18 @@ block content
 						else
 							
 							section.search-form
-								.form-group
-									table
-										tr
-											td
-												input(type="text" name="q" placeholder="Search " + admin.name)
-											td
-												select(name="property")
-													for prop in admin.options.searchColumns
-														option(value= prop)= prop
-												button.mdc-button.mdc-button--raised.search-button
-													span.mdc-button__label Go
+								form.form-validation(data-jsclass="formValidator" data-submitter=".search-button")
+									.form-group
+										table
+											tr
+												td
+													input(type="text" name="q" placeholder="Search " + admin.name data-validate={notEmpty:true})
+												td
+													select(name="property")
+														for prop in admin.options.searchColumns
+															option(value= prop)= prop
+													button.mdc-button.mdc-button--raised.search-button
+														span.mdc-button__label Go
 
 					if !rows.length
 							section
