@@ -3,6 +3,9 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
 const express = require('express');
+const {
+	validatePayload
+} = require('../../../lib/validator-extensions');
 
 const csrfProtection = csrf({
 	cookie: {
@@ -11,8 +14,6 @@ const csrfProtection = csrf({
 	},
 	ignoreMethods: process.env.TESTING ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
-
-
 
 const {
 	getUserForRequestMiddleware
@@ -29,7 +30,32 @@ module.exports = (usersApp) => {
 
 	usersApp.router.patch('/password-change', express.json(), getUserForRequestMiddleware(usersApp), csrfProtection, function (req, res) {
 
-		debug('/password-change', req.body);
+		debug('/password-change');
+
+		let errors = validatePayload(req.body, {
+			oldpassword: {
+				notEmpty: true,
+				len: [8, 20],
+				isPassword: true
+			},
+			password: {
+				notEmpty: true,
+				len: [8, 20],
+				isPassword: true
+			}
+		}, {
+			strict: true,
+			additionalProperties: ['_csrf']
+		});
+
+		if (errors.length) {
+			return res
+				.status(422)
+				.json({
+					status: 'error',
+					errors: errors
+				});
+		}
 
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {

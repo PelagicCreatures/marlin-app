@@ -1,6 +1,9 @@
 const debug = require('debug')('antisocial-user');
 const csrf = require('csurf');
 const express = require('express');
+const {
+	validatePayload
+} = require('../../../lib/validator-extensions');
 
 const csrfProtection = csrf({
 	cookie: {
@@ -21,8 +24,26 @@ module.exports = (usersApp) => {
 
 	usersApp.router.patch('/password-reset', express.json(), csrfProtection, function (req, res) {
 
-		debug('/password-reset', req.body);
+		debug('/password-reset');
 
+		let errors = validatePayload(req.body, {
+			email: {
+				notEmpty: true,
+				isEmail: true
+			}
+		}, {
+			strict: true,
+			additionalProperties: ['_csrf']
+		});
+
+		if (errors.length) {
+			return res
+				.status(422)
+				.json({
+					status: 'error',
+					errors: errors
+				});
+		}
 
 		db.getInstances('User', {
 			where: {

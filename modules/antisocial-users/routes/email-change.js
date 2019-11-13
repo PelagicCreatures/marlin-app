@@ -16,6 +16,10 @@ const {
 	getUserForRequestMiddleware
 } = require('../lib/get-user-for-request-middleware');
 
+const {
+	validatePayload
+} = require('../../../lib/validator-extensions');
+
 module.exports = (usersApp) => {
 
 	debug('mounting users API /email-change');
@@ -27,6 +31,25 @@ module.exports = (usersApp) => {
 	usersApp.router.patch('/email-change', express.json(), getUserForRequestMiddleware(usersApp), csrfProtection, function (req, res) {
 
 		debug('/email-change', req.body);
+
+		let errors = validatePayload(req.body, {
+			email: {
+				notEmpty: true,
+				isEmail: true
+			}
+		}, {
+			strict: true,
+			additionalProperties: ['_csrf']
+		});
+
+		if (errors.length) {
+			return res
+				.status(422)
+				.json({
+					status: 'error',
+					errors: errors
+				});
+		}
 
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {

@@ -40,7 +40,7 @@ module.exports = (usersApp) => {
 			},
 			username: {
 				notEmpty: true,
-				len: [8, 20],
+				len: [4, 20],
 				is: ['^[a-zA-Z0-9-]+$', '']
 			},
 			name: {

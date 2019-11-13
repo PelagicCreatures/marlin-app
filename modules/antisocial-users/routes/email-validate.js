@@ -11,10 +11,14 @@ const csrfProtection = csrf({
 	},
 	ignoreMethods: process.env.TESTING ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
+
 const {
 	validateToken, getUserForRequestMiddleware
 } = require('../lib/get-user-for-request-middleware');
 
+const {
+	validatePayload
+} = require('../../../lib/validator-extensions');
 
 module.exports = (usersApp) => {
 
@@ -26,13 +30,21 @@ module.exports = (usersApp) => {
 
 		debug('/email-validate', req.body);
 
-		if (!req.body.token) {
-			return res.json({
-				status: 'error',
-				flashLevel: 'danger',
-				flashMessage: 'Email validation failed',
-				errors: ['token is required']
-			});
+		let errors = validatePayload(req.body, {
+			token: {
+				notEmpty: true
+			}
+		}, {
+			strict: true
+		});
+
+		if (errors.length) {
+			return res
+				.status(422)
+				.json({
+					status: 'error',
+					errors: errors
+				});
 		}
 
 		// user is already logged in and validated

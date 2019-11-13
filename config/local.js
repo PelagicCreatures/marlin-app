@@ -69,6 +69,9 @@ module.exports = function (app) {
 			STRIPE_MONTHLY: process.env.STRIPE_MONTHLY
 		},
 
+		// morgan logger
+		LOGGER_LEVEL: 'dev',
+
 		// override default options for antisocial user API (see modules/antisocial-users/index.js)
 		userOptions: {},
 

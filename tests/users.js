@@ -87,7 +87,7 @@ describe('users', function () {
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: %j %j', err, res.body ? res.body : '');
+					//console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(err).to.be(null);
 				expect(res.status).to.equal(200);
@@ -211,7 +211,7 @@ describe('users', function () {
 			})
 			.end(function (err, res) {
 				if (err) {
-					console.log('errors: %j %j', err, res.body ? res.body : '');
+					//console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(res.status).to.equal(422);
 				done();

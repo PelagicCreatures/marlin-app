@@ -3,6 +3,9 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
 const express = require('express');
+const {
+	validatePayload
+} = require('../../../lib/validator-extensions');
 
 const csrfProtection = csrf({
 	cookie: {
@@ -11,6 +14,7 @@ const csrfProtection = csrf({
 	},
 	ignoreMethods: process.env.TESTING ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : []
 });
+
 const {
 	validateToken
 } = require('../lib/get-user-for-request-middleware');
@@ -28,11 +32,26 @@ module.exports = (usersApp) => {
 
 		debug('/passord-set', req.body);
 
-		if (!req.body.token) {
-			return res.status(422)
+		let errors = validatePayload(req.body, {
+			token: {
+				notEmpty: true
+			},
+			password: {
+				notEmpty: true,
+				len: [8, 20],
+				isPassword: true
+			}
+		}, {
+			strict: true,
+			additionalProperties: ['_csrf']
+		});
+
+		if (errors.length) {
+			return res
+				.status(422)
 				.json({
 					status: 'error',
-					errors: ['token is required']
+					errors: errors
 				});
 		}
 
