@@ -12,16 +12,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: Sequelize.STRING,
+      len: [0, 60]
     },
     username: {
       type: Sequelize.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      len: [4, 20],
+      is: ['^[a-zA-Z0-9-]+$', '']
     },
     email: {
       type: Sequelize.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      isEmail: true
     },
     password: {
       type: Sequelize.STRING,
@@ -46,7 +50,8 @@ module.exports = (sequelize, DataTypes) => {
     pendingEmail: {
       type: Sequelize.STRING,
       unique: true,
-      allowNull: true
+      allowNull: true,
+      isEmail: true
     }
   }, {
     ADMIN: {

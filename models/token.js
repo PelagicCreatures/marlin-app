@@ -14,7 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.STRING,
       unique: true,
       allowNull: false,
-      hidden: true
+      hidden: true,
+      is: ['^[a-zA-Z0-9]', ''],
+      len: [64, 64]
     },
     ttl: {
       type: Sequelize.INTEGER,

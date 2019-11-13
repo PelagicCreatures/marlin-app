@@ -1,6 +1,8 @@
 const debug = require('debug')('antisocial-user');
 const csrf = require('csurf');
 const express = require('express');
+const getAdmin = require('../../../lib/admin').getAdmin;
+
 const {
 	validatePayload
 } = require('../../../lib/validator-extensions');
@@ -25,12 +27,10 @@ module.exports = (usersApp) => {
 	usersApp.router.patch('/password-reset', express.json(), csrfProtection, function (req, res) {
 
 		debug('/password-reset');
+		let validators = getAdmin('User').getValidations();
 
 		let errors = validatePayload(req.body, {
-			email: {
-				notEmpty: true,
-				isEmail: true
-			}
+			email: validators.email
 		}, {
 			strict: true,
 			additionalProperties: ['_csrf']

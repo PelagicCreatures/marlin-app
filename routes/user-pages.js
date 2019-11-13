@@ -3,6 +3,8 @@ const router = express.Router();
 const async = require('async');
 const VError = require('verror').VError;
 const csrf = require('csurf');
+const getAdmin = require('../lib/admin').getAdmin;
+
 const csrfProtection = csrf({
 	cookie: {
 		signed: true,
@@ -16,6 +18,7 @@ const {
 } = require('../modules/antisocial-users/lib/get-user-for-request-middleware');
 
 module.exports = function mount(userAPI) {
+
 	router.get('/users/home', getUserForRequestMiddleware(userAPI), function (req, res, next) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
@@ -43,7 +46,8 @@ module.exports = function mount(userAPI) {
 			return res.redirect('/users/home');
 		}
 		res.render('users/register', {
-			csrfToken: req.csrfToken()
+			csrfToken: req.csrfToken(),
+			validators: getAdmin('User').getValidations()
 		});
 	});
 
@@ -71,7 +75,8 @@ module.exports = function mount(userAPI) {
 			return res.redirect('/users/home');
 		}
 		res.render('users/login', {
-			csrfToken: req.csrfToken()
+			csrfToken: req.csrfToken(),
+			validators: getAdmin('User').getValidations()
 		});
 	});
 
@@ -81,7 +86,8 @@ module.exports = function mount(userAPI) {
 		}
 		res.render('users/email-change', {
 			user: req.antisocialUser,
-			csrfToken: req.csrfToken()
+			csrfToken: req.csrfToken(),
+			validators: getAdmin('User').getValidations()
 		});
 	});
 
@@ -91,7 +97,8 @@ module.exports = function mount(userAPI) {
 		}
 		res.render('users/password-change', {
 			user: req.antisocialUser,
-			csrfToken: req.csrfToken()
+			csrfToken: req.csrfToken(),
+			validators: getAdmin('User').getValidations()
 		});
 	});
 
@@ -100,7 +107,8 @@ module.exports = function mount(userAPI) {
 			return res.sendStatus(401).send('Already logged in.');
 		}
 		res.render('users/password-reset', {
-			csrfToken: req.csrfToken()
+			csrfToken: req.csrfToken(),
+			validators: getAdmin('User').getValidations()
 		});
 	});
 
@@ -142,7 +150,8 @@ module.exports = function mount(userAPI) {
 			}
 			res.render('users/password-set', {
 				token: req.query.token,
-				csrfToken: req.csrfToken()
+				csrfToken: req.csrfToken(),
+				validators: getAdmin('User').getValidations()
 			});
 		});
 	});

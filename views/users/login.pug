@@ -10,7 +10,7 @@ block content
 			.reg-form.clear-fix.mdc-elevation--z1
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input#email.mdc-text-field__input(name="email" data-validate= {notEmpty:true,isEmail:true} value="")
+						input#email.mdc-text-field__input(name="email" data-validate= validators.email value="")
 						label.mdc-floating-label(for="email") Email Address
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -19,7 +19,7 @@ block content
 						
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input#password.mdc-text-field__input(type="password" name="password" data-validate= {notEmpty:true,len:[8,20],isPassword:true}  value="")
+						input#password.mdc-text-field__input(type="password" name="password" data-validate= {isPassword:true}  value="")
 						label.mdc-floating-label(for="password") Password
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple

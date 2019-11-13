@@ -20,7 +20,7 @@ block content
 		
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(name="confirm-email" data-validate= {notEmpty:true,isEmail:true} data-match="input[name='email']")
+						input.mdc-text-field__input(name="confirm-email" data-validate= validators.email data-match="input[name='email']")
 						label.mdc-floating-label Confirm Email Address
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -30,7 +30,7 @@ block content
 		
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(type="password" name="password" data-validate= {notEmpty:true,len:[8,20],isPassword:true})
+						input.mdc-text-field__input(type="password" name="password" data-validate= {isPassword:true})
 						label.mdc-floating-label Password
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -40,7 +40,7 @@ block content
 		
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(type="password" name="confirm-password" data-validate= {notEmpty:true,len:[8,20],isPassword:true} data-match="input[name='password']")
+						input.mdc-text-field__input(type="password" name="confirm-password" data-validate= {isPassword:true} data-match="input[name='password']")
 						label.mdc-floating-label Confirm Password
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -50,7 +50,7 @@ block content
 		
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(name="username" data-validate= {notEmpty:true, len: [4, 20], is: ['^[a-zA-Z0-9-]+$', '']} data-unique-endpoint= "/api/users/is-unique-username")
+						input.mdc-text-field__input(name="username" data-validate= validators.username data-unique-endpoint= "/api/users/is-unique-username")
 						label.mdc-floating-label Username - set your unique name
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple

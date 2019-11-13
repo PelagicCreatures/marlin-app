@@ -3,6 +3,7 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
 const express = require('express');
+const getAdmin = require('../../../lib/admin').getAdmin;
 
 const {
 	validatePayload
@@ -29,14 +30,11 @@ module.exports = (usersApp) => {
 
 		debug('/login');
 
+		let validators = getAdmin('User').getValidations();
+
 		let errors = validatePayload(req.body, {
-			email: {
-				notEmpty: true,
-				isEmail: true
-			},
+			email: validators.email,
 			password: {
-				notEmpty: true,
-				len: [8, 20],
 				isPassword: true
 			}
 		}, {
@@ -49,6 +47,8 @@ module.exports = (usersApp) => {
 				.status(422)
 				.json({
 					status: 'error',
+					flashLevel: 'danger',
+					flashMessage: 'Failed - invalid input.',
 					errors: errors
 				});
 		}

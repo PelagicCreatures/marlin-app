@@ -4,6 +4,8 @@ const async = require('async');
 const request = require('request');
 const csrf = require('csurf');
 const express = require('express');
+const getAdmin = require('../../../lib/admin').getAdmin;
+
 const {
 	validatePayload
 } = require('../../../lib/validator-extensions');
@@ -28,27 +30,16 @@ module.exports = (usersApp) => {
 
 		debug('/register', req.body);
 
-		let validators = {
-			email: {
-				notEmpty: true,
-				isEmail: true
-			},
-			password: {
-				notEmpty: true,
-				len: [8, 20],
-				isPassword: true
-			},
-			username: {
-				notEmpty: true,
-				len: [4, 20],
-				is: ['^[a-zA-Z0-9-]+$', '']
-			},
-			name: {
-				len: [0, 60]
-			}
-		};
+		let validators = getAdmin('User').getValidations();
 
-		let errors = validatePayload(req.body, validators, {
+		let errors = validatePayload(req.body, {
+			email: validators.email,
+			username: validators.username,
+			name: validators.name,
+			password: {
+				isPassword: true
+			}
+		}, {
 			strict: true,
 			additionalProperties: ['g-recaptcha-response', '_csrf']
 		});

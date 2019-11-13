@@ -3,6 +3,8 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
 const express = require('express');
+const getAdmin = require('../../../lib/admin').getAdmin;
+
 const {
 	validatePayload
 } = require('../../../lib/validator-extensions');
@@ -32,13 +34,11 @@ module.exports = (usersApp) => {
 
 		debug('/passord-set', req.body);
 
+		let validators = getAdmin('Token').getValidations();
+
 		let errors = validatePayload(req.body, {
-			token: {
-				notEmpty: true
-			},
+			token: validators.token,
 			password: {
-				notEmpty: true,
-				len: [8, 20],
 				isPassword: true
 			}
 		}, {

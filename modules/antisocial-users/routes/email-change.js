@@ -3,6 +3,7 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
 const express = require('express');
+const getAdmin = require('../../../lib/admin').getAdmin;
 
 const csrfProtection = csrf({
 	cookie: {
@@ -32,11 +33,10 @@ module.exports = (usersApp) => {
 
 		debug('/email-change', req.body);
 
+		let validators = getAdmin('User').getValidations();
+
 		let errors = validatePayload(req.body, {
-			email: {
-				notEmpty: true,
-				isEmail: true
-			}
+			email: validators.email
 		}, {
 			strict: true,
 			additionalProperties: ['_csrf']

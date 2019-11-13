@@ -34,13 +34,9 @@ module.exports = (usersApp) => {
 
 		let errors = validatePayload(req.body, {
 			oldpassword: {
-				notEmpty: true,
-				len: [8, 20],
 				isPassword: true
 			},
 			password: {
-				notEmpty: true,
-				len: [8, 20],
 				isPassword: true
 			}
 		}, {
