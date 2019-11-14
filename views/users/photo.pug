@@ -1,0 +1,19 @@
+extends ../wrapper
+
+block content
+	.page-header
+		h2 
+			<i class="material-icons">person</i> 
+			= user.username + ' profile photo'
+
+	.admin-form-container
+		.admin-form.clear-fix.mdc-elevation--z1
+			
+			form.form-validation(action="/users/profile-photo" method="PATCH" data-jsclass="formController,formValidator" data-submitter="#submitter")
+				table
+					tr
+						td!= uploadFormElement
+				section.form-group.pull-right.button-bar
+					a.mdc-button(href="/users/settings") Cancel
+					button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
+						span.mdc-button__label Save

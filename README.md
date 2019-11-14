@@ -57,7 +57,9 @@ install mysql and create tables (see below)
 `grunt devel &` run grunt in watch mode
 `NODE_ENV=localdev DEBUG=antisocial* npm start` start web services
 
-got to http://localhost:3000 in your browser
+got to http://localhost:3000 in your browser and create a login
+
+NOTE: the first user created will have superuser admin permissions
 
 As you make changes in assets/ css and js grunt and webpach will recompile client side bundles.
 

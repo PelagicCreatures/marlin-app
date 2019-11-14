@@ -25,9 +25,62 @@ module.exports = function mount(userAPI) {
 		}
 		res.render('users/home', {
 			user: req.antisocialUser,
-			flash: req.query.flash
+			flash: req.query.flash,
 		});
 	});
+
+	router.get('/users/photo', getUserForRequestMiddleware(userAPI), function (req, res, next) {
+		if (!req.antisocialUser) {
+			return res.sendStatus(401);
+		}
+
+		let admin = getAdmin('User').getColumn('profilePhoto');
+
+		res.render('users/photo', {
+			user: req.antisocialUser,
+			uploadFormElement: admin.getForm(req.antisocialUser)
+		});
+	});
+
+	router.patch('/users/profile-photo', getUserForRequestMiddleware(userAPI), express.json({
+		limit: '20mb'
+	}), function (req, res, next) {
+		if (!req.antisocialUser) {
+			return res.sendStatus(401);
+		}
+
+		let admin = getAdmin('User').getColumn('profilePhoto');
+
+		let patch = {};
+
+		admin.handleUpdate(req.antisocialUser, req.body.User, patch, (err) => {
+			if (err) {
+				return res.send({
+					status: 'error',
+					flashLevel: 'danger',
+					flashMessage: 'Error saving profile photo',
+					errors: [err.message]
+				});
+			}
+
+			userAPI.db.updateInstance('User', req.antisocialUser.id, patch, function (err) {
+				if (err) {
+					return res.send({
+						status: 'error',
+						flashLevel: 'danger',
+						flashMessage: 'Error saving profile photo',
+						errors: [err.message]
+					});
+				}
+
+				return res.send({
+					status: 'ok',
+					flashLevel: 'info',
+					flashMessage: 'saved'
+				});
+			});
+		});
+	})
 
 	router.get('/users/settings', getUserForRequestMiddleware(userAPI), function (req, res, next) {
 		if (!req.antisocialUser) {

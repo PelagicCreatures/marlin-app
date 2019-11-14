@@ -10,6 +10,7 @@ block content
 		p.alert= flash
 		
 	.page-content
+		
 		if !user.validated
 			p.alert Please check your email to confirm and validate your email address. If you did not recieve the email <a class="mdc-theme--secondary" href="/users/email-change">click here</a> to resend.
 				
@@ -17,3 +18,9 @@ block content
 			p Hi subscriber!
 		.hidden-is-subscriber
 			p Hi, why not <a href="/users/subscription">subscribe now</a>!
+
+		if user.profilePhoto
+			p= user.profilePhoto
+			-let metadata = JSON.parse(user.profilePhoto)
+			if metadata.filename
+				img.profile-photo(src= '/uploads/' + metadata.filename)

@@ -35,6 +35,13 @@ module.exports = (sequelize, DataTypes) => {
         hidden: true
       }
     },
+    profilePhoto: {
+      type: Sequelize.STRING(512),
+      ADMIN: {
+        inputType: 'image',
+        accepts: 'image/*'
+      }
+    },
     validated: {
       type: Sequelize.INTEGER
     },

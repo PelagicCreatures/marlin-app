@@ -4,7 +4,7 @@
 			!= thumb
 	.uploadable-form
 		p.metadata
-			if metadata
+			if metadata && metadata.type
 				| type: <strong>#{metadata.type}</strong> w: <strong>#{metadata.width}</strong> h: <strong>#{metadata.height}</strong>
 			
 		input(type="hidden" data-name= columnName name= name value= value)
