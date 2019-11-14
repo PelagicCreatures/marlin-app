@@ -104,6 +104,36 @@ module.exports = (usersApp) => {
 				});
 			},
 			function (user, cb) {
+				usersApp.db.getInstances('User', {}, (err, users, count) => {
+					if (err) {
+						cb(new VError(err, 'checking if first user'));
+					}
+					if (count > 1) {
+						return cb(null, user);
+					}
+					// make the first user the superuser
+					usersApp.db.getInstances('Role', {
+						where: {
+							description: 'superuser'
+						}
+					}, (err, roles) => {
+						if (err) {
+							cb(new VError(err, 'first user finding superuser role'));
+						}
+
+						usersApp.db.newInstance('UserRole', {
+							userId: user.id,
+							roleId: roles[0].id
+						}, (err) => {
+							if (err) {
+								return cb(new VError(err, 'first user attaching superuser role'));
+							}
+							cb(null, user);
+						});
+					});
+				});
+			},
+			function (user, cb) {
 				createToken(user, {
 					ip: ip
 				}, function (err, token) {
