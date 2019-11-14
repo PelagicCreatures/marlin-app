@@ -16,6 +16,7 @@ function formValidator(elem, options) {
 	this.submitter = this.element.find(this.element.data('submitter'));
 	this.uniqueDebounce = null;
 	this.lookupDebounce = null;
+	this.dirty = false;
 
 	var self = this;
 
@@ -25,6 +26,8 @@ function formValidator(elem, options) {
 		this.element.find('[data-autofocus="true"]').focus();
 
 		self.element.on('change blur focus keyup input', ':input', function (e) {
+			self.dirty = true;
+
 			if ($(this).attr('name')) {
 				$(this).data('touched', true);
 				$(this).closest('.form-group').addClass('touched');
@@ -78,7 +81,9 @@ function formValidator(elem, options) {
 			}
 			else {
 				self.valid = true;
-				$(self.submitter).prop('disabled', false).removeClass('disabled');
+				if (self.dirty) {
+					$(self.submitter).prop('disabled', false).removeClass('disabled');
+				}
 			}
 
 			if (cb) {

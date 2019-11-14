@@ -1,15 +1,17 @@
-# Example Boilerplate Node ExpressJS Web Application
+# Boilerplate Node ExpressJS Web Application
 
-This repository is a boilerplate app that includes many common functions of a registered user web app. As web apps are usually javascript intensive we use HIJAX to load pages after the initial load. The HIJAX implementation is transparent to the user and to search engines.
+This repository is a boilerplate app that includes many common functions of a web site/app featuring registered users. As web apps are usually javascript intensive we use HIJAX to load pages after the initial load. This HIJAX implementation is transparent to the user and to search engines. This can be used as a starting point for many types of web projects.
 
 ### Features
 	* ExpressJS framework w/Pug templates
 	* Material Design Availability
 	* Responsive design
 	* HIJAXed pages
-	* Admin data editing UI suite built from data model (list, view, create, edit, delete)
-	* User API (register, login, logout, email validation, password reset etc)
-	* Ajax forms and input validation
+	* Data model driven database (sequelize)
+	* Complete User API (register, login, logout, email validation, password reset etc)
+	* Admin data editing UI suite automatically built from data model.
+	* ACL access control on tables by user role (superuser, admin, etc.)
+	* Ajax forms and unified input validation
 	* Stripe for subscription plans
 	* Packaging automation for client distribution using webpack (sass, ES6) and grunt
 	* ReCaptcha v3 support for registration
@@ -23,8 +25,8 @@ This repository is a boilerplate app that includes many common functions of a re
 		* modules/ - ES6 modules
 		* scss/ - scss source
 		* stylus/ - stylus source
-		* app.js - webpack bundle app
-	* bin/ - express server
+		* app.js - webpack bundle
+	* bin/ - express server listener
 	* config/
 	* lib/
 	* migrations/
@@ -41,58 +43,11 @@ This repository is a boilerplate app that includes many common functions of a re
 	* seeders/
 	* tests/ - mocha testing suite
 	* views/ - pug templates for pages
+		* admin/ - site admin UI
 		* components/ - reusable page components
 		* shared/ - client/server shared templates
 		* users/ - user pages
-		wrapper.pug - html wrapper
-	* working/
+		* wrapper.pug - html wrapper
 	* app.js - express app
 	* gruntfile.js - grunt automation
 	* webpack.config.js - webpack automation for ES6 and SCSS (material.io etc)
-
-## Development
-install mysql and create tables (see below)
-`npm install` install packages
-`npm run watch &` run webpack in watch mode
-`grunt devel &` run grunt in watch mode
-`NODE_ENV=localdev DEBUG=antisocial* npm start` start web services
-
-got to http://localhost:3000 in your browser and create a login
-
-NOTE: the first user created will have superuser admin permissions
-
-As you make changes in assets/ css and js grunt and webpach will recompile client side bundles.
-
-### Environment Variables
-NODE_ENV:
-TESTING:
-DB_DIALECT:
-DB_HOST:
-DB_USER:
-DB_PASSWD:
-DB_DBNAME:
-COOKIE_DOMAIN:
-PUBLIC_HOST:
-RECAPTCHA_PUBLIC:
-RECAPTCHA_SECRET:
-STRIPE_PUBLIC:
-STRIPE_SECRET:
-STRIPE_YEARLY:
-STRIPE_MONTHLY:
-
-### client side pug
-```
-pug --client --no-debug --pretty --out working/templates --name pugTemplate  views/shared/test.pug
-
-pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  views/shared/confirm-dialog.pug
-```
-
-### Testing stripe webook (stripe cli https://github.com/stripe/stripe-cli)
-stripe listen --forward-to localhost:3000/api/users/stripe-webhook
-
-### Testing DB - mysql running on localhost
-
-```
-NODE_ENV=local npx sequelize-cli db:migrate
-NODE_ENV=local npx sequelize-cli db:seed:all
-```

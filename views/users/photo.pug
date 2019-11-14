@@ -9,7 +9,7 @@ block content
 	.admin-form-container
 		.admin-form.clear-fix.mdc-elevation--z1
 			
-			form.form-validation(action="/users/profile-photo" method="PATCH" data-jsclass="formController,formValidator" data-submitter="#submitter")
+			form.form-validation(action="/users/profile-photo" method="PATCH" data-jsclass="formController,formValidator" data-submitter="#submitter" data-redirect="/users/settings")
 				table
 					tr
 						td!= uploadFormElement

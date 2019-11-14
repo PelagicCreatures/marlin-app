@@ -5,9 +5,9 @@ block content
 	if admin.options.parent
 		- back = mountpoint + '/' + admin.options.parent.table + '/' + row[admin.options.parent.fk]
 
-	.admin-form-container
-		.admin-form.clear-fix.mdc-elevation--z1
-			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
+	.admin-container
+		.admin.clear-fix.mdc-elevation--z1
+			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
 			
 				.page-header
 					h2
@@ -23,16 +23,17 @@ block content
 					//pre= JSON.stringify(admin.getOptions(),"",2)
 					
 				.page-content
-					form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
-						table
-							for property in admin.options.editColumns
-								tr
-									td.label= admin.getColumn(property).options.label
-									td.data!= admin.getColumn(property).getForm(row)
+					.admin-form
+						form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
+							table
+								for property in admin.options.editColumns
+									tr
+										td.label= admin.getColumn(property).options.label
+										td.data!= admin.getColumn(property).getForm(row)
 
-						section.form-group.pull-right.button-bar
-							a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel
-							button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
-								span.mdc-button__label Save
+							section.form-group.pull-right.button-bar
+								a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel
+								button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
+									span.mdc-button__label Save
 							
 						.ajax-errors

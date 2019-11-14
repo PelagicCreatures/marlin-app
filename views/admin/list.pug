@@ -1,9 +1,9 @@
 extends ../wrapper
 
 block content
-	.admin-form-container
-		.admin-form.clear-fix.mdc-elevation--z1
-			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name)
+	.admin-container
+		.admin.clear-fix.mdc-elevation--z1
+			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name)
 				
 				.page-header
 					h2
@@ -27,7 +27,7 @@ block content
 									
 						else
 							
-							section.search-form
+							section.admin-search
 								form.form-validation(data-jsclass="formValidator" data-submitter=".search-button")
 									.form-group
 										table
@@ -35,9 +35,10 @@ block content
 												td
 													input(type="text" name="q" placeholder="Search " + admin.name data-validate={notEmpty:true})
 												td
-													select(name="property")
+													select.select-css(name="property")
 														for prop in admin.options.searchColumns
 															option(value= prop)= prop
+												td
 													button.mdc-button.mdc-button--raised.search-button
 														span.mdc-button__label Go
 
@@ -45,16 +46,17 @@ block content
 							section
 								p No rows found
 					else
-						.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
-							ul
-								li id
-								for property in admin.options.listColumns
-									li= property
-							ul
-								for row in rows
-									li.instance-select= row.id
-										ul
-											for col in admin.options.listColumns
-												li!= admin.getColumn(col).getDisplayValue(row)
-						
+						.admin-form
+							.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+								ul
+									li id
+									for property in admin.options.listColumns
+										li= property
+								ul
+									for row in rows
+										li.instance-select= row.id
+											ul
+												for col in admin.options.listColumns
+													li!= admin.getColumn(col).getDisplayValue(row)
+							
 						include pagination

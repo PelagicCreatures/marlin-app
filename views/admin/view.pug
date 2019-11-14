@@ -5,9 +5,9 @@ block content
 	if admin.options.parent
 		- back = mountpoint + '/' + admin.options.parent.table + '/' + row[admin.options.parent.fk]
 
-	.admin-form-container
-		.admin-form.clear-fix.mdc-elevation--z1
-			.admin(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
+	.admin-container
+		.admin.clear-fix.mdc-elevation--z1
+			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
 				.page-header
 					h2
 						a(href= back)
@@ -20,47 +20,48 @@ block content
 					//pre= JSON.stringify(admin.getOptions(),"",2)
 
 				.page-content
-					table
-						tr
-							td
-								= 'Row: '
-								em= row.id
-							td
-								.button-bar.pull-right
-									button.mdc-button.edit-button
-										i.material-icons edit
-									button.mdc-button.delete-button
-										i.material-icons delete_forever
-								
-						for assoc in admin.associations
-							if assoc.relationship === 'BelongsTo'
-								tr
-									td= assoc.as
-									td
-										if row[assoc.as]
-											a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
-												= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
-											
-						for property in admin.options.viewColumns
+					.admin-form
+						table
 							tr
-								td= property
-								td!= admin.getColumn(property).getDisplayValue(row)
-								
-					for assoc in admin.associations
-						if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
-							// p= JSON.stringify(assoc)
-							p
-								button.mdc-button.add-button(data-target= assoc.through ? assoc.through : assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
-									i.material-icons add_circle
-								
-								= assoc.as
-								table
-									for rel in row[assoc.as]
-										tr
-											td
-												if rel.ADMIN
-													a(href= mountpoint + '/' + rel.ADMIN.through + '/' + rel.ADMIN.id)= rel[adminTables[assoc.target].options.defaultColumn]
+								td
+									= 'Row: '
+									em= row.id
+								td
+									.button-bar.pull-right
+										button.mdc-button.edit-button
+											i.material-icons edit
+										button.mdc-button.delete-button
+											i.material-icons delete_forever
+									
+							for assoc in admin.associations
+								if assoc.relationship === 'BelongsTo'
+									tr
+										td= assoc.as
+										td
+											if row[assoc.as]
+												a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
+													= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
+												
+							for property in admin.options.viewColumns
+								tr
+									td= property
+									td!= admin.getColumn(property).getDisplayValue(row)
+									
+						for assoc in admin.associations
+							if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
+								// p= JSON.stringify(assoc)
+								p
+									button.mdc-button.add-button(data-target= assoc.through ? assoc.through : assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
+										i.material-icons add_circle
+									
+									= assoc.as
+									table
+										for rel in row[assoc.as]
+											tr
+												td
+													if rel.ADMIN
+														a(href= mountpoint + '/' + rel.ADMIN.through + '/' + rel.ADMIN.id)= rel[adminTables[assoc.target].options.defaultColumn]
 
-												else
-													a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[adminTables[assoc.target].options.defaultColumn]
-						
+													else
+														a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[adminTables[assoc.target].options.defaultColumn]
+							
