@@ -102,10 +102,10 @@ var didLogOut = () => {
 
 var checkSubscription = () => {
 	if (App.Cookies.get('subscriber')) {
-		$('body').removeClass('dont-have-subscription').addClass('have-subscription');
+		$('body').removeClass('not-subscriber').addClass('is-subscriber');
 	}
 	else {
-		$('body').removeClass('have-subscription').addClass('dont-have-subscription');
+		$('body').removeClass('is-subscriber').addClass('not-subscriber');
 	}
 
 	if (App.Cookies.get('admin')) {

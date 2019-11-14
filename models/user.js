@@ -57,7 +57,16 @@ module.exports = (sequelize, DataTypes) => {
     ADMIN: {
       defaultColumn: 'email',
       listColumns: ['email', 'username', 'validated'],
-      searchColumns: ['email']
+      searchColumns: ['email'],
+      ACL: [{
+        permission: 'deny',
+        roles: ['*'],
+        actions: ['*']
+      }, {
+        permission: 'allow',
+        roles: ['superuser'],
+        actions: ['create', 'view', 'edit', 'delete']
+      }]
     }
   });
 
@@ -79,10 +88,20 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false,
     ADMIN: {
+      hidden: true,
       parent: {
         table: 'User',
         fk: 'userId'
-      }
+      },
+      ACL: [{
+        permission: 'deny',
+        roles: ['*'],
+        actions: ['*']
+      }, {
+        permission: 'allow',
+        roles: ['superuser'],
+        actions: ['create', 'view', 'edit', 'delete']
+      }]
     }
   });
 

@@ -19,7 +19,16 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     ADMIN: {
       defaultColumn: 'description',
-      listColumns: ['description']
+      listColumns: ['description'],
+      ACL: [{
+        permission: 'deny',
+        roles: ['*'],
+        actions: ['*']
+      }, {
+        permission: 'allow',
+        roles: ['superuser'],
+        actions: ['create', 'view', 'edit', 'delete']
+      }]
     }
   });
 

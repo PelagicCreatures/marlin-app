@@ -37,12 +37,22 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     ADMIN: {
+      hidden: true,
       defaultColumn: 'lastaccess',
       listColumns: ['type', 'ip', 'lastaccess'],
       parent: {
         table: 'User',
         fk: 'userId'
-      }
+      },
+      ACL: [{
+        permission: 'deny',
+        roles: ['*'],
+        actions: ['*']
+      }, {
+        permission: 'allow',
+        roles: ['superuser'],
+        actions: ['create', 'view', 'edit', 'delete']
+      }]
     }
   });
 
