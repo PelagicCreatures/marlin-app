@@ -53,22 +53,23 @@ block content
 										= property
 										ul
 											li.data!= admin.getColumn(property).getDisplayValue(row)
-									
-						for assoc in admin.associations
-							if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
-								// p= JSON.stringify(assoc)
-								p
-									button.mdc-button.add-button(data-target= assoc.through ? assoc.through : assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
-										i.material-icons add_circle
-									
-									= assoc.as
-									table
-										for rel in row[assoc.as]
-											tr
-												td
-													if rel.ADMIN
-														a(href= mountpoint + '/' + rel.ADMIN.through + '/' + rel.ADMIN.id)= rel[adminTables[assoc.target].options.defaultColumn]
+						
+						if !admin.options.skipReferences
+							for assoc in admin.associations
+								if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
+									// p= JSON.stringify(assoc)
+									p
+										button.mdc-button.add-button(data-target= assoc.through ? assoc.through : assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
+											i.material-icons add_circle
+										
+										= assoc.as
+										table
+											for rel in row[assoc.as]
+												tr
+													td
+														if rel.ADMIN
+															a(href= mountpoint + '/' + rel.ADMIN.through + '/' + rel.ADMIN.id)= rel[adminTables[assoc.target].options.defaultColumn]
 
-													else
-														a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[adminTables[assoc.target].options.defaultColumn]
-							
+														else
+															a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[adminTables[assoc.target].options.defaultColumn]
+								

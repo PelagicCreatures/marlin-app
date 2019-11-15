@@ -71,6 +71,14 @@ function adminController(elem, options) {
 			self.API(method, endpoint, data);
 		});
 
+		this.element.on('mouseenter', '.select-row', function (e) {
+			$(this).closest('tr').addClass('hovering');
+		});
+
+		this.element.on('mouseleave', '.select-row', function (e) {
+			$(this).closest('tr').removeClass('hovering');
+		});
+
 		this.element.on('click', '.select-row', function (e) {
 			e.preventDefault();
 			var id = parseInt($(this).data('row'));
