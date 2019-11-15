@@ -36,8 +36,31 @@ function adminController(elem, options) {
 
 		this.element.on('click', '.delete-button', function (e) {
 			e.preventDefault();
-			let endpoint = self.mountpoint + '/' + self.model + '/' + self.id;
-			self.API('DELETE', endpoint);
+
+			let html = confirmDialogTemplate({
+				title: 'Please Confirm',
+				prompt: 'Delete this row?'
+			});
+
+			$('#ephemeral').append($(html));
+
+			let dialog = App.MDC.MDCDialog.attachTo(document.querySelector('#confirm-dialog'));
+			$('#confirm-dialog').data('mdc-dialog', dialog);
+
+			dialog.listen('MDCDialog:closed', function (e) {
+				$('body').removeClass('modal-open');
+				if (e.detail.action === 'accept') {
+					let endpoint = self.mountpoint + '/' + self.model + '/' + self.id;
+					self.API('DELETE', endpoint);
+				}
+
+				dialog.destroy();
+				$('#ephemeral').empty();
+			});
+
+			$('body').addClass('modal-open');
+			dialog.open();
+
 		});
 
 		this.element.on('click', '.search-button', function (e) {

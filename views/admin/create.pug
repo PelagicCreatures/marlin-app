@@ -30,7 +30,7 @@ block content
 							
 									for property in admin.options.editColumns
 										if property !== fk
-											li.label
+											li.label.edit
 												= admin.getColumn(property).options.label
 												ul
 													li!= admin.getColumn(property).getForm(row)
