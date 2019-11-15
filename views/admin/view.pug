@@ -21,31 +21,38 @@ block content
 
 				.page-content
 					.admin-form
-						table
-							tr
-								td
-									= 'Row: '
-									em= row.id
-								td
-									.button-bar.pull-right
-										button.mdc-button.edit-button
-											i.material-icons edit
-										button.mdc-button.delete-button
-											i.material-icons delete_forever
+						.button-bar.pull-right
+							button.mdc-button.edit-button
+								i.material-icons edit
+							button.mdc-button.delete-button
+								i.material-icons delete_forever
+								
+						.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+							ul
+								li
+								li
+							ul
+								li.label
+									= 'row'
+									ul
+										li= row.id
+											
 									
-							for assoc in admin.associations
-								if assoc.relationship === 'BelongsTo'
-									tr
-										td= assoc.as
-										td
-											if row[assoc.as]
-												a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
-													= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
+								for assoc in admin.associations
+									if assoc.relationship === 'BelongsTo'
+										li.label
+											= assoc.as
+											ul
+												li.data
+													if row[assoc.as]
+														a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
+															= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
 												
-							for property in admin.options.viewColumns
-								tr
-									td= property
-									td!= admin.getColumn(property).getDisplayValue(row)
+								for property in admin.options.viewColumns
+									li.label
+										= property
+										ul
+											li.data!= admin.getColumn(property).getDisplayValue(row)
 									
 						for assoc in admin.associations
 							if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'

@@ -62,7 +62,7 @@ var boot = () => {
 
 	window.setTimeout(function () {
 		$('#splash').fadeOut('fast');
-	}, 1000);
+	}, 500);
 
 	$(document).ajaxStart(function () {
 		progressBar(true);

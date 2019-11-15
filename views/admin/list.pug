@@ -54,9 +54,9 @@ block content
 										li= property
 								ul
 									for row in rows
-										li.instance-select= row.id
+										li.select-row(data-row= row.id)= row.id
 											ul
 												for col in admin.options.listColumns
-													li!= admin.getColumn(col).getDisplayValue(row)
+													li.select-row(data-row= row.id)!= admin.getColumn(col).getDisplayValue(row)
 							
 						include pagination

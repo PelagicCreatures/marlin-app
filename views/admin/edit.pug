@@ -25,11 +25,16 @@ block content
 				.page-content
 					.admin-form
 						form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
-							table
-								for property in admin.options.editColumns
-									tr
-										td.label= admin.getColumn(property).options.label
-										td.data!= admin.getColumn(property).getForm(row)
+							.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+								ul
+									li
+									li
+								ul
+									for property in admin.options.editColumns
+										li.label.edit
+											= admin.getColumn(property).options.label
+											ul
+												li.data!= admin.getColumn(property).getForm(row)
 
 							section.form-group.pull-right.button-bar
 								a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel

@@ -71,9 +71,9 @@ function adminController(elem, options) {
 			self.API(method, endpoint, data);
 		});
 
-		this.element.on('click', '.flextable-row', function (e) {
+		this.element.on('click', '.select-row', function (e) {
 			e.preventDefault();
-			var id = parseInt($(this).find('.flextable-row-header').html());
+			var id = parseInt($(this).data('row'));
 			loadPage(self.mountpoint + '/' + self.model + '/' + id)
 		});
 	}
