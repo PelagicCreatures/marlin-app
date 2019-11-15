@@ -22,12 +22,18 @@ block content
 						form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
 							if fk
 								input(type="hidden" name= admin.name + '['+fk+']' value= belongsTo)
-							table
-								for property in admin.options.editColumns
-									if property !== fk
-										tr
-											td.label= admin.getColumn(property).options.label
-											td!= admin.getColumn(property).getForm(row)
+							.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+								ul
+									li
+									li
+								ul
+							
+									for property in admin.options.editColumns
+										if property !== fk
+											li.label
+												= admin.getColumn(property).options.label
+												ul
+													li!= admin.getColumn(property).getForm(row)
 
 							section.form-group.pull-right.button-bar
 								a.mdc-button(href= mountpoint + '/' + admin.name) Cancel
