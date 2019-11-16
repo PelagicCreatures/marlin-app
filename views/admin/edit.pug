@@ -34,7 +34,7 @@ block content
 										li.label.edit
 											= admin.getColumn(property).options.label
 											ul
-												li.data!= admin.getColumn(property).getForm(row)
+												li.data!= admin.getColumn(property).getForm(row, prepared[property])
 
 							section.form-group.pull-right.button-bar
 								a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel

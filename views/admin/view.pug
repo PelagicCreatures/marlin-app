@@ -53,7 +53,7 @@ block content
 									li.label
 										= property
 										ul
-											li.data!= admin.getColumn(property).getDisplayValue(row)
+											li.data!= admin.getColumn(property).getDisplayValue(row,prepared[property])
 						
 						for dependant in dependants
 							p
@@ -69,8 +69,11 @@ block content
 												- let relAdmin = adminTables[dependant.table]
 												a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
 		
-		p Dependants
-		pre= JSON.stringify(dependants,"",2)
+		//p prepared
+		//pre= JSON.stringify(prepared,"",2)
+												
+		//p Dependants
+		//pre= JSON.stringify(dependants,"",2)
 
-		p References:
-		pre= JSON.stringify(references,"",2)
+		//p References:
+		//pre= JSON.stringify(references,"",2)

@@ -57,6 +57,9 @@ block content
 										li.select-row(data-row= row.id)= row.id
 											ul
 												for col in admin.options.listColumns
-													li.select-row(data-row= row.id)!= admin.getColumn(col).getDisplayValue(row)
+													li.select-row(data-row= row.id)!= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
 							
 						include pagination
+	
+	p prepared
+	pre= JSON.stringify(prepared,"",2)
