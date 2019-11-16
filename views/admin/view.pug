@@ -55,22 +55,22 @@ block content
 										ul
 											li.data!= admin.getColumn(property).getDisplayValue(row)
 						
-						if !admin.options.skipReferences
-							for assoc in admin.associations
-								if assoc.relationship === 'HasMany' || assoc.relationship === 'BelongsToMany'
-									// p= JSON.stringify(assoc)
-									p
-										button.mdc-button.add-button(data-target= assoc.through ? assoc.through : assoc.target data-fk= assoc.foreignKey data-belongs-to= row.id)
-											i.material-icons add_circle
-										
-										= assoc.as
-										table
-											for rel in row[assoc.as]
-												tr
-													td
-														if rel.ADMIN
-															a(href= mountpoint + '/' + rel.ADMIN.through + '/' + rel.ADMIN.id)= rel[adminTables[assoc.target].options.defaultColumn]
-
-														else
-															a(href= mountpoint + '/' + assoc.target + '/' + rel.id)= rel[adminTables[assoc.target].options.defaultColumn]
+						for dependant in dependants
+							p
+								button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
+									i.material-icons add_circle
 								
+								= dependant.table + ' (' + dependant.rows.count + ' rows)'
+								
+								table
+									for rel in dependant.rows.rows
+										tr
+											td
+												- let relAdmin = adminTables[dependant.table]
+												a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+		
+		p Dependants
+		pre= JSON.stringify(dependants,"",2)
+
+		p References:
+		pre= JSON.stringify(references,"",2)

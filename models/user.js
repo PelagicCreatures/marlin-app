@@ -95,6 +95,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false,
     ADMIN: {
+      defaultColumn: 'roleId',
       hidden: true,
       parent: {
         table: 'User',
