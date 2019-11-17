@@ -14,8 +14,6 @@ block content
 							button.mdc-button.add-button
 								i.material-icons add_circle
 								
-					// pre= JSON.stringify(admin.getOptions(),"",2)
-
 				.page-content
 					if admin.options.searchColumns.length
 						if q
@@ -63,3 +61,9 @@ block content
 	
 	p prepared
 	pre= JSON.stringify(prepared,"",2)
+	
+	p Dependants
+	pre= JSON.stringify(dependants,"",2)
+
+	p References:
+	pre= JSON.stringify(references,"",2)

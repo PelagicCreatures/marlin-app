@@ -87,10 +87,7 @@ module.exports = (sequelize, DataTypes) => {
     userId: {
       type: Sequelize.INTEGER,
       unique: true,
-      allowNull: false,
-      ADMIN: {
-        hidden: true
-      }
+      allowNull: false
     }
   }, {
     timestamps: false,

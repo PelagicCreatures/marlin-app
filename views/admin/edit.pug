@@ -16,12 +16,11 @@ block content
 							i.material-icons arrow_back_ios
 						= admin.name + ' table edit row ' + row.id
 						
-						.pull-right
-							button.mdc-button.delete-button
-								i.material-icons delete_forever
-					
-					//pre= JSON.stringify(admin.getOptions(),"",2)
-					
+						if canDelete
+							.pull-right
+								button.mdc-button.delete-button
+									i.material-icons delete_forever
+										
 				.page-content
 					.admin-form
 						form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
@@ -31,10 +30,11 @@ block content
 									li
 								ul
 									for property in admin.options.editColumns
-										li.label.edit
-											= admin.getColumn(property).options.label
-											ul
-												li.data!= admin.getColumn(property).getForm(row, prepared[property])
+										if property !== fk
+											li.label.edit
+												= admin.getColumn(property).options.label
+												ul
+													li.data!= admin.getColumn(property).getForm(row, prepared[property])
 
 							section.form-group.pull-right.button-bar
 								a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel
@@ -45,3 +45,6 @@ block content
 		
 		// p prepared
 		// pre= JSON.stringify(prepared,"",2)
+		
+		p Refs
+		pre= JSON.stringify(refs,"",2)

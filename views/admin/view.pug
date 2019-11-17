@@ -17,16 +17,16 @@ block content
 							button.mdc-button.add-button
 								i.material-icons add_circle
 					
-					//pre= JSON.stringify(admin.getOptions(),"",2)
-
 				.page-content
 					.admin-form
 						.button-bar.pull-right
 							p
 								button.mdc-button.edit-button
 									i.material-icons edit
-								button.mdc-button.delete-button
-									i.material-icons delete_forever
+									
+								if canDelete
+									button.mdc-button.delete-button
+										i.material-icons delete_forever
 								
 						.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
 							ul
@@ -37,24 +37,19 @@ block content
 									= 'row'
 									ul
 										li= row.id
-											
-									
-								for assoc in admin.associations
-									if assoc.relationship === 'BelongsTo'
-										li.label
-											= assoc.as
-											ul
-												li.data
-													if row[assoc.as]
-														a(href= mountpoint + '/' + assoc.target + '/' + row[assoc.as].id)
-															= row[assoc.as][adminTables[assoc.target].options.defaultColumn]
-												
-								for property in admin.options.viewColumns
+								if fk
 									li.label
-										= property
+										= fk
 										ul
-											li.data!= admin.getColumn(property).getDisplayValue(row,prepared[property])
-						
+											li.data!= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
+										
+								for property in admin.options.viewColumns
+									if property !== fk
+										li.label
+											= property
+											ul
+												li.data!= admin.getColumn(property).getDisplayValue(row,prepared[property])
+											
 						for dependant in dependants
 							p
 								button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
@@ -69,11 +64,14 @@ block content
 												- let relAdmin = adminTables[dependant.table]
 												a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
 		
-		// p prepared
-		// pre= JSON.stringify(prepared,"",2)
+		p prepared
+		pre= JSON.stringify(prepared,"",2)
 
-		// p Dependants
-		// pre= JSON.stringify(dependants,"",2)
+		p Dependants
+		pre= JSON.stringify(dependants,"",2)
 
-		// p References:
-		// pre= JSON.stringify(references,"",2)
+		p References:
+		pre= JSON.stringify(references,"",2)
+		
+		p Associations
+		pre= JSON.stringify(assoc,"",2)
