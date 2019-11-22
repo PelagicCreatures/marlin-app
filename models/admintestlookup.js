@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 	}, {
 		timestamps: false,
 		ADMIN: {
+			behavior: 'child',
 			defaultColumn: 'description'
 		}
 	});

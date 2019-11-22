@@ -120,6 +120,11 @@ function formValidator(elem, options) {
 
 			var validations = input.data('validate');
 
+			// if we allow null and it is null, skip all other validation
+			if (!validations['notEmpty'] && !val) {
+				return cb(null, errors);
+			}
+
 			for (let test in validations) {
 				let opts = validations[test];
 				if (typeof opts === 'boolean') {

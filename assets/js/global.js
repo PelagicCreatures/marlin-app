@@ -232,6 +232,13 @@ var instantiateMaterialDesignElements = (element) => {
 		});
 	}
 
+	let chips = document.querySelectorAll('.mdc-chip-set');
+	if (chips && chips.length) {
+		chips.forEach((element) => {
+			App.MDC.MDCChipSet.attachTo(element);
+		});
+	}
+
 	let wantRipple = document.querySelectorAll('.mdc-fab,.mdc-button');
 	if (wantRipple && wantRipple.length) {
 		wantRipple.forEach((element) => {

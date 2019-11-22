@@ -73,6 +73,12 @@ import {
 }
 from '@material/linear-progress';
 
+import {
+	MDCChipSet
+}
+from '@material/chips';
+
+
 export {
 	MDCRipple,
 	MDCLineRipple,
@@ -87,5 +93,6 @@ export {
 	MDCCheckbox,
 	MDCSelect,
 	MDCSwitch,
-	MDCLinearProgress
+	MDCLinearProgress,
+	MDCChipSet
 }

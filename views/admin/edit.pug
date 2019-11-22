@@ -36,15 +36,26 @@ block content
 												ul
 													li.data!= admin.getColumn(property).getForm(row, prepared[property])
 
+									if !admin.options.skipReferences
+										// belongs to many relationships (through tables)
+										for manyThrough in admin.options.hasManyThrough
+											li.label
+												= manyThrough.as
+												ul
+													li.data!= admin.getColumn(manyThrough.as).getForm(row,prepared[manyThrough.as],{resolved:manyThroughs[manyThrough.as]})
+														
 							section.form-group.pull-right.button-bar
 								a.mdc-button(href= mountpoint + '/' + admin.name + '/' + row.id) Cancel
 								button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
 									span.mdc-button__label Save
 							
 						.ajax-errors
+	//	
+		p prepared
+		pre= JSON.stringify(prepared,"",2)
 		
-		// p prepared
-		// pre= JSON.stringify(prepared,"",2)
+		p manyThroughs
+		pre= JSON.stringify(manyThroughs,"",2)
 		
-		p Refs
-		pre= JSON.stringify(refs,"",2)
+		p Options
+		pre= JSON.stringify(admin.options,"",2)

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: Sequelize.STRING,
+      allowNull: true,
       len: [0, 60]
     },
     username: {
@@ -37,22 +38,27 @@ module.exports = (sequelize, DataTypes) => {
     },
     profilePhoto: {
       type: Sequelize.STRING(512),
+      allowNull: true,
       ADMIN: {
         inputType: 'image',
         accepts: 'image/*'
       }
     },
     validated: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      allowNull: true
     },
     stripeCustomer: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: true
     },
     stripeSubscription: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: true
     },
     stripeStatus: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: true
     },
     pendingEmail: {
       type: Sequelize.STRING,
@@ -72,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
       }, {
         permission: 'allow',
         roles: ['superuser'],
-        actions: ['create', 'view', 'edit', 'delete']
+        actions: ['view', 'edit', 'delete']
       }]
     }
   });

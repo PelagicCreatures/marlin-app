@@ -58,12 +58,12 @@ block content
 													li.select-row(data-row= row.id)!= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
 							
 						include pagination
-	
-	p prepared
-	pre= JSON.stringify(prepared,"",2)
-	
-	p Dependants
-	pre= JSON.stringify(dependants,"",2)
+	//	
+		p prepared
+		pre= JSON.stringify(prepared,"",2)
+		
+		p Dependants
+		pre= JSON.stringify(dependants,"",2)
 
-	p References:
-	pre= JSON.stringify(references,"",2)
+		p References:
+		pre= JSON.stringify(references,"",2)

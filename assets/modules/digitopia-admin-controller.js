@@ -107,6 +107,16 @@ function adminController(elem, options) {
 			var id = parseInt($(this).data('row'));
 			loadPage(self.mountpoint + '/' + self.model + '/' + id)
 		});
+
+		this.element.on('MDCChip:selection', '.mdc-chip', function (e) {
+
+			let selected = []
+			$(this).closest('.mdc-chip-set').find('.mdc-chip--selected').each(function () {
+				selected.push($(this).data('id'))
+			})
+			$(this).closest('.mdc-chip-set').find('input').val(selected.join(',')).trigger('change');
+
+		});
 	}
 
 	this.stop = function () {
@@ -114,6 +124,12 @@ function adminController(elem, options) {
 		this.element.off('click', '.add-button');
 		this.element.off('click', '.edit-button');
 		this.element.off('click', '.delete-button');
+		this.element.off('click', '.search-button');
+		this.element.off('click', '#submitter');
+		this.element.off('mouseenter', '.select-row');
+		this.element.off('mouseleave', '.select-row');
+		this.element.off('click', '.select-row');
+		this.element.off('MDCChip:selection', '.mdc-chip');
 	}
 
 	this.API = function (method, endpoint, data) {
