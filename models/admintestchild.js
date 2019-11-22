@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
 
-	const AdminTestLookup = sequelize.define('AdminTestLookup', {
+	const AdminTestChild = sequelize.define('AdminTestChild', {
 		id: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -28,5 +28,11 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	});
 
-	return AdminTestLookup;
+	AdminTestChild.associate = function (models) {
+		AdminTestChild.belongsTo(models.AdminTest, {
+			foreignKey: 'testId'
+		});
+	}
+
+	return AdminTestChild;
 };

@@ -52,11 +52,29 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		ADMIN: {
-			behavior: 'parent',
-			defaultColumn: 'textcolumn',
-			listColumns: ['textcolumn', 'profilePhoto', 'lookupId']
+			listColumns: ['textcolumn', 'profilePhoto', 'lookupId'],
+			ACL: [{
+				permission: 'deny',
+				roles: ['*'],
+				actions: ['*']
+			}, {
+				permission: 'allow',
+				roles: ['superuser'],
+				actions: ['create', 'view', 'edit', 'delete']
+			}]
 		}
 	});
+
+	AdminTest.associate = function (models) {
+		AdminTest.hasMany(models.AdminTestChild, {
+			foreignKey: 'testId'
+		});
+
+		AdminTest.belongsToMany(models.AdminTestMulti, {
+			through: 'MultiJoin',
+			foreignKey: 'testId'
+		});
+	};
 
 	return AdminTest;
 };

@@ -83,39 +83,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  const UserRole = sequelize.define('UserRole', {
-    id: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    userId: {
-      type: Sequelize.INTEGER,
-      unique: true,
-      allowNull: false
-    }
-  }, {
-    timestamps: false,
-    ADMIN: {
-      defaultColumn: 'roleId',
-      hidden: true,
-      parent: {
-        table: 'User',
-        fk: 'userId'
-      },
-      ACL: [{
-        permission: 'deny',
-        roles: ['*'],
-        actions: ['*']
-      }, {
-        permission: 'allow',
-        roles: ['superuser'],
-        actions: ['create', 'view', 'edit', 'delete']
-      }]
-    }
-  });
-
   User.associate = function (models) {
     User.hasMany(models.Token, {
       foreignKey: 'userId'

@@ -51,46 +51,55 @@ block content
 											ul
 												li.data!= admin.getColumn(property).getDisplayValue(row,prepared[property])
 						
-						if !admin.options.skipReferences
-							// belongs to many relationships (through tables)
-							for manyThrough in admin.options.hasManyThrough
-								if manyThroughs[manyThrough.as].rows.length
-									p= manyThrough.as
-									.mdc-chip-set
-										for through in manyThroughs[manyThrough.as].rows
-											.mdc-chip
-												.mdc-chip__ripple
-												span.mdc-chip__text= through.description
-							
-							// has many relationships
-							for dependant in dependants
-								p
-									button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
-										i.material-icons add_circle
-									
-									= dependant.table + ' (' + dependant.rows.count + ' rows)'
+						// belongs to many relationships (through tables)
+						for manyThrough in admin.options.hasManyThrough
+							if manyThroughs[manyThrough.as].rows.length
+								- let relAdmin = adminTables[manyThrough.target]
+								- let defaultColumn = relAdmin.options.defaultColumn
+								p= manyThrough.as
+								.mdc-chip-set
+									for through in manyThroughs[manyThrough.as].rows
+										.mdc-chip
+											.mdc-chip__ripple
+											span.mdc-chip__text= through[defaultColumn]
+						
+						// has many relationships
+						for dependant in dependants
+							- let relAdmin = adminTables[dependant.table]
+							p
+								button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
+									i.material-icons add_circle
 								
-								table
-									for rel in dependant.rows.rows
-										tr
-											td
-												- let relAdmin = adminTables[dependant.table]
-												a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+								= dependant.table + ' (' + dependant.rows.count + ' rows)'
+							
+							table
+								for rel in dependant.rows.rows
+									tr
+										td
+											a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+						
+						for ref in references
+							- let relAdmin = adminTables[ref.table]
+							p
+								= ref.table + ' (' + ref.rows.count + ' rows)'
+							if relAdmin
+								ul
+									for rel in ref.rows.rows
+										li
+											a(href= mountpoint + '/' + ref.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+						
 	//
 		p ManyThroughs
 		pre= JSON.stringify(manyThroughs,"",2)
 		
 		p Dependants
 		pre= JSON.stringify(dependants,"",2)
-
-		p Dependants
-		pre= JSON.stringify(dependants,"",2)
-
-		p References:
-		pre= JSON.stringify(references,"",2)
-		
+	
 		p Associations
 		pre= JSON.stringify(assoc,"",2)
-		
+			
 		p Options
 		pre= JSON.stringify(admin.options,"",2)
+		
+	p References:
+	pre= JSON.stringify(references,"",2)

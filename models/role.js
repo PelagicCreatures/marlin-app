@@ -18,9 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false,
     ADMIN: {
-      defaultColumn: 'description',
       listColumns: ['description'],
-      skipReferences: true,
       ACL: [{
         permission: 'deny',
         roles: ['*'],

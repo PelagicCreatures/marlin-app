@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
 
-	const AdminTestLookup = sequelize.define('AdminTestLookup', {
+	const AdminTestMulti = sequelize.define('AdminTestMulti', {
 		id: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -28,5 +28,13 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	});
 
-	return AdminTestLookup;
+
+	AdminTestMulti.associate = function (models) {
+		AdminTestMulti.belongsToMany(models.AdminTest, {
+			through: 'MultiJoin',
+			foreignKey: 'multiId'
+		});
+	};
+
+	return AdminTestMulti;
 };

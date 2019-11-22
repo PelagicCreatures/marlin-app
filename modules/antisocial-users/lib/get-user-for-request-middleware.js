@@ -201,7 +201,7 @@ function expireTokens(usersAPI) {
 			}
 		};
 		debug('expireTokens query %j', query);
-		usersAPI.db.tableDefs['Token'].destroy(query)
+		usersAPI.db.getModel('Token').destroy(query)
 			.then((result) => {
 				debug('expireTokens %j', result);
 			})
