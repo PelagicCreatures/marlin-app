@@ -44,18 +44,19 @@ h1,h2,h3,h4
 
 .page-header
 	padding-top: 1em
-	.no-icon
-		margin-left: 2em
-	.back-button
-		margin-left:.75em
-	.action
-		margin-right: 2em
+	.not-screen-xsmall &
+		.no-icon
+			margin-left: 2em
+		.back-button
+			margin-left:.75em
+		.action
+			margin-right: 2em
 
 .page-content
 	background-color: white
 	min-height: calc(80vh - 200px)
-	padding:1em
 	.not-screen-xsmall &
+		padding:1em
 		margin-left:2em
 		margin-right:2em
 
@@ -322,6 +323,10 @@ tr.hovering
 		background-color:white
 		border-radius: 4px
 		padding: .5em
+		.add-button, .delete-button, .edit-button
+			cursor:pointer
+			&:hover
+				color: red
 		.admin-search
 			input[type="text"],textarea
 				font-size:1em
@@ -331,8 +336,8 @@ tr.hovering
 			table
 				td
 					img
-						max-height: 200px
-						width:auto
+						max-width: 100%
+						height:auto
 			input[type="text"],textarea
 				font-size:1em
 				width: 100%
@@ -350,12 +355,20 @@ tr.hovering
 					box-shadow: 0 0 0 1px -moz-mac-focusring;
 					color: #222;
 					outline: none;
+			input[type="file"]
+				display: none
+			.file-upload-label
+				i
+					font-size: 2em
+					vertical-align: middle
+				cursor: pointer
 			.form-group
 				position:relative
 			.mdc-switch
 				margin: 1em
 			.label
-				width: 250px
+				.not-screen-xsmall &
+					width: 250px
 				&.edit
 					padding-top:18px
 				&:first-child
@@ -367,7 +380,7 @@ tr.hovering
 			.uploadable-preview
 				display:inline-block
 				img
-					margin-right:10px
+					padding-right:10px
 					vertical-align:middle
 			.uploadable-form
 				display:inline-block

@@ -19,17 +19,11 @@ block content
 							i.material-icons arrow_back_ios
 						= admin.name
 						.pull-right.action
-							button.mdc-button.add-button
+							.add-button
 								i.material-icons add
 					
 				.page-content
 					.admin-form
-						.button-bar.pull-right
-							if canDelete
-								p
-									button.mdc-button.delete-button
-										i.material-icons delete_forever
-								
 						.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
 							ul
 								li
@@ -38,7 +32,12 @@ block content
 								li.label
 									= 'row'
 									ul
-										li= row.id
+										li
+											.button-bar.pull-right
+												if canDelete
+													.delete-button
+														i.material-icons delete_forever
+											= row.id
 										
 								if fk
 									li.label
