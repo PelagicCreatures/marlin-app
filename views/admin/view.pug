@@ -1,5 +1,10 @@
 extends ../wrapper
 
+block fab
+	button.mdc-fab.mdc-fab--mini.app-fab-fixed
+		.mdc-fab__ripple
+		a.mdc-fab__icon.material-icons(href= mountpoint + '/' + admin.name + '/' + row.id + '/edit') edit
+
 block content
 	- let back = mountpoint + '/' + admin.name;
 	if (admin.options.behavior === 'child') && fk
@@ -10,21 +15,18 @@ block content
 			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
 				.page-header
 					h2
-						a(href= back)
+						a.back-button(href= back)
 							i.material-icons arrow_back_ios
-						= admin.name + ' table'
-						.pull-right
+						= admin.name
+						.pull-right.action
 							button.mdc-button.add-button
-								i.material-icons add_circle
+								i.material-icons add
 					
 				.page-content
 					.admin-form
 						.button-bar.pull-right
-							p
-								button.mdc-button.edit-button
-									i.material-icons edit
-									
-								if canDelete
+							if canDelete
+								p
 									button.mdc-button.delete-button
 										i.material-icons delete_forever
 								
@@ -104,5 +106,5 @@ block content
 		p Options
 		pre= JSON.stringify(admin.options,"",2)
 		
-	p References:
-	pre= JSON.stringify(references,"",2)
+		p References:
+		pre= JSON.stringify(references,"",2)

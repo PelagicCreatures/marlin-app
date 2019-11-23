@@ -4,10 +4,9 @@ block content
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
 			.page-header
-				h2 Site Admin
+				h2.no-icon Database Admin Edit
 			
-			strong Tables:
-			ul
-				for table in tables
-					li
-						a(href="/admin/" + table)= table
+			.page-content
+				nav.mdc-list
+					for table in tables
+						a.mdc-list-item(href="/admin/" + table)= table

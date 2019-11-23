@@ -12,12 +12,12 @@ block content
 				.page-header
 					h2
 						
-						a(href= mountpoint + '/' + admin.name + '/' + row.id)
+						a.back-button(href= mountpoint + '/' + admin.name + '/' + row.id)
 							i.material-icons arrow_back_ios
-						= admin.name + ' table edit row ' + row.id
+						= admin.name + ': edit row ' + row.id
 						
 						if canDelete
-							.pull-right
+							.pull-right.action
 								button.mdc-button.delete-button
 									i.material-icons delete_forever
 										

@@ -1,5 +1,10 @@
 extends ../wrapper
 
+block fab
+	button.mdc-fab.mdc-fab--mini.app-fab-fixed
+		.mdc-fab__ripple
+		a.mdc-fab__icon.material-icons(href= mountpoint + '/' + admin.name + '/create') add
+
 block content
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
@@ -7,12 +12,9 @@ block content
 				
 				.page-header
 					h2
-						a(href= mountpoint + '/menu')
+						a.back-button(href= mountpoint + '/menu')
 							i.material-icons arrow_back_ios
-						= admin.name + ' table '
-						.pull-right
-							button.mdc-button.add-button
-								i.material-icons add_circle
+						= admin.name
 								
 				.page-content
 					if admin.options.searchColumns.length
@@ -38,7 +40,7 @@ block content
 															option(value= prop)= prop
 												td
 													button.mdc-button.mdc-button--raised.search-button
-														span.mdc-button__label Go
+														i.material-icons search
 
 					if !rows.length
 							section
