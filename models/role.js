@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false,
     ADMIN: {
-      listColumns: ['description'],
+      behavior: 'reference',
       ACL: [{
         permission: 'deny',
         roles: ['*'],

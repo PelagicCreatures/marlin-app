@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		ADMIN: {
+			behavior: 'parent',
 			listColumns: ['textcolumn', 'profilePhoto', 'lookupId'],
 			ACL: [{
 				permission: 'deny',
@@ -67,7 +68,8 @@ module.exports = (sequelize, DataTypes) => {
 
 	AdminTest.associate = function (models) {
 		AdminTest.hasMany(models.AdminTestChild, {
-			foreignKey: 'testId'
+			foreignKey: 'testId',
+			onDelete: 'CASCADE'
 		});
 
 		AdminTest.belongsToMany(models.AdminTestMulti, {

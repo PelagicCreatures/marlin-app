@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 	}, {
 		timestamps: false,
 		ADMIN: {
+			behavior: 'child',
 			ACL: [{
 				permission: 'deny',
 				roles: ['*'],
@@ -30,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
 
 	AdminTestChild.associate = function (models) {
 		AdminTestChild.belongsTo(models.AdminTest, {
-			foreignKey: 'testId'
+			foreignKey: 'testId',
+			onDelete: 'CASCADE'
 		});
 	}
 

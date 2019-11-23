@@ -2,8 +2,8 @@ extends ../wrapper
 
 block content
 	- let back = mountpoint + '/' + admin.name;
-	if admin.options.parent
-		- back = mountpoint + '/' + admin.options.parent.table + '/' + belongsTo
+	if (admin.options.behavior === 'child')
+		- back = mountpoint + '/' + pt + '/' + belongsTo
 	
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
@@ -32,15 +32,16 @@ block content
 												ul
 													li!= admin.getColumn(property).getForm(row,prepared[property])
 
-									// belongs to many relationships (through tables)
-									for manyThrough in admin.options.hasManyThrough
-										li.label
-											= manyThrough.as
-											ul
-												li.data!= admin.getColumn(manyThrough.as).getForm(row,prepared[manyThrough.as],{resolved:manyThroughs[manyThrough.as]})
+									if (admin.options.behavior !== 'reference')
+										// belongs to many relationships (through tables)
+										for manyThrough in admin.options.hasManyThrough
+											li.label
+												= manyThrough.as
+												ul
+													li.data!= admin.getColumn(manyThrough.as).getForm(row,prepared[manyThrough.as],{resolved:manyThroughs[manyThrough.as]})
 													
 							section.form-group.pull-right.button-bar
-								a.mdc-button(href= mountpoint + '/' + admin.name) Cancel
+								a.mdc-button(href= back) Cancel
 								button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
 									span.mdc-button__label Save
 								

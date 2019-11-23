@@ -2,8 +2,8 @@ extends ../wrapper
 
 block content
 	- let back = mountpoint + '/' + admin.name;
-	if admin.options.parent
-		- back = mountpoint + '/' + admin.options.parent.table + '/' + row[admin.options.parent.fk]
+	if (admin.options.behavior === 'child') && fk
+		- back = mountpoint + '/' + pt + '/' + row[fk]
 
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
@@ -51,42 +51,45 @@ block content
 											ul
 												li.data!= admin.getColumn(property).getDisplayValue(row,prepared[property])
 						
-						// belongs to many relationships (through tables)
-						for manyThrough in admin.options.hasManyThrough
-							if manyThroughs[manyThrough.as].rows.length
-								- let relAdmin = adminTables[manyThrough.target]
-								- let defaultColumn = relAdmin.options.defaultColumn
-								p= manyThrough.as
-								.mdc-chip-set
-									for through in manyThroughs[manyThrough.as].rows
-										.mdc-chip
-											.mdc-chip__ripple
-											span.mdc-chip__text= through[defaultColumn]
+						if (admin.options.behavior !== 'reference')
+							// belongs to many relationships (through tables)
+							for manyThrough in admin.options.hasManyThrough
+								if manyThroughs[manyThrough.as].rows.length
+									- let relAdmin = adminTables[manyThrough.target]
+									- let defaultColumn = relAdmin.options.defaultColumn
+									p= manyThrough.as
+									.mdc-chip-set
+										for through in manyThroughs[manyThrough.as].rows
+											.mdc-chip
+												.mdc-chip__ripple
+												span.mdc-chip__text= through[defaultColumn]
 						
-						// has many relationships
-						for dependant in dependants
-							- let relAdmin = adminTables[dependant.table]
-							p
-								button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
-									i.material-icons add_circle
+						if (admin.options.behavior === 'parent')
+							// has many relationships
+							for dependant in dependants
+								- let relAdmin = adminTables[dependant.table]
+								p
+									button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
+										i.material-icons add_circle
+									
+									= dependant.table + ' (' + dependant.rows.count + ' rows)'
 								
-								= dependant.table + ' (' + dependant.rows.count + ' rows)'
-							
-							table
-								for rel in dependant.rows.rows
-									tr
-										td
-											a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+								table
+									for rel in dependant.rows.rows
+										tr
+											td
+												a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
 						
-						for ref in references
-							- let relAdmin = adminTables[ref.table]
-							p
-								= ref.table + ' (' + ref.rows.count + ' rows)'
-							if relAdmin
-								ul
-									for rel in ref.rows.rows
-										li
-											a(href= mountpoint + '/' + ref.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+						if (admin.options.behavior !== 'parent')
+							for ref in references
+								- let relAdmin = adminTables[ref.table]
+								p
+									= ref.table + ' (' + ref.rows.count + ' rows)'
+								if relAdmin
+									ul
+										for rel in ref.rows.rows
+											li
+												a(href= mountpoint + '/' + ref.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
 						
 	//
 		p ManyThroughs

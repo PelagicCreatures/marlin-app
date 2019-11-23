@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     ADMIN: {
+      behavior: 'child',
       hidden: true,
       ACL: [{
         permission: 'deny',

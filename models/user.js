@@ -68,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     ADMIN: {
+      behavior: 'parent',
       defaultColumn: 'email',
       listColumns: ['email', 'username', 'validated'],
       searchColumns: ['email'],
