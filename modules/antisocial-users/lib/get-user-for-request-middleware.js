@@ -45,10 +45,17 @@ function getUserForRequestMiddleware(userAPI) {
 			}
 			if (!tokenInstances || tokenInstances.length !== 1) {
 				debug('getAuthenticatedUser token not found', tokenInstances);
-				res.clearCookie('access-token', {
-					'path': '/',
-					'signed': true
-				});
+				res
+					.clearCookie('access-token', {
+						path: '/',
+						signed: true,
+						httpOnly: true
+					})
+					.clearCookie('logged-in', {
+						path: '/',
+						signed: true
+					});
+
 				if (process.env.STRIPE_SECRET) {
 					res.clearCookie('subscriber');
 				}
@@ -57,10 +64,16 @@ function getUserForRequestMiddleware(userAPI) {
 
 			validateToken(db, tokenInstances[0], function (err) {
 				if (err) {
-					res.clearCookie('access-token', {
-						'path': '/',
-						'signed': true
-					});
+					res
+						.clearCookie('access-token', {
+							path: '/',
+							signed: true,
+							httpOnly: true
+						})
+						.clearCookie('logged-in', {
+							path: '/',
+							signed: true
+						});
 					return next();
 				}
 

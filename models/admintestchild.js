@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 		timestamps: false,
 		ADMIN: {
 			behavior: 'child',
+			hidden: true,
 			ACL: [{
 				permission: 'deny',
 				roles: ['*'],

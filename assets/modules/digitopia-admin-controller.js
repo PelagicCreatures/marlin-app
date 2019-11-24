@@ -91,6 +91,8 @@ function adminController(elem, options) {
 				data[n][p[1]] = $(cb).is(':checked'); // sets data.table.column to true or false
 			}
 
+			data['_csrf'] = self.element.find('[name="_csrf"]').val();
+
 			self.API(method, endpoint, data);
 		});
 
@@ -149,7 +151,7 @@ function adminController(elem, options) {
 				if (data.status === 'ok') {
 					flashAjaxStatus('success', flashMessage);
 					let redir = self.redirect;
-					if (data.id) {
+					if (data.id && !redir.match(/\/\d+$/)) {
 						redir += '/' + data.id
 					}
 					loadPage(redir);
@@ -159,6 +161,24 @@ function adminController(elem, options) {
 					self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>');
 				}
 			})
+			.fail(function (jqXHR, textStatus, errorThrown) {
+				var message = errorThrown;
+				if (jqXHR.responseJSON) {
+					if (jqXHR.responseJSON.errors) {
+						message = '';
+						for (var i = 0; i < jqXHR.responseJSON.errors.length; i++) {
+							if (message) {
+								message += ', ';
+							}
+							message += jqXHR.responseJSON.errors[i];
+						}
+					}
+					else {
+						message = jqXHR.responseJSON.status;
+					}
+				}
+				self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-error"><i class="material-icons">error</i> ' + message + '</div>');
+			});
 	}
 }
 

@@ -18,6 +18,8 @@ block content
 				.page-content
 					.admin-form
 						form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
+							input(type="hidden" name="_csrf" value= csrfToken)
+
 							if fk
 								input(type="hidden" name= admin.name + '['+fk+']' value= belongsTo)
 							.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
@@ -34,11 +36,11 @@ block content
 
 									if (admin.options.behavior !== 'reference')
 										// belongs to many relationships (through tables)
-										for manyThrough in admin.options.hasManyThrough
+										for join in admin.options.joins
 											li.label
-												= manyThrough.as
+												= join.as
 												ul
-													li.data!= admin.getColumn(manyThrough.as).getForm(row,prepared[manyThrough.as],{resolved:manyThroughs[manyThrough.as]})
+													li.data!= admin.getColumn(join.as).getForm(row,prepared[join.as],{resolved:joins[join.as]})
 													
 							section.form-group.pull-right.button-bar
 								a.mdc-button(href= back) Cancel

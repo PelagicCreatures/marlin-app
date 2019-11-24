@@ -35,7 +35,6 @@ module.exports = (usersApp) => {
 		let errors = validatePayload(req.body, {
 			email: validators.email,
 			username: validators.username,
-			name: validators.name,
 			password: {
 				isPassword: true
 			}
@@ -163,7 +162,12 @@ module.exports = (usersApp) => {
 				res.cookie('access-token', token.token, {
 						'path': '/',
 						'maxAge': token.ttl * 1000,
-						'signed': true
+						'signed': true,
+						'httpOnly': true
+					})
+					.cookie('logged-in', 1, {
+						'path': '/',
+						'maxAge': token.ttl * 1000
 					})
 					.json({
 						'status': 'ok',

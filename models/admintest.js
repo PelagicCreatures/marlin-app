@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
 			ADMIN: {
 				label: 'my label',
 				maxLength: 80,
-				inputType: 'text'
+				inputType: 'text',
+				sanitizers: {
+					xss: true
+				}
 			}
 		},
 		textareacolumn: {
@@ -24,6 +27,9 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: true,
 			ADMIN: {
 				maxLength: 2048,
+				sanitizers: {
+					xss: true
+				}
 			}
 		},
 		lookupId: {

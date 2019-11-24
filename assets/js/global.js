@@ -53,7 +53,7 @@ var boot = () => {
 	}
 
 	// Set initial login state css show/hide behavior
-	if (getAccessToken()) {
+	if (App.Cookies.get('logged-in')) {
 		didLogIn();
 	}
 	else {
@@ -121,10 +121,6 @@ var checkSubscription = () => {
 	else {
 		$('body').removeClass('is-superuser').addClass('not-superuser')
 	}
-}
-
-var getAccessToken = () => {
-	return App.Cookies.get('access-token');
 }
 
 // load a page programatically

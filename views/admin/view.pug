@@ -54,13 +54,13 @@ block content
 						
 						if (admin.options.behavior !== 'reference')
 							// belongs to many relationships (through tables)
-							for manyThrough in admin.options.hasManyThrough
-								if manyThroughs[manyThrough.as].rows.length
-									- let relAdmin = adminTables[manyThrough.target]
+							for join in admin.options.joins
+								if joins[join.as].rows.length
+									- let relAdmin = adminTables[join.target]
 									- let defaultColumn = relAdmin.options.defaultColumn
-									p= manyThrough.as
+									p= join.as
 									.mdc-chip-set
-										for through in manyThroughs[manyThrough.as].rows
+										for through in joins[join.as].rows
 											.mdc-chip
 												.mdc-chip__ripple
 												span.mdc-chip__text= through[defaultColumn]
@@ -94,7 +94,7 @@ block content
 						
 	
 		p ManyThroughs
-		pre= JSON.stringify(manyThroughs,"",2)
+		pre= JSON.stringify(joins,"",2)
 		
 		p Dependants
 		pre= JSON.stringify(dependants,"",2)

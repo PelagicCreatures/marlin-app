@@ -40,14 +40,20 @@ module.exports = (usersApp) => {
 			}
 
 			res.clearCookie('access-token', {
-				path: '/',
-				signed: true
-			}).send({
-				status: 'ok',
-				flashLevel: 'info',
-				flashMessage: 'Bye.',
-				didLogout: true
-			});
+					path: '/',
+					signed: true,
+					httpOnly: true
+				})
+				.clearCookie('logged-in', {
+					path: '/',
+					signed: true
+				})
+				.send({
+					status: 'ok',
+					flashLevel: 'info',
+					flashMessage: 'Bye.',
+					didLogout: true
+				});
 		});
 	});
 };

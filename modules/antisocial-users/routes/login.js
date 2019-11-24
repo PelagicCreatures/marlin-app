@@ -130,6 +130,12 @@ module.exports = (usersApp) => {
 			res.cookie('access-token', token.token, {
 					'path': '/',
 					'maxAge': token.ttl * 1000,
+					'signed': true,
+					'httpOnly': true
+				})
+				.cookie('logged-in', 1, {
+					'path': '/',
+					'maxAge': token.ttl * 1000,
 					'signed': true
 				})
 				.send({
