@@ -60,6 +60,7 @@ require('./lib/user-events')(userAPI);
 
 // UI
 app.use('/', require('./routes/index')(userAPI));
+app.use('/', require('./routes/testbench')(userAPI));
 app.use('/', require('./routes/user-pages')(userAPI));
 
 // error response for bad _csrf in forms

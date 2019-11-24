@@ -43,14 +43,22 @@ block content
 									li.label
 										= fk
 										ul
-											li.data!= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
-										
+											li.data
+												if admin.getColumn(fk).getValueProducesMarkup
+													!= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
+												else
+													= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
+													
 								for property in admin.options.viewColumns
 									if property !== fk
 										li.label
 											= property
 											ul
-												li.data!= admin.getColumn(property).getDisplayValue(row,prepared[property])
+												li.data
+													if admin.getColumn(property).getValueProducesMarkup
+														!= admin.getColumn(property).getDisplayValue(row,prepared[property])
+													else
+														= admin.getColumn(property).getDisplayValue(row,prepared[property])
 						
 						if (admin.options.behavior !== 'reference')
 							// belongs to many relationships (through tables)

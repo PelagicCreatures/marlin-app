@@ -57,7 +57,11 @@ block content
 										li.select-row(data-row= row.id)= row.id
 											ul
 												for col in admin.options.listColumns
-													li.select-row(data-row= row.id)!= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
+													li.select-row(data-row= row.id)
+														if admin.getColumn(col).getValueProducesMarkup
+															!= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
+														else
+															= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
 							
 						include pagination
 	//	

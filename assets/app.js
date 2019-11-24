@@ -27,6 +27,8 @@ import flexTable from './modules/digitopia-flex-table.js'
 import paginationController from './modules/digitopia-pagination-controller.js'
 import adminController from './modules/digitopia-admin-controller.js'
 import uploadableImage from './modules/digitopia-uploadable-image.js'
+import markdownEditor from './modules/digitopia-markdown-editor.js'
+
 
 export {
 	MDC,
