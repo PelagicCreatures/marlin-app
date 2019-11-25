@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: Sequelize.TEXT,
 			allowNull: true,
 			ADMIN: {
+				inputType: 'markdown',
 				maxLength: 2048,
 				sanitizers: {
 					xss: true

@@ -18,7 +18,7 @@ function markdownEditor(elem) {
 	this.content = $(this.element.data('content'));
 
 	this.start = function () {
-		self.view = new MarkdownView(self.target[0], self.content.val())
+		self.view = new ProseMirrorView(self.target[0], self.content.val())
 
 		this.target.on('input blur focus keyup paste click', '[contenteditable]', function (e) {
 			self.content.val(self.view.content)
