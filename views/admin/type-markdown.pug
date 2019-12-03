@@ -1,10 +1,9 @@
-form-group
-	div.markdown-editor(data-jsclass="markdownEditor" data-target=".current-editor" data-content=".target")
-		.current-editor
-		.view-mode
-			label Markdown <input type=radio name=inputformat value=markdown>
-			= ' | '
-			label <input type=radio name=inputformat value=prosemirror checked> WYSIWYG
-		textarea.target(style="display:none" name= name data-validate= options.validate)= value
+.form-group.markdown-editor(data-jsclass="markdownEditor" data-target=".current-editor" data-content=".target")
+	textarea.target(style="display:none" name= name data-validate= options.validate)= value
+	.current-editor
+	.view-mode.pull-right
+		label Markdown <input type=radio name=inputformat value=markdown>
+		= ' | '
+		label <input type=radio name=inputformat value=prosemirror checked> WYSIWYG
 	.input-ok-indicator.material-icons check_circle
 	.validation-help.mdc-text-field-helper-text--persistent

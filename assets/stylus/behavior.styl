@@ -336,7 +336,7 @@ tr.hovering
 			table
 				td
 					img
-						max-width: 100%
+						max-width: 250px
 						height:auto
 			input[type="text"],textarea
 				font-size:1em
@@ -426,11 +426,13 @@ tr.hovering
 // prosemirror test
 
 .markdown-editor
-	max-width: 80%
-	margin: 20px
-	
+	padding-right: 40px
+	.view-mode
+		font-size: 11px
+		color: #999
 	.ProseMirror
 			height 120px
+			border-bottom: thin solid #c0c0c0
 			overflow-y auto
 			box-sizing border-box
 			position relative
@@ -600,7 +602,6 @@ tr.hovering
 			right 0
 			border-bottom 1px solid silver
 			background white
-			z-index 10
 			-moz-box-sizing border-box
 			box-sizing border-box
 			overflow visible

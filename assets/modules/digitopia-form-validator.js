@@ -47,7 +47,7 @@ function formValidator(elem, options) {
 
 	this.validate = function (cb) {
 		var invalidFields = 0;
-		var fields = self.element.find(':input');
+		var fields = self.element.find('[data-validate]:input');
 
 		async.map(fields, self.validateField, function (err, allerrors) {
 			for (var i = 0; i < fields.length; i++) {
@@ -56,7 +56,7 @@ function formValidator(elem, options) {
 
 				if (errors && errors.length) {
 					++invalidFields;
-
+					//console.log(input.attr('name') + ' ' + errors.join(', '));
 					input.closest('.form-group').removeClass('input-ok');
 					if (input.data('touched')) {
 						input.closest('.form-group').addClass('input-error');
@@ -65,6 +65,7 @@ function formValidator(elem, options) {
 					}
 				}
 				else {
+					//console.log(input.attr('name') + ' ok');
 					input.closest('.form-group').removeClass('input-error');
 					input.closest('.mdc-text-field').removeClass('mdc-text-field--invalid');
 					input.closest('.form-group').addClass('input-ok');

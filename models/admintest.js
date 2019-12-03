@@ -17,9 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 				label: 'my label',
 				maxLength: 80,
 				inputType: 'text',
-				sanitizers: {
-					xss: true
-				}
+				notHTML: true
 			}
 		},
 		textareacolumn: {
@@ -28,9 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 			ADMIN: {
 				inputType: 'markdown',
 				maxLength: 2048,
-				sanitizers: {
-					xss: true
-				}
+				notHTML: true
 			}
 		},
 		lookupId: {

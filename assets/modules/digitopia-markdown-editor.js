@@ -21,11 +21,11 @@ function markdownEditor(elem) {
 		self.view = new ProseMirrorView(self.target[0], self.content.val())
 
 		this.target.on('input blur focus keyup paste click', '[contenteditable]', function (e) {
-			self.content.val(self.view.content)
+			self.content.val(self.view.content).trigger('change')
 		})
 
 		this.target.on('input blur focus keyup paste', 'textarea', function (e) {
-			self.content.val(self.view.content)
+			self.content.val(self.view.content).trigger('change')
 		})
 
 		this.element.on('change', 'input[type=radio]', function (e) {
@@ -42,6 +42,7 @@ function markdownEditor(elem) {
 
 	this.stop = function () {
 		this.element.off('change', 'input[type=radio]');
+		self.view.destroy();
 	}
 
 }
