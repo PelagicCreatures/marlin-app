@@ -1,4 +1,9 @@
-div
+extends wrapper
+
+block content
+
   pre= message
-  p= error.status
-  pre #{error.stack}
+  
+  if verbose
+    p= error.status
+    pre #{error.stack}

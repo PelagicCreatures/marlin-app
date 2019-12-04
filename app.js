@@ -90,17 +90,27 @@ app.start = function (done) {
     });
 
     // error handler
-    /*
     app.use(function (err, req, res, next) {
-      // set locals, only providing error in development
-      res.locals.message = err.message;
-      res.locals.error = req.app.get('env') === 'local' ? err : {};
+      if (res.headersSent) {
+        return next(err)
+      }
 
+      res.locals.message = err.cause && err.cause() ? err.cause().message : err.message;
+
+
+      if (req.headers['x-digitopia-hijax']) {
+        res.set('x-digitopia-hijax-flash-level', 'danger');
+        res.set('x-digitopia-hijax-flash-message', res.locals.message);
+      }
+
+      // set locals, only providing error details in development
+      res.locals.error = err;
+      res.locals.verbose = req.app.get('env') === 'local' || req.app.get('env') === 'development';
       // render the error page
       res.status(err.status || 500);
       res.render('error');
     });
-    */
+
     done();
   });
 }
