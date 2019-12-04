@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "test": "NODE_ENV=local TESTING=true mocha tests/users.js",
-    "debug": "NODE_ENV=local DEBUG=antisocial-* node --inspect bin/www",
+    "debug": "NODE_ENV=local DEBUG=antisocial-analytics,antisocial-admin node --inspect bin/www",
     "development": "NODE_ENV=development node bin/www",
     "production": "NODE_ENV=production node bin/www",
     "build": "webpack",

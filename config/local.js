@@ -4,6 +4,15 @@ const path = require('path');
 module.exports = function (app) {
 	debug('env: local development');
 
+	// admin visitor analytics
+	let trackUsers = {
+		scope: 'shiny-happy-cookie',
+		method: 'put',
+		path: '/collect',
+		mountPoint: '/behavior',
+		endpoint: '/behavior/collect'
+	}
+
 	// options for sequalize ORM database models
 	// use mysql if environment DB_DIALECT set to 'mysql', otherwise sqlite
 	let dbOptions = {};
@@ -27,11 +36,7 @@ module.exports = function (app) {
 				},
 				freezeTableName: true
 			},
-			logging: false,
-			ADMIN: {
-				MOUNTPOINT: '/admin',
-				UPLOAD_PATH: '/uploads'
-			}
+			logging: false
 		}
 	}
 	else {
@@ -45,11 +50,7 @@ module.exports = function (app) {
 				charset: "utf8",
 				freezeTableName: true
 			},
-			logging: false,
-			ADMIN: {
-				MOUNTPOINT: '/admin',
-				UPLOAD_PATH: '/uploads'
-			}
+			logging: true
 		}
 	}
 
@@ -66,7 +67,8 @@ module.exports = function (app) {
 			RECAPTCHA_PUBLIC: process.env.RECAPTCHA_PUBLIC,
 			STRIPE_PUBLIC: process.env.STRIPE_PUBLIC,
 			STRIPE_YEARLY: process.env.STRIPE_YEARLY,
-			STRIPE_MONTHLY: process.env.STRIPE_MONTHLY
+			STRIPE_MONTHLY: process.env.STRIPE_MONTHLY,
+			TRACK_USER_BEHAVIOR: trackUsers
 		},
 
 		// morgan logger
@@ -77,6 +79,14 @@ module.exports = function (app) {
 
 		// options for sequalize ORM database models
 		dbOptions: dbOptions,
+
+		// options for admin
+		adminOptions: {
+			MOUNTPOINT: '/admin',
+			UPLOAD_PATH: '/uploads'
+		},
+
+		analyticsOptions: trackUsers,
 
 		// content security profile (helmet-csp module)
 		cspOptions: {

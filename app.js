@@ -47,13 +47,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 var dbHandler = require('./lib/db-sequelize');
 app.db = new dbHandler(app, config.dbOptions);
 
-if (config.dbOptions.ADMIN) {
-  const admin = require("./lib/admin");
-  admin.mount(app, app.db, config.dbOptions.ADMIN);
-}
-
 // set up and mount the user API
 const userAPI = require('./modules/antisocial-users/index')(config.userOptions, app, app.db);
+
+if (config.analyticsOptions) {
+  const analyics = require("./lib/analytics");
+  analyics.mount(app, app.db, config.analyticsOptions);
+}
 
 // set up user event handlers
 require('./lib/user-events')(userAPI);
@@ -63,36 +63,44 @@ app.use('/', require('./routes/index')(userAPI));
 app.use('/', require('./routes/testbench')(userAPI));
 app.use('/', require('./routes/user-pages')(userAPI));
 
-// error response for bad _csrf in forms
-app.use(function (err, req, res, next) {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err)
-  res.status(403).send({
-    status: 'error',
-    errors: ['invalid csrf']
-  });
-});
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'local' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
 // call asynchronous things that need to be stable before we can handle requests
 app.start = function (done) {
   debug('starting app');
   app.db.sync(() => {
     debug('db sync done');
+
+    // now that the db is up we can initialize /admin
+    if (config.adminOptions) {
+      const admin = require("./lib/admin");
+      admin.mount(app, app.db, config.adminOptions);
+    }
+
+    // error response for bad _csrf in forms
+    app.use(function (err, req, res, next) {
+      if (err.code !== 'EBADCSRFTOKEN') return next(err)
+      res.status(403).send({
+        status: 'error',
+        errors: ['invalid csrf']
+      });
+    });
+
+    // catch 404 and forward to error handler
+    app.use(function (req, res, next) {
+      next(createError(404));
+    });
+
+    // error handler
+    /*
+    app.use(function (err, req, res, next) {
+      // set locals, only providing error in development
+      res.locals.message = err.message;
+      res.locals.error = req.app.get('env') === 'local' ? err : {};
+
+      // render the error page
+      res.status(err.status || 500);
+      res.render('error');
+    });
+    */
     done();
   });
 }
