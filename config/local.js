@@ -68,7 +68,7 @@ module.exports = function (app) {
 			STRIPE_PUBLIC: process.env.STRIPE_PUBLIC,
 			STRIPE_YEARLY: process.env.STRIPE_YEARLY,
 			STRIPE_MONTHLY: process.env.STRIPE_MONTHLY,
-			TRACK_USER_BEHAVIOR: trackUsers
+			USER_BEHAVIOR: trackUsers
 		},
 
 		// morgan logger

@@ -33,8 +33,8 @@ var boot = () => {
 
 	$('body').digitopiaController(options);
 
-	if (publicOptions.TRACK_USER_BEHAVIOR) {
-		$('body').digitopiaAnalytics(publicOptions.TRACK_USER_BEHAVIOR);
+	if (publicOptions.USER_BEHAVIOR) {
+		$('body').digitopiaAnalytics(publicOptions.USER_BEHAVIOR);
 	}
 
 	// Things to do when HIJAX loads a new page
