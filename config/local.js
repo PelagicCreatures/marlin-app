@@ -83,7 +83,7 @@ module.exports = function (app) {
 		// options for admin
 		adminOptions: {
 			MOUNTPOINT: '/admin',
-			UPLOAD_PATH: '/uploads'
+			UPLOAD_PATH: '/uploads/'
 		},
 
 		analyticsOptions: trackUsers,

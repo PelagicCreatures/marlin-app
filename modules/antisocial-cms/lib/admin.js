@@ -219,7 +219,7 @@ function mount(app, options) {
 		db: app.db
 	});
 
-	UPLOAD_PATH = path.join(__dirname, '../public', options.UPLOAD_PATH);
+	UPLOAD_PATH = path.join(__dirname, '../../../', 'public', options.UPLOAD_PATH);
 	UPLOAD_URI_PREFIX = options.UPLOAD_PATH;
 	MOUNTPOINT = options.MOUNTPOINT;
 
@@ -566,7 +566,7 @@ function mount(app, options) {
 				return next(new VError('admin for ' + table + ' not defined'));
 			}
 
-			if (!db.checkPermission(table, req.antisocialUser, 'edit')) {
+			if (!app.db.checkPermission(table, req.antisocialUser, 'edit')) {
 				return next(new VError('you don\'t have permission to edit ' + table));
 			}
 
@@ -645,14 +645,14 @@ function mount(app, options) {
 				return next(new VError('admin for ' + table + ' not defined'));
 			}
 
-			if (!db.checkPermission(table, req.antisocialUser, 'delete')) {
+			if (!app.db.checkPermission(table, req.antisocialUser, 'delete')) {
 				return next(new VError('you don\'t have permission to delete ' + table));
 			}
 
 			async.waterfall([
 				// read  row
 				(cb) => {
-					db.getInstances(table, {
+					app.db.getInstances(table, {
 						where: {
 							id: id
 						}
