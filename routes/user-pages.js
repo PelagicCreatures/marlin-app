@@ -3,7 +3,7 @@ const router = express.Router();
 const async = require('async');
 const VError = require('verror').VError;
 const csrf = require('csurf');
-const getAdmin = require('../lib/admin').getAdmin;
+const getAdmin = require('../modules/antisocial-cms/lib/admin').getAdmin;
 
 const csrfProtection = csrf({
 	cookie: {
@@ -17,9 +17,9 @@ const {
 	getUserForRequestMiddleware
 } = require('../modules/antisocial-users/lib/get-user-for-request-middleware');
 
-module.exports = function mount(userAPI) {
+module.exports = function mount(app) {
 
-	router.get('/users/home', getUserForRequestMiddleware(userAPI), function (req, res, next) {
+	router.get('/users/home', getUserForRequestMiddleware(app), function (req, res, next) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
@@ -29,7 +29,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/photo', getUserForRequestMiddleware(userAPI), function (req, res, next) {
+	router.get('/users/photo', getUserForRequestMiddleware(app), function (req, res, next) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
@@ -42,7 +42,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.patch('/users/profile-photo', getUserForRequestMiddleware(userAPI), express.json({
+	router.patch('/users/profile-photo', getUserForRequestMiddleware(app), express.json({
 		limit: '20mb'
 	}), function (req, res, next) {
 		if (!req.antisocialUser) {
@@ -63,7 +63,7 @@ module.exports = function mount(userAPI) {
 				});
 			}
 
-			userAPI.db.updateInstance('User', req.antisocialUser.id, patch, function (err) {
+			app.db.updateInstance('User', req.antisocialUser.id, patch, function (err) {
 				if (err) {
 					return res.send({
 						status: 'error',
@@ -82,7 +82,7 @@ module.exports = function mount(userAPI) {
 		});
 	})
 
-	router.get('/users/settings', getUserForRequestMiddleware(userAPI), function (req, res, next) {
+	router.get('/users/settings', getUserForRequestMiddleware(app), function (req, res, next) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
@@ -91,7 +91,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/register', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
+	router.get('/users/register', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			if (req.headers['x-digitopia-hijax']) {
 				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
@@ -104,7 +104,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/validate', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
+	router.get('/users/validate', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser && req.antisocialUser.validated) {
 			if (req.headers['x-digitopia-hijax']) {
 				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
@@ -120,7 +120,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/login', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
+	router.get('/users/login', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			if (req.headers['x-digitopia-hijax']) {
 				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
@@ -133,7 +133,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/email-change', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
+	router.get('/users/email-change', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
@@ -144,7 +144,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/password-change', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
+	router.get('/users/password-change', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
@@ -155,7 +155,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/password-reset', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
+	router.get('/users/password-reset', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			return res.sendStatus(401).send('Already logged in.');
 		}
@@ -165,7 +165,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/password-set', getUserForRequestMiddleware(userAPI), csrfProtection, function (req, res) {
+	router.get('/users/password-set', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			return res.sendStatus(401).send('Already logged in.');
 		}
@@ -175,7 +175,7 @@ module.exports = function mount(userAPI) {
 
 		async.series([
 			function findToken(cb) {
-				userAPI.db.getInstances('Token', {
+				app.db.getInstances('Token', {
 					where: {
 						'token': req.query.token
 					}
@@ -187,7 +187,7 @@ module.exports = function mount(userAPI) {
 						return cb(new VError('Reset token was not found.'));
 					}
 
-					validateToken(userAPI.db, tokenInstances[0], function (err) {
+					validateToken(app.db, tokenInstances[0], function (err) {
 						if (err) {
 							return cb(err);
 						}
@@ -209,7 +209,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/tokens', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/tokens', getUserForRequestMiddleware(app), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.redirect('/users/login');
 		}
@@ -229,7 +229,7 @@ module.exports = function mount(userAPI) {
 		});
 	});
 
-	router.get('/users/subscription', getUserForRequestMiddleware(userAPI), function (req, res) {
+	router.get('/users/subscription', getUserForRequestMiddleware(app), function (req, res) {
 		if (!req.antisocialUser) {
 			return res.redirect('/users/login');
 		}

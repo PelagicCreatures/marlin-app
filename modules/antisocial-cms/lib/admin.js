@@ -105,7 +105,7 @@ let MOUNTPOINT = '';
 
 const {
 	getUserForRequestMiddleware
-} = require('../modules/antisocial-users/lib/get-user-for-request-middleware');
+} = require('../../antisocial-users/lib/get-user-for-request-middleware');
 
 function ensureRoleMiddleware(req, res, next) {
 	if (!req.antisocialUser) {
@@ -210,179 +210,118 @@ async function getReferences(modelName, instance) {
 	return result;
 }
 
-function mount(app, db, options) {
+function mount(app, options) {
 	let router = express.Router();
 
 	expressApp = app;
 
 	let userForRequestMiddleware = getUserForRequestMiddleware({
-		db: db
+		db: app.db
 	});
 
 	UPLOAD_PATH = path.join(__dirname, '../public', options.UPLOAD_PATH);
 	UPLOAD_URI_PREFIX = options.UPLOAD_PATH;
-	MOUNTPOINT = options.MOUNTPOINT ? options.MOUNTPOINT : '/admin';
+	MOUNTPOINT = options.MOUNTPOINT;
 
 	// create admin for models defined in /models skipping auto generated join tables
-	for (let model in db.modelDefs) {
-		let AdminTable = new adminTable(app, db.sequelize.models[model]);
+	for (let model in app.db.modelDefs) {
+		let AdminTable = new adminTable(app, app.db.sequelize.models[model]);
 	}
 
 	debug('associationsMap: %j', associationsMap);
 
-	debug('mounting admin /menu')
-	router.get('/menu', userForRequestMiddleware, ensureRoleMiddleware, function (req, res) {
+	if (options.MOUNTPOINT) {
+		debug('mounting admin /menu')
+		router.get('/menu', userForRequestMiddleware, ensureRoleMiddleware, function (req, res) {
 
-		let tables = []
-		for (table in adminTables) {
-			if (!adminTables[table].options.hidden) {
-				if (db.checkPermission(table, req.antisocialUser, 'view')) {
-					tables.push(adminTables[table].name);
+			let tables = []
+			for (table in adminTables) {
+				if (!adminTables[table].options.hidden) {
+					if (app.db.checkPermission(table, req.antisocialUser, 'view')) {
+						tables.push(adminTables[table].name);
+					}
 				}
 			}
-		}
 
-		res.render('admin/menu', {
-			tables: tables
+			res.render('admin/menu', {
+				tables: tables
+			});
 		});
-	});
 
-	// list rows
-	debug('mounting admin /table')
-	router.get('/:table', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-		let table = req.params.table;
-		let admin = adminTables[table];
-		if (!adminTables[table]) {
-			return next(new VError('admin for ' + table + ' not defined'));
-		}
+		// list rows
+		debug('mounting admin /table')
+		router.get('/:table', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+			let table = req.params.table;
+			let admin = adminTables[table];
+			if (!adminTables[table]) {
+				return next(new VError('admin for ' + table + ' not defined'));
+			}
 
-		if (!db.checkPermission(table, req.antisocialUser, 'view')) {
-			return next(new VError('you don\'t have permission to view ' + table));
-		}
+			if (!app.db.checkPermission(table, req.antisocialUser, 'view')) {
+				return next(new VError('you don\'t have permission to view ' + table));
+			}
 
-		let page = req.query.p ? parseInt(req.query.p) : 1;
+			let page = req.query.p ? parseInt(req.query.p) : 1;
 
-		let query = {}
-		query.limit = ITEMS_PER_PAGE;
-		query.offset = (page - 1) * ITEMS_PER_PAGE;
+			let query = {}
+			query.limit = ITEMS_PER_PAGE;
+			query.offset = (page - 1) * ITEMS_PER_PAGE;
 
-		// searching
-		if (req.query.q) {
-			let searchCol = req.query.property;
-			query.where = {
-				[searchCol]: {
-					[Op.like]: req.query.q + '%'
+			// searching
+			if (req.query.q) {
+				let searchCol = req.query.property;
+				query.where = {
+					[searchCol]: {
+						[Op.like]: req.query.q + '%'
+					}
 				}
 			}
-		}
 
-		db.getInstances(table, query, (err, rows, count) => {
-			if (err) {
-				return res.status(500).send('error: ' + err.message);
-			}
+			app.db.getInstances(table, query, (err, rows, count) => {
+				if (err) {
+					return res.status(500).send('error: ' + err.message);
+				}
 
-			let pages = count ? Math.ceil(count / ITEMS_PER_PAGE) : 0;
+				let pages = count ? Math.ceil(count / ITEMS_PER_PAGE) : 0;
 
-			let pagination = {
-				count: count,
-				pages: pages,
-				page: page,
-				next: page < pages ? page + 1 : page,
-				prev: page > 1 ? page - 1 : 1,
-				uri: '?q=' + (req.q ? encodeURIComponent(req.q) : '') + '&property=' + (req.query.property ? encodeURIComponent(req.query.property) : '')
-			}
+				let pagination = {
+					count: count,
+					pages: pages,
+					page: page,
+					next: page < pages ? page + 1 : page,
+					prev: page > 1 ? page - 1 : 1,
+					uri: '?q=' + (req.q ? encodeURIComponent(req.q) : '') + '&property=' + (req.query.property ? encodeURIComponent(req.query.property) : '')
+				}
 
-			let prepared = {};
-			async.map(rows, (row, cb) => {
-				prepared[row.id] = {}
-				admin.resolve(row, prepared[row.id], cb);
-			}, (err) => {
-				res.render('admin/list', {
-					admin: admin,
-					rows: rows,
-					q: req.query.q,
-					pagination: pagination,
-					mountpoint: options.MOUNTPOINT,
-					prepared: prepared
+				let prepared = {};
+				async.map(rows, (row, cb) => {
+					prepared[row.id] = {}
+					admin.resolve(row, prepared[row.id], cb);
+				}, (err) => {
+					res.render('admin/list', {
+						admin: admin,
+						rows: rows,
+						q: req.query.q,
+						pagination: pagination,
+						mountpoint: options.MOUNTPOINT,
+						prepared: prepared
+					});
 				});
 			});
 		});
-	});
 
-	// new row
-	debug('mounting admin /:table/create')
-	router.get('/:table/create', csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-		let table = req.params.table;
+		// new row
+		debug('mounting admin /:table/create')
+		router.get('/:table/create', csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+			let table = req.params.table;
 
-		let admin = adminTables[table];
-		if (!adminTables[table]) {
-			return next(new VError('admin for ' + table + ' not defined'));
-		}
-
-		if (!db.checkPermission(table, req.antisocialUser, 'create')) {
-			return next(new VError('you don\'t have permission to create ' + table));
-		}
-
-		let pt, fk;
-		let parent = associationsMap[table] ? associationsMap[table].parent : {};
-		if (parent.length) {
-			pt = Object.keys(parent[0])[0];
-			fk = parent[0][pt];
-		}
-
-		let prepared = {};
-		admin.prepare(null, prepared, (err) => {
-			res.render('admin/create', {
-				admin: admin,
-				mountpoint: options.MOUNTPOINT,
-				belongsTo: req.query['belongs-to'],
-				prepared: prepared,
-				joins: {},
-				pt: pt,
-				fk: fk,
-				csrfToken: req.csrfToken()
-			});
-		});
-	});
-
-	// view row
-	debug('mounting admin /:table/:rowId')
-	router.get('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-		let table = req.params.table;
-		let id = parseInt(req.params.rowId);
-
-		let admin = adminTables[table];
-		if (!adminTables[table]) {
-			return next(new VError('admin for ' + table + ' not defined'));
-		}
-
-		if (!db.checkPermission(table, req.antisocialUser, 'view')) {
-			return next(new VError('you don\'t have permission to view ' + table));
-		}
-
-		let query = {
-			where: {
-				id: id
-			}
-		};
-
-		db.getInstances(table, query, async(err, rows) => {
-			if (err) {
-				return res.status(500).send('error: ' + err.message);
+			let admin = adminTables[table];
+			if (!adminTables[table]) {
+				return next(new VError('admin for ' + table + ' not defined'));
 			}
 
-			if (!rows || !rows.length) {
-				return res.status(404).send('error: row not found in ' + table);
-			}
-
-			let refs, deps, joins;
-			try {
-				refs = await getReferences(table, rows[0]);
-				deps = await getDependants(table, rows[0]);
-				joins = await getJoins(table, rows[0]);
-			}
-			catch (err) {
-				return res.status(500).send('error resolving data ' + err.message)
+			if (!app.db.checkPermission(table, req.antisocialUser, 'create')) {
+				return next(new VError('you don\'t have permission to create ' + table));
 			}
 
 			let pt, fk;
@@ -393,318 +332,381 @@ function mount(app, db, options) {
 			}
 
 			let prepared = {};
-			admin.resolve(rows[0], prepared, (err) => {
-				res.render('admin/view', {
+			admin.prepare(null, prepared, (err) => {
+				res.render('admin/create', {
 					admin: admin,
-					row: rows[0],
 					mountpoint: options.MOUNTPOINT,
-					adminTables: adminTables,
-					references: refs,
-					dependants: deps,
-					joins: joins,
+					belongsTo: req.query['belongs-to'],
 					prepared: prepared,
-					canDelete: admin.options.behavior === 'reference' ? Object.keys(refs).length === 0 && Object.keys(joins).length === 0 : true,
-					assoc: associationsMap[table],
-					pt: pt,
-					fk: fk
-				});
-			});
-		});
-	});
-
-	// edit row form
-	debug('mounting admin /:table/:rowId/edit')
-	router.get('/:table/:rowId/edit', csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-		let table = req.params.table;
-		let id = parseInt(req.params.rowId);
-
-		let admin = adminTables[table];
-		if (!adminTables[table]) {
-			return next(new VError('admin for ' + table + ' not defined'));
-		}
-
-		if (!db.checkPermission(table, req.antisocialUser, 'edit')) {
-			return next(new VError('you don\'t have permission to edit ' + table));
-		}
-
-		db.getInstances(table, {
-			where: {
-				id: id
-			}
-		}, async(err, rows) => {
-			if (err) {
-				return res.status(500).send('error: ' + err.message);
-			}
-
-			let refs, joins;
-			try {
-				refs = await getReferences(table, rows[0]);
-				joins = await getJoins(table, rows[0]);
-			}
-			catch (err) {
-				return res.status(500).send('error resolving data ' + err.message)
-			}
-
-			let pt, fk;
-			let parent = associationsMap[table] ? associationsMap[table].parent : {};
-			if (parent.length) {
-				pt = Object.keys(parent[0])[0];
-				fk = parent[0][pt];
-			}
-
-			let prepared = {};
-			admin.prepare(rows[0], prepared, (err) => {
-				res.render('admin/edit', {
-					admin: admin,
-					row: rows[0],
-					mountpoint: options.MOUNTPOINT,
-					prepared: prepared,
-					refs: refs,
-					joins: joins,
-					canDelete: admin.options.behavior === 'reference' ? Object.keys(refs).length === 0 && Object.keys(joins).length === 0 : true,
+					joins: {},
 					pt: pt,
 					fk: fk,
 					csrfToken: req.csrfToken()
 				});
 			});
 		});
-	});
 
-	// create a row
-	debug('mounting admin POST /:table')
-	router.post('/:table', express.json({
-		limit: '20mb'
-	}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-		let table = req.params.table;
+		// view row
+		debug('mounting admin /:table/:rowId')
+		router.get('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+			let table = req.params.table;
+			let id = parseInt(req.params.rowId);
 
-		let admin = adminTables[table];
-		if (!adminTables[table]) {
-			return next(new VError('admin for ' + table + ' not defined'));
-		}
-
-		if (!db.checkPermission(table, req.antisocialUser, 'create')) {
-			return next(new VError('you don\'t have permission to create ' + table));
-		}
-
-		let sanitized = sanitizePayload(req.body[table], admin.getSanitizers(), {});
-
-		let validations = admin.getValidations();
-
-		let errors = validatePayload(sanitized.values, validations, {});
-
-		if (errors.length) {
-			return res
-				.status(422)
-				.json({
-					status: 'error',
-					errors: errors
-				});
-		}
-
-		app.db.newInstance(table, sanitized.values, function (err, instance) {
-			if (err) {
-				return res.send({
-					status: 'error',
-					flashLevel: 'danger',
-					flashMessage: 'Error creating row',
-					errors: [err.message]
-				});
+			let admin = adminTables[table];
+			if (!adminTables[table]) {
+				return next(new VError('admin for ' + table + ' not defined'));
 			}
 
-			admin.handleUpdate(instance, req.body[table], (err, dirty) => {
-				if (err) {
-					return res.send({
-						status: 'error',
-						flashLevel: 'danger',
-						flashMessage: 'Error doing admin handleUpdate',
-						errors: [err.message]
-					});
-				}
-
-				if (Object.keys(dirty).length === 0) {
-					return res.send({
-						status: 'ok',
-						flashLevel: 'info',
-						flashMessage: 'created',
-						id: instance.id
-					});
-				}
-
-				app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
-					if (err) {
-						return res.send({
-							status: 'error',
-							flashLevel: 'danger',
-							flashMessage: 'Error saving row after admin handleUpdate',
-							errors: [err.message]
-						});
-					}
-
-					return res.send({
-						status: 'ok',
-						flashLevel: 'info',
-						flashMessage: 'created',
-						id: instance.id,
-						warnings: sanitized.warnings
-					});
-				});
-			})
-		});
-	});
-
-	// update a row
-	debug('mounting admin PUT /:table/:rowId')
-	router.put('/:table/:rowId', express.json({
-		limit: '20mb'
-	}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-		let table = req.params.table;
-		let id = req.params.rowId;
-
-		let admin = adminTables[table];
-		if (!adminTables[table]) {
-			return next(new VError('admin for ' + table + ' not defined'));
-		}
-
-		if (!db.checkPermission(table, req.antisocialUser, 'edit')) {
-			return next(new VError('you don\'t have permission to edit ' + table));
-		}
-
-		let sanitized = sanitizePayload(req.body[table], admin.getSanitizers(), {});
-
-		let validations = admin.getValidations();
-
-		let errors = validatePayload(sanitized.values, validations, {});
-
-		if (errors.length) {
-			return res
-				.status(422)
-				.json({
-					status: 'error',
-					errors: errors
-				});
-		}
-
-		app.db.updateInstance(table, id, sanitized.values, function (err, instance) {
-			if (err) {
-				return res.send({
-					status: 'error',
-					flashLevel: 'danger',
-					flashMessage: 'Error saving row',
-					errors: [err.message]
-				});
+			if (!app.db.checkPermission(table, req.antisocialUser, 'view')) {
+				return next(new VError('you don\'t have permission to view ' + table));
 			}
 
-			admin.handleUpdate(instance, sanitized.values, (err, dirty) => {
+			let query = {
+				where: {
+					id: id
+				}
+			};
+
+			app.db.getInstances(table, query, async(err, rows) => {
 				if (err) {
-					return res.send({
-						status: 'error',
-						flashLevel: 'danger',
-						flashMessage: 'Error doing admin handleUpdate',
-						errors: [err.message]
-					});
+					return res.status(500).send('error: ' + err.message);
 				}
 
-				if (Object.keys(dirty).length === 0) {
-					return res.send({
-						status: 'ok',
-						flashLevel: 'info',
-						flashMessage: 'saved'
-					});
+				if (!rows || !rows.length) {
+					return res.status(404).send('error: row not found in ' + table);
 				}
 
-				app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
-					if (err) {
-						return res.send({
-							status: 'error',
-							flashLevel: 'danger',
-							flashMessage: 'Error saving row after admin handleUpdate',
-							errors: [err.message]
-						});
-					}
+				let refs, deps, joins;
+				try {
+					refs = await getReferences(table, rows[0]);
+					deps = await getDependants(table, rows[0]);
+					joins = await getJoins(table, rows[0]);
+				}
+				catch (err) {
+					return res.status(500).send('error resolving data ' + err.message)
+				}
 
-					return res.send({
-						status: 'ok',
-						flashLevel: 'info',
-						flashMessage: 'saved',
-						warnings: sanitized.warnings
+				let pt, fk;
+				let parent = associationsMap[table] ? associationsMap[table].parent : {};
+				if (parent.length) {
+					pt = Object.keys(parent[0])[0];
+					fk = parent[0][pt];
+				}
+
+				let prepared = {};
+				admin.resolve(rows[0], prepared, (err) => {
+					res.render('admin/view', {
+						admin: admin,
+						row: rows[0],
+						mountpoint: options.MOUNTPOINT,
+						adminTables: adminTables,
+						references: refs,
+						dependants: deps,
+						joins: joins,
+						prepared: prepared,
+						canDelete: admin.options.behavior === 'reference' ? Object.keys(refs).length === 0 && Object.keys(joins).length === 0 : true,
+						assoc: associationsMap[table],
+						pt: pt,
+						fk: fk
 					});
 				});
 			});
 		});
-	});
 
-	// delete a row
-	debug('mounting admin DELETE /:table/:rowId')
-	router.delete('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-		let table = req.params.table;
-		let id = req.params.rowId;
+		// edit row form
+		debug('mounting admin /:table/:rowId/edit')
+		router.get('/:table/:rowId/edit', csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+			let table = req.params.table;
+			let id = parseInt(req.params.rowId);
 
-		let admin = adminTables[table];
-		if (!adminTables[table]) {
-			return next(new VError('admin for ' + table + ' not defined'));
-		}
-
-		if (!db.checkPermission(table, req.antisocialUser, 'delete')) {
-			return next(new VError('you don\'t have permission to delete ' + table));
-		}
-
-		async.waterfall([
-			// read  row
-			(cb) => {
-				db.getInstances(table, {
-					where: {
-						id: id
-					}
-				}, (err, rows) => {
-					if (err) {
-						return cb(new VError(err, 'error reading row'));
-					}
-					if (!rows.length) {
-						return cb(new VError('row not found'))
-					}
-					cb(null, rows[0]);
-				})
-			},
-			// give admin a chance to cleanup images, etc.
-			(instance, cb) => {
-				admin.handleDelete(instance, (err) => {
-					if (err) {
-						return cb(new VError(err, 'admin handleDelete failed'));
-					}
-					cb(null, instance);
-				})
-			},
-			// delete the row
-			(instance, cb) => {
-				app.db.deleteInstance(table, id, function (err, instance) {
-					if (err) {
-						return cb(new VError(err, 'deleteInstance error'));
-					}
-					cb();
-				})
+			let admin = adminTables[table];
+			if (!adminTables[table]) {
+				return next(new VError('admin for ' + table + ' not defined'));
 			}
-		], (err) => {
 
-			if (err) {
-				return res.send({
-					status: 'error',
-					flashLevel: 'danger',
-					flashMessage: 'Error deleting row',
-					errors: [err.message]
+			if (!app.db.checkPermission(table, req.antisocialUser, 'edit')) {
+				return next(new VError('you don\'t have permission to edit ' + table));
+			}
+
+			app.db.getInstances(table, {
+				where: {
+					id: id
+				}
+			}, async(err, rows) => {
+				if (err) {
+					return res.status(500).send('error: ' + err.message);
+				}
+
+				let refs, joins;
+				try {
+					refs = await getReferences(table, rows[0]);
+					joins = await getJoins(table, rows[0]);
+				}
+				catch (err) {
+					return res.status(500).send('error resolving data ' + err.message)
+				}
+
+				let pt, fk;
+				let parent = associationsMap[table] ? associationsMap[table].parent : {};
+				if (parent.length) {
+					pt = Object.keys(parent[0])[0];
+					fk = parent[0][pt];
+				}
+
+				let prepared = {};
+				admin.prepare(rows[0], prepared, (err) => {
+					res.render('admin/edit', {
+						admin: admin,
+						row: rows[0],
+						mountpoint: options.MOUNTPOINT,
+						prepared: prepared,
+						refs: refs,
+						joins: joins,
+						canDelete: admin.options.behavior === 'reference' ? Object.keys(refs).length === 0 && Object.keys(joins).length === 0 : true,
+						pt: pt,
+						fk: fk,
+						csrfToken: req.csrfToken()
+					});
 				});
-			}
-
-			return res.send({
-				status: 'ok',
-				flashLevel: 'info',
-				flashMessage: 'deleted'
 			});
 		});
-	});
 
-	debug('mounting admin on %s', options.MOUNTPOINT);
+		// create a row
+		debug('mounting admin POST /:table')
+		router.post('/:table', express.json({
+			limit: '20mb'
+		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+			let table = req.params.table;
 
-	app.use(options.MOUNTPOINT, router);
+			let admin = adminTables[table];
+			if (!adminTables[table]) {
+				return next(new VError('admin for ' + table + ' not defined'));
+			}
+
+			if (!app.db.checkPermission(table, req.antisocialUser, 'create')) {
+				return next(new VError('you don\'t have permission to create ' + table));
+			}
+
+			let sanitized = sanitizePayload(req.body[table], admin.getSanitizers(), {});
+
+			let validations = admin.getValidations();
+
+			let errors = validatePayload(sanitized.values, validations, {});
+
+			if (errors.length) {
+				return res
+					.status(422)
+					.json({
+						status: 'error',
+						errors: errors
+					});
+			}
+
+			app.db.newInstance(table, sanitized.values, function (err, instance) {
+				if (err) {
+					return res.send({
+						status: 'error',
+						flashLevel: 'danger',
+						flashMessage: 'Error creating row',
+						errors: [err.message]
+					});
+				}
+
+				admin.handleUpdate(instance, req.body[table], (err, dirty) => {
+					if (err) {
+						return res.send({
+							status: 'error',
+							flashLevel: 'danger',
+							flashMessage: 'Error doing admin handleUpdate',
+							errors: [err.message]
+						});
+					}
+
+					if (Object.keys(dirty).length === 0) {
+						return res.send({
+							status: 'ok',
+							flashLevel: 'info',
+							flashMessage: 'created',
+							id: instance.id
+						});
+					}
+
+					app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
+						if (err) {
+							return res.send({
+								status: 'error',
+								flashLevel: 'danger',
+								flashMessage: 'Error saving row after admin handleUpdate',
+								errors: [err.message]
+							});
+						}
+
+						return res.send({
+							status: 'ok',
+							flashLevel: 'info',
+							flashMessage: 'created',
+							id: instance.id,
+							warnings: sanitized.warnings
+						});
+					});
+				})
+			});
+		});
+
+		// update a row
+		debug('mounting admin PUT /:table/:rowId')
+		router.put('/:table/:rowId', express.json({
+			limit: '20mb'
+		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+			let table = req.params.table;
+			let id = req.params.rowId;
+
+			let admin = adminTables[table];
+			if (!adminTables[table]) {
+				return next(new VError('admin for ' + table + ' not defined'));
+			}
+
+			if (!db.checkPermission(table, req.antisocialUser, 'edit')) {
+				return next(new VError('you don\'t have permission to edit ' + table));
+			}
+
+			let sanitized = sanitizePayload(req.body[table], admin.getSanitizers(), {});
+
+			let validations = admin.getValidations();
+
+			let errors = validatePayload(sanitized.values, validations, {});
+
+			if (errors.length) {
+				return res
+					.status(422)
+					.json({
+						status: 'error',
+						errors: errors
+					});
+			}
+
+			app.db.updateInstance(table, id, sanitized.values, function (err, instance) {
+				if (err) {
+					return res.send({
+						status: 'error',
+						flashLevel: 'danger',
+						flashMessage: 'Error saving row',
+						errors: [err.message]
+					});
+				}
+
+				admin.handleUpdate(instance, sanitized.values, (err, dirty) => {
+					if (err) {
+						return res.send({
+							status: 'error',
+							flashLevel: 'danger',
+							flashMessage: 'Error doing admin handleUpdate',
+							errors: [err.message]
+						});
+					}
+
+					if (Object.keys(dirty).length === 0) {
+						return res.send({
+							status: 'ok',
+							flashLevel: 'info',
+							flashMessage: 'saved'
+						});
+					}
+
+					app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
+						if (err) {
+							return res.send({
+								status: 'error',
+								flashLevel: 'danger',
+								flashMessage: 'Error saving row after admin handleUpdate',
+								errors: [err.message]
+							});
+						}
+
+						return res.send({
+							status: 'ok',
+							flashLevel: 'info',
+							flashMessage: 'saved',
+							warnings: sanitized.warnings
+						});
+					});
+				});
+			});
+		});
+
+		// delete a row
+		debug('mounting admin DELETE /:table/:rowId')
+		router.delete('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+			let table = req.params.table;
+			let id = req.params.rowId;
+
+			let admin = adminTables[table];
+			if (!adminTables[table]) {
+				return next(new VError('admin for ' + table + ' not defined'));
+			}
+
+			if (!db.checkPermission(table, req.antisocialUser, 'delete')) {
+				return next(new VError('you don\'t have permission to delete ' + table));
+			}
+
+			async.waterfall([
+				// read  row
+				(cb) => {
+					db.getInstances(table, {
+						where: {
+							id: id
+						}
+					}, (err, rows) => {
+						if (err) {
+							return cb(new VError(err, 'error reading row'));
+						}
+						if (!rows.length) {
+							return cb(new VError('row not found'))
+						}
+						cb(null, rows[0]);
+					})
+				},
+				// give admin a chance to cleanup images, etc.
+				(instance, cb) => {
+					admin.handleDelete(instance, (err) => {
+						if (err) {
+							return cb(new VError(err, 'admin handleDelete failed'));
+						}
+						cb(null, instance);
+					})
+				},
+				// delete the row
+				(instance, cb) => {
+					app.db.deleteInstance(table, id, function (err, instance) {
+						if (err) {
+							return cb(new VError(err, 'deleteInstance error'));
+						}
+						cb();
+					})
+				}
+			], (err) => {
+
+				if (err) {
+					return res.send({
+						status: 'error',
+						flashLevel: 'danger',
+						flashMessage: 'Error deleting row',
+						errors: [err.message]
+					});
+				}
+
+				return res.send({
+					status: 'ok',
+					flashLevel: 'info',
+					flashMessage: 'deleted'
+				});
+			});
+		});
+
+		debug('mounting admin on %s', options.MOUNTPOINT);
+
+		app.use(options.MOUNTPOINT, router);
+	}
 }
 
 function mapAssociation(name, type, details) {

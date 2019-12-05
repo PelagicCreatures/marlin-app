@@ -5,7 +5,7 @@ const csrf = require('csurf');
 const express = require('express');
 const {
 	validatePayload
-} = require('../../../lib/validator-extensions');
+} = require('../../antisocial-cms/lib/validator-extensions');
 
 const csrfProtection = csrf({
 	cookie: {

@@ -30,7 +30,7 @@ class dbHandler extends EventEmitter {
 		// keep production credentials there - they are passed into this in 'options'
 		this.sequelize = new Sequelize(options.db, options.user, options.password, options);
 
-		let modelsPath = path.join(__dirname, '../models');
+		let modelsPath = path.join(__dirname, '../../../models');
 
 
 		// load models in models directory (exclude models/index.js used by sequelize-cli db:migrate)

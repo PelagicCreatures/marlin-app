@@ -17,7 +17,7 @@ const defaults = {
 var express = require('express');
 var events = require('events');
 
-module.exports = (options, app, db) => {
+module.exports = (app, options) => {
 
 	var router;
 
@@ -31,7 +31,7 @@ module.exports = (options, app, db) => {
 	var usersApp = new events.EventEmitter();
 	usersApp.options = options;
 	usersApp.app = app;
-	usersApp.db = db;
+	usersApp.db = app.db;
 	usersApp.router = router;
 
 	for (let prop in defaults) {

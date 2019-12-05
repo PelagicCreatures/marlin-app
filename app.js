@@ -44,24 +44,24 @@ app.use(cookieParser('SeCretDecdrrnG'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // setup DB (sequelize) & load models
-var dbHandler = require('./lib/db-sequelize');
+var dbHandler = require('./modules/antisocial-cms/lib/db-sequelize');
 app.db = new dbHandler(app, config.dbOptions);
 
 // set up and mount the user API
-const userAPI = require('./modules/antisocial-users/index')(config.userOptions, app, app.db);
+app.userAPI = require('./modules/antisocial-users/index')(app, config.userOptions);
 
 if (config.analyticsOptions) {
-  const analyics = require("./lib/analytics");
-  analyics.mount(app, app.db, config.analyticsOptions);
+  const analyics = require("./modules/antisocial-cms/lib/analytics");
+  analyics.mount(app, config.analyticsOptions);
 }
 
 // set up user event handlers
-require('./lib/user-events')(userAPI);
+require('./lib/user-events')(app);
 
 // UI
-app.use('/', require('./routes/index')(userAPI));
-app.use('/', require('./routes/testbench')(userAPI));
-app.use('/', require('./routes/user-pages')(userAPI));
+app.use('/', require('./routes/index')(app));
+app.use('/', require('./routes/testbench')(app));
+app.use('/', require('./routes/user-pages')(app));
 
 // call asynchronous things that need to be stable before we can handle requests
 app.start = function (done) {
@@ -71,18 +71,9 @@ app.start = function (done) {
 
     // now that the db is up we can initialize /admin
     if (config.adminOptions) {
-      const admin = require("./lib/admin");
-      admin.mount(app, app.db, config.adminOptions);
+      app.admin = require("./modules/antisocial-cms/lib/admin");
+      app.admin.mount(app, config.adminOptions);
     }
-
-    // error response for bad _csrf in forms
-    app.use(function (err, req, res, next) {
-      if (err.code !== 'EBADCSRFTOKEN') return next(err)
-      res.status(403).send({
-        status: 'error',
-        errors: ['invalid csrf']
-      });
-    });
 
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {
@@ -95,8 +86,14 @@ app.start = function (done) {
         return next(err)
       }
 
-      res.locals.message = err.cause && err.cause() ? err.cause().message : err.message;
+      if (err.code === 'EBADCSRFTOKEN') {
+        return res.status(403).send({
+          status: 'error',
+          errors: ['invalid csrf']
+        });
+      }
 
+      res.locals.message = err.cause && err.cause() ? err.cause().message : err.message;
 
       if (req.headers['x-digitopia-hijax']) {
         res.set('x-digitopia-hijax-flash-level', 'danger');

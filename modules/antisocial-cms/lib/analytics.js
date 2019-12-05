@@ -14,18 +14,18 @@ const {
 
 const {
 	getUserForRequestMiddleware
-} = require('../modules/antisocial-users/lib/get-user-for-request-middleware');
+} = require('../../antisocial-users/lib/get-user-for-request-middleware');
 
 const {
 	getAdmin,
 	ensureRoleMiddleware
 } = require('./admin');
 
-function mount(app, db, options) {
+function mount(app, options) {
 	let router = express.Router();
 
 	let userForRequestMiddleware = getUserForRequestMiddleware({
-		db: db
+		db: app.db
 	});
 
 	debug('mounting analytics GET /dashboard')
@@ -68,7 +68,7 @@ function mount(app, db, options) {
 			order: Sequelize.literal('groupByHr DESC')
 		}
 
-		db.getModel('UserBehavior')
+		app.db.getModel('UserBehavior')
 			.findAll(query)
 			.then(function (result) {
 				res.send({
@@ -150,7 +150,7 @@ function mount(app, db, options) {
 
 			debug('/behavior %j', req.body);
 
-			db.newInstance('UserBehavior', payload, (err) => {
+			app.db.newInstance('UserBehavior', payload, (err) => {
 				if (err) {
 					return res.send({
 						status: 'error',

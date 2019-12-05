@@ -3,11 +3,11 @@ const debug = require('debug')('antisocial-user');
 const async = require('async');
 const csrf = require('csurf');
 const express = require('express');
-const getAdmin = require('../../../lib/admin').getAdmin;
+const getAdmin = require('../../antisocial-cms/lib/admin').getAdmin;
 
 const {
 	validatePayload
-} = require('../../../lib/validator-extensions');
+} = require('../../antisocial-cms/lib/validator-extensions');
 
 const csrfProtection = csrf({
 	cookie: {

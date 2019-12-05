@@ -80,14 +80,13 @@ describe('users', function () {
 		client1.put('http://127.0.0.1:3000/api/users/register')
 			.set('Accept', 'application/json')
 			.send({
-				'name': 'user one',
 				'username': 'user-one',
 				'email': 'mrhodes+1@myantisocial.net',
 				'password': 'Testing123'
 			})
 			.end(function (err, res) {
 				if (err) {
-					//console.log('errors: %j %j', err, res.body ? res.body : '');
+					console.log('errors: %j %j', err, res.body ? res.body : '');
 				}
 				expect(err).to.be(null);
 				expect(res.status).to.equal(200);
@@ -142,7 +141,6 @@ describe('users', function () {
 		client2.put('http://127.0.0.1:3000/api/users/register')
 			.set('Accept', 'application/json')
 			.send({
-				'name': 'user two',
 				'username': 'user-two',
 				'email': 'mrhodes+2@myantisocial.net',
 				'password': 'Testing123'

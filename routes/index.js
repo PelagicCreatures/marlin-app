@@ -4,7 +4,7 @@ const {
   getUserForRequestMiddleware
 } = require('../modules/antisocial-users/lib/get-user-for-request-middleware');
 
-module.exports = function mount(userAPI) {
+module.exports = function mount(app) {
 
   router.get('/', function (req, res, next) {
     res.render('index', {});

@@ -5,9 +5,9 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 
-function getUserForRequestMiddleware(userAPI) {
+function getUserForRequestMiddleware(app) {
 
-	let db = userAPI.db;
+	let db = app.db;
 
 	// get token from headers or cookies and resolve the logged in user
 	// if found set req.antisocialToken and req.antisocialUser for later use
