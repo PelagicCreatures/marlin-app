@@ -1,7 +1,7 @@
 // import any ES6 modules you need here and they will get bundled in
 
 import {
-	boot,
+	Utils,
 	jQuery,
 	Cookies,
 	async
@@ -12,7 +12,7 @@ from '../modules/digitopia-cms/assets/app'
 // webpack will expose things exported here
 // as App.XXX in the global namespace
 export {
-	boot,
+	Utils,
 	jQuery,
 	Cookies,
 	async
