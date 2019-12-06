@@ -54,11 +54,11 @@ function formController(elem, options) {
 				var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout;
 
 				if (loggedIn) {
-					didLogIn();
+					Utils.didLogIn();
 				}
 
 				if (loggedOut) {
-					didLogOut();
+					Utils.didLogOut();
 				}
 
 				if (data.status === 'ok') {
