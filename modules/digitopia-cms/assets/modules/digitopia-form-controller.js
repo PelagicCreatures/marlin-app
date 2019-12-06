@@ -64,7 +64,7 @@ function formController(elem, options) {
 				if (data.status === 'ok') {
 					Utils.flashAjaxStatus('success', flashMessage);
 					if (!self.stayOnPage) {
-						loadPage(self.redirect);
+						Utils.loadPage(self.redirect);
 					}
 					else {
 						self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>');

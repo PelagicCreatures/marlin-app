@@ -8,13 +8,3 @@ const cookieOptions = {
 	domain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : document.location.hostname,
 	expires: 365
 }
-
-// load a page programatically
-const loadPage = (href) => {
-	$('body').trigger('DigitopiaLoadPage', href);
-}
-
-// reload current page programatically
-const reloadPage = () => {
-	$('body').trigger('DigitopiaReloadPage');
-}

@@ -24,17 +24,17 @@ function adminController(elem, options) {
 				let belongsTo = $(this).data('belongs-to');
 				let fk = $(this).data('fk');
 
-				loadPage(self.mountpoint + '/' + target + '/create?fk=' + fk + '&belongs-to=' + belongsTo)
+				Utils.loadPage(self.mountpoint + '/' + target + '/create?fk=' + fk + '&belongs-to=' + belongsTo)
 
 			}
 			else {
-				loadPage(self.mountpoint + '/' + self.model + '/create')
+				Utils.loadPage(self.mountpoint + '/' + self.model + '/create')
 			}
 		});
 
 		this.element.on('click', '.edit-button', function (e) {
 			e.preventDefault();
-			loadPage(self.mountpoint + '/' + self.model + '/' + self.id + '/edit')
+			Utils.loadPage(self.mountpoint + '/' + self.model + '/' + self.id + '/edit')
 		});
 
 		this.element.on('click', '.delete-button', function (e) {
@@ -71,7 +71,7 @@ function adminController(elem, options) {
 			let q = $(this).closest('.form-group').find('input[name="q"]').val();
 			let prop = $(this).closest('.form-group').find('select[name="property"]').val();
 			if (q && prop) {
-				loadPage(location.pathname + '?q=' + encodeURIComponent(q) + '&property=' + encodeURIComponent(prop));
+				Utils.loadPage(location.pathname + '?q=' + encodeURIComponent(q) + '&property=' + encodeURIComponent(prop));
 			}
 		});
 
@@ -110,7 +110,7 @@ function adminController(elem, options) {
 		this.element.on('click', '.select-row', function (e) {
 			e.preventDefault();
 			var id = parseInt($(this).data('row'));
-			loadPage(self.mountpoint + '/' + self.model + '/' + id)
+			Utils.loadPage(self.mountpoint + '/' + self.model + '/' + id)
 		});
 
 		this.element.on('MDCChip:selection', '.mdc-chip', function (e) {
@@ -157,7 +157,7 @@ function adminController(elem, options) {
 					if (data.id && !redir.match(/\/\d+$/)) {
 						redir += '/' + data.id
 					}
-					loadPage(redir);
+					Utils.loadPage(redir);
 				}
 				else {
 					console.log(data);

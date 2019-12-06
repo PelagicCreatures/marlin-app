@@ -233,6 +233,16 @@ var progressBar = (show) => {
 	}
 }
 
+// load a page programatically
+const loadPage = (href) => {
+	$('body').trigger('DigitopiaLoadPage', href);
+}
+
+// reload current page programatically
+const reloadPage = () => {
+	$('body').trigger('DigitopiaReloadPage');
+}
+
 export {
 	boot,
 	didLogIn,
@@ -241,5 +251,7 @@ export {
 	didInjectContent,
 	instantiateMaterialDesignElements,
 	flashAjaxStatus,
-	progressBar
+	progressBar,
+	loadPage,
+	reloadPage
 }

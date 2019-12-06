@@ -67,20 +67,20 @@ function ajaxButton(elem, options) {
 				var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout;
 
 				if (loggedIn) {
-					didLogIn();
+					Utils.didLogIn();
 				}
 
 				if (loggedOut) {
-					didLogOut();
+					Utils.didLogOut();
 				}
 
 				if (data.status === 'ok') {
 					Utils.flashAjaxStatus('success', flashMessage);
 					if (self.redirect === location.pathname) {
-						reloadPage();
+						Utils.reloadPage();
 					}
 					else {
-						loadPage(self.redirect);
+						Utils.loadPage(self.redirect);
 					}
 				}
 				else {
