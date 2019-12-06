@@ -4,6 +4,11 @@ import {
 }
 from '../../../digitopia/js/controller.js';
 
+import {
+	didInjectContent
+}
+from './utils';
+
 function flexTable(elem, options) {
 	this.element = $(elem);
 	this.data = $(this.element).clone(true, true);

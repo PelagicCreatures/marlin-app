@@ -4,6 +4,8 @@ import {
 }
 from '../../../digitopia/js/controller.js';
 
+import * as Utils from './utils';
+
 function formController(elem, options) {
 	this.element = $(elem);
 	var self = this;
@@ -60,7 +62,7 @@ function formController(elem, options) {
 				}
 
 				if (data.status === 'ok') {
-					flashAjaxStatus('success', flashMessage);
+					Utils.flashAjaxStatus('success', flashMessage);
 					if (!self.stayOnPage) {
 						loadPage(self.redirect);
 					}

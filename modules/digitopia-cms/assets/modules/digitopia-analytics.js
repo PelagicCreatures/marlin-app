@@ -4,6 +4,10 @@ import {
 }
 from '../../../digitopia/js/controller.js';
 
+import Cookies from "js-cookie";
+
+import * as Utils from './utils';
+
 function digitopiaAnalytics(elem, options) {
 	this.element = $(elem);
 
@@ -13,8 +17,8 @@ function digitopiaAnalytics(elem, options) {
 	this.method = options.method;
 	this.endpoint = options.endpoint;
 
-	this.behaviorId = App.Cookies.get(this.scope);
-	this.scale = App.Cookies.get('responsive') ? App.Cookies.get('responsive').split(' ')[1] : 'unknown';
+	this.behaviorId = Cookies.get(this.scope);
+	this.scale = Cookies.get('responsive') ? Cookies.get('responsive').split(' ')[1] : 'unknown';
 
 	this.start = function () {
 		this.element.on('DigitopiaScaleChanged', function (e, scale) {
@@ -42,7 +46,7 @@ function digitopiaAnalytics(elem, options) {
 			type: type,
 			behaviorId: self.behaviorId,
 			path: path,
-			hasAccount: App.Cookies.get('have-account'),
+			hasAccount: Cookies.get('have-account'),
 			scale: self.scale,
 			referer: oldPath
 		}
@@ -58,7 +62,7 @@ function digitopiaAnalytics(elem, options) {
 				if (data && data.status === 'ok') {
 					if (self.behaviorId !== data.behaviorId) {
 						self.behaviorId = data.behaviorId;
-						App.Cookies.set(self.scope, self.behaviorId, {
+						Cookies.set(self.scope, self.behaviorId, {
 							path: '/',
 							domain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : document.location.hostname,
 							expires: 365
@@ -82,7 +86,7 @@ function digitopiaAnalytics(elem, options) {
 						message = jqXHR.responseJSON.status;
 					}
 				}
-				flashAjaxStatus('error', message);
+				Utils.flashAjaxStatus('error', message);
 			});
 	}
 }

@@ -4,6 +4,9 @@ import {
 }
 from '../../../digitopia/js/controller.js';
 
+import * as Utils from './utils';
+import * as MDC from './MDC';
+
 function ajaxButton(elem, options) {
 	this.element = $(elem);
 	var self = this;
@@ -24,7 +27,7 @@ function ajaxButton(elem, options) {
 
 				$('#ephemeral').append($(html));
 
-				let dialog = App.MDC.MDCDialog.attachTo(document.querySelector(self.confirm));
+				let dialog = MDC.MDCDialog.attachTo(document.querySelector(self.confirm));
 				$(self.confirm).data('mdc-dialog', dialog);
 
 				dialog.listen('MDCDialog:closed', function (e) {
@@ -72,7 +75,7 @@ function ajaxButton(elem, options) {
 				}
 
 				if (data.status === 'ok') {
-					flashAjaxStatus('success', flashMessage);
+					Utils.flashAjaxStatus('success', flashMessage);
 					if (self.redirect === location.pathname) {
 						reloadPage();
 					}
@@ -81,7 +84,7 @@ function ajaxButton(elem, options) {
 					}
 				}
 				else {
-					flashAjaxStatus(flashLevel, flashMessage);
+					Utils.flashAjaxStatus(flashLevel, flashMessage);
 				}
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
@@ -100,7 +103,7 @@ function ajaxButton(elem, options) {
 						message = jqXHR.responseJSON.status;
 					}
 				}
-				flashAjaxStatus('error', message);
+				Utils.flashAjaxStatus('error', message);
 			});
 	};
 };

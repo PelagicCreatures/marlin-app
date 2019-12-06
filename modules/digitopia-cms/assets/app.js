@@ -73,7 +73,13 @@ import {
 }
 from './modules/digitopia-analytics-report.js'
 
+import {
+	boot
+}
+from './modules/utils.js'
+
 export {
+	boot,
 	MDC,
 	jQuery,
 	Cookies,

@@ -4,6 +4,9 @@ import {
 }
 from '../../../digitopia/js/controller.js';
 
+import * as Utils from './utils';
+import * as MDC from './MDC';
+
 function adminController(elem, options) {
 	this.element = $(elem);
 	var self = this;
@@ -44,7 +47,7 @@ function adminController(elem, options) {
 
 			$('#ephemeral').append($(html));
 
-			let dialog = App.MDC.MDCDialog.attachTo(document.querySelector('#confirm-dialog'));
+			let dialog = MDC.MDCDialog.attachTo(document.querySelector('#confirm-dialog'));
 			$('#confirm-dialog').data('mdc-dialog', dialog);
 
 			dialog.listen('MDCDialog:closed', function (e) {
@@ -149,7 +152,7 @@ function adminController(elem, options) {
 				var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel;
 				var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage;
 				if (data.status === 'ok') {
-					flashAjaxStatus('success', flashMessage);
+					Utils.flashAjaxStatus('success', flashMessage);
 					let redir = self.redirect;
 					if (data.id && !redir.match(/\/\d+$/)) {
 						redir += '/' + data.id
