@@ -1,0 +1,20 @@
+extends ../../../views/wrapper
+
+block content
+	.reg-form-container.centered
+		h2 Validate Your Email Address
+		
+		if flash
+			p.alert= flash
+		else
+			
+			form.form.form-validation(action="/api/users/email-validate" method="PATCH" data-jsclass="formController" data-submitter="#submitter")
+				input(type="hidden" name="_csrf" value= csrfToken)
+
+				input(type="hidden" name="token" value= token)
+				.reg-form.clear-fix.mdc-elevation--z1
+					section.form-group
+						p.truncate= 'code: ' + token
+					section.form-group.pull-right
+						button#submitter.mdc-button.mdc-button--raised.primary-button
+							span.mdc-button__label Click Here to Complete Validation

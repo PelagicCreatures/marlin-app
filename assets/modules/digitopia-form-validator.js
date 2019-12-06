@@ -8,7 +8,7 @@ import {
 	Validator,
 	getMessage
 }
-from '../../modules/antisocial-cms/lib/validator-extensions.js';
+from '../../modules/digitopia-cms/lib/validator-extensions.js';
 
 function formValidator(elem, options) {
 	this.element = $(elem);

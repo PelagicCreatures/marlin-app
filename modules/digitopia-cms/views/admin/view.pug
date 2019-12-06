@@ -1,0 +1,117 @@
+extends ../../../../views/wrapper
+
+block fab
+	button.mdc-fab.mdc-fab--mini.app-fab-fixed
+		.mdc-fab__ripple
+		a.mdc-fab__icon.material-icons(href= mountpoint + '/' + admin.name + '/' + row.id + '/edit') edit
+
+block content
+	- let back = mountpoint + '/' + admin.name;
+	if (admin.options.behavior === 'child') && fk
+		- back = mountpoint + '/' + pt + '/' + row[fk]
+
+	.admin-container
+		.admin.clear-fix.mdc-elevation--z1
+			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
+				.page-header
+					h2
+						a.back-button(href= back)
+							i.material-icons arrow_back_ios
+						= admin.name
+						.pull-right.action
+							.add-button
+								i.material-icons add
+					
+				.page-content
+					.admin-form
+						.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+							ul
+								li
+								li
+							ul
+								li.label
+									= 'row'
+									ul
+										li
+											.button-bar.pull-right
+												if canDelete
+													.delete-button
+														i.material-icons delete_forever
+											= row.id
+										
+								if fk
+									li.label
+										= fk
+										ul
+											li.data
+												if admin.getColumn(fk).getValueProducesMarkup
+													!= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
+												else
+													= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
+													
+								for property in admin.options.viewColumns
+									if property !== fk
+										li.label
+											= property
+											ul
+												li.data
+													if admin.getColumn(property).getValueProducesMarkup
+														!= admin.getColumn(property).getDisplayValue(row,prepared[property])
+													else
+														= admin.getColumn(property).getDisplayValue(row,prepared[property])
+						
+						if (admin.options.behavior !== 'reference')
+							// belongs to many relationships (through tables)
+							for join in admin.options.joins
+								if joins[join.as].rows.length
+									- let relAdmin = adminTables[join.target]
+									- let defaultColumn = relAdmin.options.defaultColumn
+									p= join.as
+									.mdc-chip-set
+										for through in joins[join.as].rows
+											.mdc-chip
+												.mdc-chip__ripple
+												span.mdc-chip__text= through[defaultColumn]
+						
+						if (admin.options.behavior === 'parent')
+							// has many relationships
+							for dependant in dependants
+								- let relAdmin = adminTables[dependant.table]
+								p
+									button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
+										i.material-icons add_circle
+									
+									= dependant.table + ' (' + dependant.rows.count + ' rows)'
+								
+								table
+									for rel in dependant.rows.rows
+										tr
+											td
+												a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+						
+						if (admin.options.behavior !== 'parent')
+							for ref in references
+								- let relAdmin = adminTables[ref.table]
+								p
+									= ref.table + ' (' + ref.rows.count + ' rows)'
+								if relAdmin
+									ul
+										for rel in ref.rows.rows
+											li
+												a(href= mountpoint + '/' + ref.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+						
+	
+		p ManyThroughs
+		pre= JSON.stringify(joins,"",2)
+		
+		p Dependants
+		pre= JSON.stringify(dependants,"",2)
+	
+		p Associations
+		pre= JSON.stringify(assoc,"",2)
+			
+		p Options
+		pre= JSON.stringify(admin.options,"",2)
+		
+		p References:
+		pre= JSON.stringify(references,"",2)

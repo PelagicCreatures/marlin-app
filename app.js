@@ -44,14 +44,14 @@ app.use(cookieParser('SeCretDecdrrnG'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // setup DB (sequelize) & load models
-var dbHandler = require('./modules/antisocial-cms/lib/db-sequelize');
+var dbHandler = require('./modules/digitopia-cms/lib/db-sequelize');
 app.db = new dbHandler(app, config.dbOptions);
 
 // set up and mount the user API
-app.userAPI = require('./modules/antisocial-users/index')(app, config.userOptions);
+app.userAPI = require('./modules/digitopia-cms/index')(app, config.userOptions);
 
 if (config.analyticsOptions) {
-  const analyics = require("./modules/antisocial-cms/lib/analytics");
+  const analyics = require("./modules/digitopia-cms/lib/analytics");
   analyics.mount(app, config.analyticsOptions);
 }
 
@@ -61,7 +61,6 @@ require('./lib/user-events')(app);
 // UI
 app.use('/', require('./routes/index')(app));
 app.use('/', require('./routes/testbench')(app));
-app.use('/', require('./routes/user-pages')(app));
 
 // call asynchronous things that need to be stable before we can handle requests
 app.start = function (done) {
@@ -71,7 +70,7 @@ app.start = function (done) {
 
     // now that the db is up we can initialize /admin
     if (config.adminOptions) {
-      app.admin = require("./modules/antisocial-cms/lib/admin");
+      app.admin = require("./modules/digitopia-cms/lib/admin");
       app.admin.mount(app, config.adminOptions);
     }
 

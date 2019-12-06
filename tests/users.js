@@ -4,7 +4,7 @@ var expect = require('expect.js');
 var uuid = require('uuid');
 var async = require('async');
 
-const validateToken = require('../modules/antisocial-users/lib/get-user-for-request-middleware').validateToken;
+const validateToken = require('../modules/digitopia-cms/lib/get-user-for-request-middleware').validateToken;
 
 // TODO negative coverage for login, reg, validate etc.
 

@@ -74,7 +74,7 @@ module.exports = function (app) {
 		// morgan logger
 		LOGGER_LEVEL: 'dev',
 
-		// override default options for antisocial user API (see modules/antisocial-users/index.js)
+		// override default options for antisocial user API (see modules/digitopia-cms/index.js)
 		userOptions: {},
 
 		// options for sequalize ORM database models
