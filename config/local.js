@@ -57,9 +57,8 @@ module.exports = function (app) {
 	let config = {
 		siteName: 'Boilerplate User Web App',
 
-		// options for client side javascript & pug templates
-		// in templates exposed as 'options.xxxx',
-		// in JS exposed as 'publicOptions.xxxx'
+		// expose options for client side javascript & pug templates
+		// this is exposed as 'publicOptions.xxxx',
 		// WARNING: NO PRIVATE INFO should be in app.locals.publicOptions
 		publicOptions: {
 			COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
@@ -74,7 +73,7 @@ module.exports = function (app) {
 		// morgan logger
 		LOGGER_LEVEL: 'dev',
 
-		// override default options for antisocial user API (see modules/digitopia-cms/index.js)
+		// override default options for antisocial user API
 		userOptions: {},
 
 		// options for sequalize ORM database models

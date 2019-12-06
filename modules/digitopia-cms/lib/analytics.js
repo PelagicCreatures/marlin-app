@@ -4,6 +4,7 @@ const express = require('express');
 const debug = require('debug')('antisocial-analytics');
 const async = require('async');
 const moment = require('moment');
+const path = require('path');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -21,6 +22,8 @@ const {
 	ensureRoleMiddleware
 } = require('./admin');
 
+let viewsPath = path.join(__dirname, '../', 'views');
+
 function mount(app, options) {
 	let router = express.Router();
 
@@ -30,7 +33,7 @@ function mount(app, options) {
 
 	debug('mounting analytics GET /dashboard')
 	router.get('/dashboard', userForRequestMiddleware, ensureRoleMiddleware, function (req, res) {
-		res.render('admin/dashboard', {});
+		res.render(viewsPath + '/admin/dashboard', {});
 	});
 
 	// report given a date prefix and optional path report total: users, pageviews

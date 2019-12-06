@@ -22,13 +22,14 @@ class dbHandler extends EventEmitter {
 
 		super();
 		this.app = app;
-		this.options = options;
+		this.options = options.dbOptions;
+		this.adminOptions = options.adminOptions;
 
 		this.modelDefs = [];
 
 		// the sequelize config file is used for sequelize-cli db:migrate but we don't
 		// keep production credentials there - they are passed into this in 'options'
-		this.sequelize = new Sequelize(options.db, options.user, options.password, options);
+		this.sequelize = new Sequelize(options.db, options.user, options.password, options.dbOptions);
 
 		let modelDirs = [path.join(__dirname, '../', 'models')];
 		modelDirs.push(path.join(__dirname, '../../../models'));
@@ -100,6 +101,12 @@ class dbHandler extends EventEmitter {
 					done();
 				});
 			});
+
+			// now that the db is up we can initialize /admin
+			if (this.adminOptions) {
+				this.app.admin = require("./admin");
+				this.app.admin.mount(this.app, this.adminOptions);
+			}
 		});
 	}
 

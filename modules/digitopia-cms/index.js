@@ -19,17 +19,15 @@ var events = require('events');
 
 module.exports = (app, options) => {
 
-	var router;
+	// setup DB (sequelize) & load models
+	var dbHandler = require('./lib/db-sequelize');
+	app.db = new dbHandler(app, options);
 
-	if (app.loopback) {
-		router = app.loopback.Router();
-	}
-	else {
-		router = express.Router();
-	}
+	var router = express.Router();
 
 	var usersApp = new events.EventEmitter();
-	usersApp.options = options;
+
+	usersApp.options = options.userOptions;
 	usersApp.app = app;
 	usersApp.db = app.db;
 	usersApp.router = router;
@@ -61,11 +59,11 @@ module.exports = (app, options) => {
 
 	debug('mounting users API on ' + usersApp.options.MOUNTPOINT);
 
-	if (usersApp.options.MOUNTPOINT) {
-		app.use(usersApp.options.MOUNTPOINT, router);
-	}
-	else {
-		app.use(router);
+	app.use(usersApp.options.MOUNTPOINT, router);
+
+	if (options.analyticsOptions) {
+		const analyics = require("./lib/analytics");
+		analyics.mount(app, options.analyticsOptions);
 	}
 
 	return usersApp;

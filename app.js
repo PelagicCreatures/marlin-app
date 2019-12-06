@@ -45,15 +45,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // setup DB (sequelize) & load models
 var dbHandler = require('./modules/digitopia-cms/lib/db-sequelize');
-app.db = new dbHandler(app, config.dbOptions);
+app.db = new dbHandler(app, config);
 
 // set up and mount the user API
-app.userAPI = require('./modules/digitopia-cms/index')(app, config.userOptions);
-
-if (config.analyticsOptions) {
-  const analyics = require("./modules/digitopia-cms/lib/analytics");
-  analyics.mount(app, config.analyticsOptions);
-}
+app.userAPI = require('./modules/digitopia-cms/index')(app, config);
 
 // set up user event handlers
 require('./lib/user-events')(app);
@@ -62,17 +57,14 @@ require('./lib/user-events')(app);
 app.use('/', require('./routes/index')(app));
 app.use('/', require('./routes/testbench')(app));
 
-// call asynchronous things that need to be stable before we can handle requests
+// Call asynchronous things that need to be stable
+// before we can handle requests
+// NOTE: /admin routes are mounted by this so error
+// handlers need to be defined after this call
 app.start = function (done) {
   debug('starting app');
   app.db.sync(() => {
     debug('db sync done');
-
-    // now that the db is up we can initialize /admin
-    if (config.adminOptions) {
-      app.admin = require("./modules/digitopia-cms/lib/admin");
-      app.admin.mount(app, config.adminOptions);
-    }
 
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {
