@@ -2,13 +2,13 @@ import $ from "jquery";
 import {
 	GetJQueryPlugin
 }
-from '../../modules/digitopia/js/controller.js';
+from '../../../digitopia/js/controller.js';
 
 import {
 	Validator,
 	getMessage
 }
-from '../../modules/digitopia-cms/lib/validator-extensions.js';
+from '../../lib/validator-extensions.js';
 
 function formValidator(elem, options) {
 	this.element = $(elem);

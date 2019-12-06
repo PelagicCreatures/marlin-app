@@ -2,7 +2,7 @@ import $ from "jquery";
 import {
 	GetJQueryPlugin
 }
-from '../../modules/digitopia/js/controller.js';
+from '../../../digitopia/js/controller.js';
 
 function flexTable(elem, options) {
 	this.element = $(elem);

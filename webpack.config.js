@@ -4,7 +4,7 @@ const WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = {
 	mode: 'development',
-	entry: ['./assets/scss/app.scss', './assets/app.js'],
+	entry: ['./assets/scss/app.scss', './assets/app.js', './modules/digitopia-cms/assets/app.js'],
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'working/assets'),
