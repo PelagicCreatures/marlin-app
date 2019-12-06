@@ -32,8 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	AdminTestChild.associate = function (models) {
 		AdminTestChild.belongsTo(models.AdminTest, {
-			foreignKey: 'testId',
-			onDelete: 'CASCADE'
+			foreignKey: 'testId'
 		});
 	}
 

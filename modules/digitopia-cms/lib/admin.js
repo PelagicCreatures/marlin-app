@@ -1321,7 +1321,7 @@ class adminMarkdownColumn extends adminColumn {
 
 	getDisplayValue(instance, data, options) {
 		let md = new MarkdownIt();
-		return md.render(instance[this.name]);
+		return md.render(instance[this.name] ? instance[this.name] : "");
 	};
 
 	getForm(instance, data, options) {

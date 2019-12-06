@@ -71,8 +71,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	AdminTest.associate = function (models) {
 		AdminTest.hasMany(models.AdminTestChild, {
-			foreignKey: 'testId',
-			onDelete: 'CASCADE'
+			foreignKey: 'testId'
 		});
 
 		AdminTest.belongsToMany(models.AdminTestMulti, {

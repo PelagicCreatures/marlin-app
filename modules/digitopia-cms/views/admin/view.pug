@@ -63,7 +63,7 @@ block content
 						if (admin.options.behavior !== 'reference')
 							// belongs to many relationships (through tables)
 							for join in admin.options.joins
-								if joins[join.as].rows.length
+								if joins[join.as] && joins[join.as].rows.length
 									- let relAdmin = adminTables[join.target]
 									- let defaultColumn = relAdmin.options.defaultColumn
 									p= join.as

@@ -10,7 +10,7 @@ got to http://localhost:3000 in your browser and create a login
 
 NOTE: the first user created will have superuser admin permissions
 
-As you make changes in assets/ css and js grunt and webpach will recompile client side bundles.
+As you make changes in assets/ css and js grunt and webpack will recompile client side bundles.
 
 ### Environment Variables
 NODE_ENV:
