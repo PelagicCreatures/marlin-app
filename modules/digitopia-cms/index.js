@@ -48,6 +48,7 @@ module.exports = (app, options) => {
 	require('./api-routes/password-reset.js')(usersApp);
 	require('./api-routes/password-set.js')(usersApp);
 	require('./api-routes/token-delete.js')(usersApp);
+	require('./api-routes/delete.js')(usersApp);
 	if (process.env.STRIPE_SECRET) {
 		require('./api-routes/subscription-cancel.js')(usersApp);
 		require('./api-routes/stripe-webhook.js')(usersApp);

@@ -43,10 +43,6 @@ app.use(cookieParser('SeCretDecdrrnG'));
 // deliver static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// setup DB (sequelize) & load models
-var dbHandler = require('./modules/digitopia-cms/lib/db-sequelize');
-app.db = new dbHandler(app, config);
-
 // set up and mount the user API
 app.userAPI = require('./modules/digitopia-cms/index')(app, config);
 
