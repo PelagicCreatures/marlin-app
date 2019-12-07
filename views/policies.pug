@@ -1,0 +1,26 @@
+extends wrapper
+
+block content
+	.page-header
+		h2 
+			a(href="/users/home")
+				i.material-icons arrow_back_ios
+				
+			i.material-icons person
+			| Privacy and Use Policies
+
+	.page-content
+		p
+			strong Personal Information and Privacy
+		ol
+			li This service uses browser "cookies" to to hold some information.
+			li We employ an anonymous tracking cookie for statistical purposes. This tracker is visible to this service only - no cross site tracking technology is deployed on this service.
+			li For registered users, we collect an email address and a password. We only use your address to communicate with you about your account. We do not sell or share account email addresses. Your pasword is always encrypted and securely stored.
+			li Once registered and logged in we use a token cookie that identifies your browser with your personal account information stored on the server.
+			li If you choose do delete your account, all cookies in your browser and all personal information stored in our live databases is immediatly deleted. Note that we do have backups of our database for disaster recovery purposes which we keep for one month, after the backup retention window your information will be not be stored on any of our systems.
+			li 3rd party services
+				ul
+					li Mailchimp - We use mailchimp for opt-in newsletters. When you delete your account we unsubscribe you from all lists.
+					li Stripe - We use stripe for subscription payments. When you delete your account we cancel you active subscription and delete your account from stripe. Stripe has it's own polices on privacy and personal information which adheres to strict standards and practicies when handling payment information. No payment information is stored in our servers.
+					li Advertising - we do not share your personal information with advertisers or ad networks but ad networks can and do track you but do so anonymously.
+					

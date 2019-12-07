@@ -10,7 +10,7 @@ block content
 			.reg-form.clear-fix.mdc-elevation--z1
 				section.form-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(name="email" data-validate= {notEmpty:true,isEmail:true} data-unique-endpoint= "/api/users/is-unique-email")
+						input.mdc-text-field__input(autocomplete="username" name="email" data-validate= {notEmpty:true,isEmail:true} data-unique-endpoint= "/api/users/is-unique-email")
 						label.mdc-floating-label Email Address
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -69,3 +69,7 @@ block content
 					a(href="/users/login") Already have an account
 
 			p.mdc-typography--caption After you click "Sign Up" we will send a new validation message to your new email address. Follow the link in the email to complete this process.
+			
+			p.mdc-typography--caption
+				| Note: Once registered, you can delete your account at any time to remove all your personal information from our files. Your password will be encrypted and we will not sell or share your email address. 
+				a(href="/policies") MORE

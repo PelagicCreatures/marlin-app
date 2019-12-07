@@ -51,7 +51,7 @@ require('./lib/user-events')(app);
 
 // UI
 app.use('/', require('./routes/index')(app));
-app.use('/', require('./routes/testbench')(app));
+app.use('/', require('./routes/policies')(app));
 
 // Call asynchronous things that need to be stable
 // before we can handle requests

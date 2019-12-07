@@ -18,6 +18,8 @@ module.exports = (usersApp) => {
 
 		debug('/delete');
 
+		var stripe = require('stripe')(process.env.STRIPE_SECRET);
+
 		var currentUser = req.antisocialUser;
 		if (!currentUser) {
 			return res.status(401).json({
@@ -31,18 +33,17 @@ module.exports = (usersApp) => {
 		async.series([
 			// cancel subscription if applicable
 			(cb) => {
-				if (!req.antisocialUser.stripeSubscription) {
+				if (!req.antisocialUser.stripeCustomer) {
 					return setImmediate(cb);
 				}
-				stripe.subscriptions.update(
-					req.antisocialUser.stripeSubscription, {
-						cancel_at_period_end: true
-					},
+				stripe.customers.del(
+					req.antisocialUser.stripeCustomer,
 					function (err, confirmation) {
 						if (err) {
 							return cb(new VError(err, 'Error cancelling subscription'))
 						}
 						actions.push('Subscription Cancelled.');
+						cb();
 					});
 			},
 			// delete the user (will also delete all tokens)
