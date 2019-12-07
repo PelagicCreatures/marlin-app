@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 		'assets/stylus/*.styl'
 	];
 
-	var watchfiles = ['views/shared/*.pug', 'views/admin/*.pug']
+	var watchfiles = ['modules/digitopia-cms/views/shared/*.pug']
 
 	var allFiles = [];
 	allFiles = allFiles.concat(watchfiles, jsFiles, cssFiles, stylusFiles);
@@ -52,7 +52,7 @@ module.exports = function (grunt) {
 		cssDistDir: 'public/dist/css/',
 		pkg: grunt.file.readJSON('package.json'),
 		exec: {
-			pug: 'npx pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  views/shared/confirm-dialog.pug'
+			pug: 'npx pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  modules/digitopia-cms/views/shared/confirm-dialog.pug'
 		},
 		copy: {
 			main: {
