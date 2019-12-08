@@ -10,6 +10,8 @@ import {
 }
 from '../../lib/validator-extensions.js';
 
+import async from "async";
+
 function formValidator(elem, options) {
 	this.element = $(elem);
 	this.valid = false;

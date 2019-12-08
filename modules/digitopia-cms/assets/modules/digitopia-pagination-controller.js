@@ -7,8 +7,6 @@ from '../../../digitopia/js/controller.js';
 function paginationController(elem, options) {
 	this.element = $(elem);
 
-	this.settings = $.extend({}, options || {});
-
 	var self = this;
 
 	this.start = function () {

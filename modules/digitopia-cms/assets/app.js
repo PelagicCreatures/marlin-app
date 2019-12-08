@@ -9,9 +9,11 @@
 */
 
 import * as MDC from './modules/MDC'
-import jQuery from "jquery";
-import Cookies from "js-cookie";
-import async from "async";
+
+import {
+	serializeObject
+}
+from "./modules/serializeObject";
 
 import {
 	GetJQueryPlugin, digitopiaController
@@ -78,9 +80,6 @@ import * as Utils from './modules/utils.js'
 export {
 	Utils,
 	MDC,
-	jQuery,
-	Cookies,
-	async,
 	digitopiaController,
 	digitopiaAnalytics
 }

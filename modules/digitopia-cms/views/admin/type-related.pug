@@ -3,8 +3,8 @@
 		option(value="") ---
 		for row in related
 			if row.id == value
-				option(value= row.id selected)= row.description
+				option(value= row.id selected)= row[defaultColumn]
 			else
-				option(value= row.id)= row.description
+				option(value= row.id)= row[defaultColumn]
 	.input-ok-indicator.material-icons check_circle
 	.validation-help

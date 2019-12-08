@@ -1,4 +1,5 @@
 import * as MDC from './MDC'
+import $ from "jquery";
 import Cookies from "js-cookie";
 
 var MDCInstanciateOnce = 0;

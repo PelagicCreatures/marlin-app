@@ -1,4 +1,7 @@
 // https://github.com/macek/jquery-serialize-object
+
+import jQuery from "jquery";
+
 (function ($) {
 	$.fn.serializeObject = function () {
 

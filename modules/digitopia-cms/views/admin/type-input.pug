@@ -1,4 +1,4 @@
 .form-group
-	input(type="text" name= name value= value data-validate= options.validate)
+	input(type= (options.inputHTMLType ? options.inputHTMLType : "text") name= name value= value data-validate= options.validate)
 	.input-ok-indicator.material-icons check_circle
 	.validation-help

@@ -880,11 +880,9 @@ class adminTable extends EventEmitter {
 				adminOptions.inputType = 'checkbox';
 			}
 
-			/*
 			if (adminOptions.type === 'DATE') {
-				adminOptions.inputType = 'date';
+				adminOptions.inputHTMLType = 'date';
 			}
-			*/
 
 			adminOptions.id = (col === 'id');
 
@@ -894,7 +892,6 @@ class adminTable extends EventEmitter {
 			if (!this.options.defaultColumn && !adminOptions.id && adminOptions.inputType === 'text') {
 				this.options.defaultColumn = col;
 			}
-
 
 			if (adminOptions.id) {
 				adminOptions.hidden = true;
@@ -1262,11 +1259,15 @@ class adminReferenceColumn extends adminColumn {
 	}
 
 	getForm(instance, data, options) {
+		let relAdmin = adminTables[this.options.references.model]
+		let defaultColumn = relAdmin.options.defaultColumn
+
 		return pug.renderFile(viewsPath + '/admin/type-related.pug', {
 			name: this.table.name + '[' + this.name + ']',
 			value: instance ? instance[this.name] : '',
 			options: this.options,
-			related: data.related
+			related: data.related,
+			defaultColumn: defaultColumn
 		});
 	}
 
