@@ -5,6 +5,7 @@
   "scripts": {
     "test": "NODE_ENV=test TESTING=true npx mocha tests/users.js",
     "debug": "NODE_ENV=local node --inspect bin/www",
+    "local": "NODE_ENV=local node bin/www",
     "development": "NODE_ENV=development node bin/www",
     "production": "NODE_ENV=production node bin/www",
     "build": "webpack;grunt",
