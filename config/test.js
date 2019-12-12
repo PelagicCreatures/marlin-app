@@ -17,6 +17,7 @@ module.exports = function (app) {
 	}
 
 	let config = {
+
 		siteName: 'Boilerplate User Web App',
 
 		publicOptions: {},
