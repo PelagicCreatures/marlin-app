@@ -38,7 +38,7 @@ if (config.LOGGER_LEVEL) {
 }
 
 // use basic-auth for development environment
-if (config.BASIC_AUTH) {
+if (config.BASIC_AUTH && !process.env.TESTING) {
   var basicAuth = require('./lib/basicAuth')(config.BASIC_AUTH);
   app.use(basicAuth);
 }

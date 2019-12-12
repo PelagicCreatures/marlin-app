@@ -4,3 +4,6 @@ public/uploads
 working
 node_modules
 *.env
+config/local.js
+config/development.js
+config/production.js

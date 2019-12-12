@@ -2,17 +2,14 @@
 sudo yum install -y gcc-c++ make
 curl -sL https://rpm.nodesource.com/setup_12.x | sudo -E bash -
 sudo yum install -y nodejs
-sudo yum install sqlite-devel
 sudo yum install -y git
-npm install -g grunt
-npm install -g mocha
+sudo yum install -y sqlite-devel
 clone repository
-cd modules
-git clone https://github.com/mediapolis/digitopia.git
-cd digitopia
-git checkout v1
 npm install
 npm run test
+npm run watch
+npm run debug
+http://localhost:3000
 
 ## Development
 install mysql and create tables (see below)

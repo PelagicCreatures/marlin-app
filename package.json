@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "NODE_ENV=local TESTING=true mocha tests/users.js",
+    "test": "NODE_ENV=test TESTING=true npx mocha tests/users.js",
     "debug": "NODE_ENV=local node --inspect bin/www",
     "development": "NODE_ENV=development node bin/www",
     "production": "NODE_ENV=production node bin/www",
-    "build": "webpack",
-    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose"
+    "build": "webpack;grunt",
+    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose&npx grunt devel&"
   },
   "dependencies": {
     "basic-auth": "^2.0.1",

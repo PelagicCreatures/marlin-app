@@ -7,7 +7,6 @@ module.exports = function (grunt) {
 	];
 
 	var cssFiles = [
-		'modules/digitopia/dist/css/digitopia.css',
 		'working/assets/*.css',
 		'assets/css/*.css'
 	];
