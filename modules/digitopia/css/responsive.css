@@ -1,0 +1,36 @@
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+ 
+.responsive-loading {
+	background:url(/digitopia/images/loading.gif);
+	background-repeat:no-repeat;
+	background-position:center;
+}
+
+#parallax-wrapper {
+	position:relative;
+}
+	
+.parallax-act {	
+	z-index:10;
+	position:fixed;
+}
+
+.parallax-scene {
+	position:static;
+	overflow:hidden;
+	border-top:thin dashed red;
+}
+
+.parallax-actor-absolute {
+	position:absolute;
+	-webkit-transform: translateZ(0);
+}
+
+.parallax-actor-fixed {
+	position:fixed;
+	-webkit-transform: translateZ(0);
+}
+
+
