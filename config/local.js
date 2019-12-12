@@ -57,6 +57,11 @@ module.exports = function (app) {
 	let config = {
 		siteName: 'Boilerplate User Web App',
 
+		BASIC_AUTH: {
+			USER_NAME: 'testuser',
+			PASSWORD: 'testpass'
+		},
+
 		// expose options for client side javascript & pug templates
 		// this is exposed as 'publicOptions.xxxx',
 		// WARNING: NO PRIVATE INFO should be in app.locals.publicOptions

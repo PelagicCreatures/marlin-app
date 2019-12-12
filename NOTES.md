@@ -1,3 +1,18 @@
+# aws instance
+sudo yum install -y gcc-c++ make
+curl -sL https://rpm.nodesource.com/setup_12.x | sudo -E bash -
+sudo yum install -y nodejs
+sudo yum install sqlite-devel
+sudo yum install -y git
+npm install -g grunt
+npm install -g mocha
+clone repository
+cd modules
+git clone https://github.com/mediapolis/digitopia.git
+cd digitopia
+git checkout v1
+npm install
+npm run test
 
 ## Development
 install mysql and create tables (see below)

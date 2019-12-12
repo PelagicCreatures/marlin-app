@@ -37,6 +37,12 @@ if (config.LOGGER_LEVEL) {
   app.use(logger(config.LOGGER_LEVEL));
 }
 
+// use basic-auth for development environment
+if (config.BASIC_AUTH) {
+  var basicAuth = require('./lib/basicAuth')(config.BASIC_AUTH);
+  app.use(basicAuth);
+}
+
 // parse cookies in all routes
 app.use(cookieParser('SeCretDecdrrnG'));
 
