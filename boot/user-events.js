@@ -6,10 +6,12 @@ module.exports = (app) => {
 		cb();
 	})
 
+	// send confirmation email
 	app.userAPI.on('sendEmailConfirmation', function (user, token) {
 		debug('sendEmailConfirmation event user: %j token: %j', user, token);
 	});
 
+	// send password reset email
 	app.userAPI.on('sendPasswordReset', function (user, token) {
 		debug('sendPasswordReset user: %j token: %j', user, token);
 	});

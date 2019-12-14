@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const uuid = require('uuid');
@@ -44,7 +45,7 @@ if (config.BASIC_AUTH && !process.env.TESTING) {
 }
 
 // parse cookies in all routes
-app.use(cookieParser('SeCretDecdrrnG'));
+app.use(cookieParser(config.COOKIE_KEY));
 
 // deliver static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -52,12 +53,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 // set up and mount the user API
 app.userAPI = require('./modules/digitopia-cms/index')(app, config);
 
-// set up user event handlers
-require('./lib/user-events')(app);
+let bootDir = path.join(__dirname, 'boot')
+fs
+  .readdirSync(bootDir)
+  .filter(file => {
+    return (file.indexOf('.') !== 0) && (file.slice(-3) === '.js');
+  })
+  .forEach(file => {
+    debug('boot/' + file);
+    require(path.join(bootDir, file))(app);
+  });
 
-// UI
-app.use('/', require('./routes/index')(app));
-app.use('/', require('./routes/policies')(app));
+let routesDir = path.join(__dirname, 'routes')
+fs
+  .readdirSync(routesDir)
+  .filter(file => {
+    return (file.indexOf('.') !== 0) && (file.slice(-3) === '.js');
+  })
+  .forEach(file => {
+    debug('routes/' + file);
+    app.use('/', require(path.join(routesDir, file))(app));
+  });
 
 // Call asynchronous things that need to be stable
 // before we can handle requests

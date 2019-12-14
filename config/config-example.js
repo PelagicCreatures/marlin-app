@@ -59,6 +59,8 @@ module.exports = function (app) {
 	let config = {
 		siteName: 'Boilerplate User Web App',
 
+		COOKIE_KEY: 'SeCretDecdrrnG',
+
 		BASIC_AUTH: {
 			USER_NAME: process.env.BASIC_AUTH_USER_NAME,
 			PASSWORD: process.env.BASIC_AUTH_PASSWORD

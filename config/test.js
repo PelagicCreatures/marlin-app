@@ -20,6 +20,8 @@ module.exports = function (app) {
 
 		siteName: 'Boilerplate User Web App',
 
+		COOKIE_KEY: 'SeCretDecdrrnG',
+
 		publicOptions: {},
 
 		userOptions: {},

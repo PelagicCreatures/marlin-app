@@ -18,6 +18,8 @@ NOTE: the first user created will have superuser admin permissions
 
 As you make changes in assets/*  webpack and grunt will recompile the client side bundles so all you have to do is reload the page to see changes
 
+PORT=80 BASIC_AUTH_USER_NAME=LGBT BASIC_AUTH_PASSWORD=dot nohup npm run local &
+
 ### Environment Variables
 NODE_ENV:
 PORT:
