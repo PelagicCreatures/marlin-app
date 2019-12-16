@@ -8,8 +8,8 @@
     "local": "NODE_ENV=local node bin/www",
     "development": "NODE_ENV=development node bin/www",
     "production": "NODE_ENV=production node bin/www",
-    "build": "webpack;grunt",
-    "watch": "webpack --devtool source-map -d --watch --info-verbosity verbose&npx grunt devel&"
+    "build": "npx webpack;npx grunt",
+    "watch": "npx webpack --devtool source-map -d --watch --info-verbosity verbose&npx grunt devel&"
   },
   "dependencies": {
     "basic-auth": "^2.0.1",

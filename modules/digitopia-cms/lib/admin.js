@@ -1041,6 +1041,9 @@ class adminColumn extends EventEmitter {
 	}
 
 	getDisplayValue(instance, data, options) {
+		if (this.options.type === 'JSONTYPE') {
+			return JSON.stringify(instance[this.name] ? instance[this.name] : {}, '', 2)
+		}
 		return instance[this.name];
 	}
 }

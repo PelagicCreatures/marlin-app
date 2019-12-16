@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
 				notHTML: true
 			}
 		},
+		jsoncolumn: {
+			type: Sequelize.JSON,
+			allowNull: true
+		},
 		lookupId: {
 			type: Sequelize.INTEGER,
 			references: {
