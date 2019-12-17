@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
 
-	const AdminTestChild = sequelize.define('AdminTestChild', {
+	const AdminTestChildChild = sequelize.define('AdminTestChildChild', {
 		id: {
 			type: Sequelize.INTEGER,
 			allowNull: false,
@@ -30,15 +30,11 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	});
 
-	AdminTestChild.associate = function (models) {
-		AdminTestChild.belongsTo(models.AdminTest, {
-			foreignKey: 'testId'
-		});
-
-		AdminTestChild.hasMany(models.AdminTestChildChild, {
+	AdminTestChildChild.associate = function (models) {
+		AdminTestChildChild.belongsTo(models.AdminTestChild, {
 			foreignKey: 'childId'
 		});
 	}
 
-	return AdminTestChild;
+	return AdminTestChildChild;
 };

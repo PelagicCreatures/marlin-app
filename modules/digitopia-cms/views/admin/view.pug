@@ -73,23 +73,22 @@ block content
 												.mdc-chip__ripple
 												span.mdc-chip__text= through[defaultColumn]
 						
-						if (admin.options.behavior === 'parent')
-							// has many relationships
-							for dependant in dependants
-								- let relAdmin = adminTables[dependant.table]
-								p
-									button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
-										i.material-icons add_circle
-									
-									= dependant.table + ' (' + dependant.rows.count + ' rows)'
+						// has many relationships
+						for dependant in dependants
+							- let relAdmin = adminTables[dependant.table]
+							p
+								button.mdc-button.add-button(data-target= dependant.table data-fk= dependant.fk data-belongs-to= row.id)
+									i.material-icons add_circle
 								
-								table
-									for rel in dependant.rows.rows
-										tr
-											td
-												a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
+								= dependant.table + ' (' + dependant.rows.count + ' rows)'
+							
+							table
+								for rel in dependant.rows.rows
+									tr
+										td
+											a(href= mountpoint + '/' + dependant.table + '/' + rel.id)= rel[relAdmin.options.defaultColumn]
 						
-						if (admin.options.behavior !== 'parent')
+						if (admin.options.behavior === 'reference')
 							for ref in references
 								- let relAdmin = adminTables[ref.table]
 								p
