@@ -1,3 +1,10 @@
+## using this project as a template
+git remote add template https://github.com/antiSocialNet/user-boilerplate.git
+git fetch --all
+git merge template/master --allow-unrelated-histories
+
+Any changes to files in this project can then be merged into your project
+
 # aws instance
 sudo yum install -y gcc-c++ make
 curl -sL https://rpm.nodesource.com/setup_12.x | sudo -E bash -

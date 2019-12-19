@@ -92,6 +92,10 @@ class dbHandler extends EventEmitter {
 						this.newInstance('Role', {
 							description: 'admin'
 						}, cb);
+					}, (cb) => {
+						this.newInstance('Role', {
+							description: 'owner'
+						}, cb);
 					}
 				], function (err) {
 					if (err) {
@@ -230,7 +234,7 @@ class dbHandler extends EventEmitter {
 			});
 	}
 
-	checkPermission(modelName, user, action) {
+	checkPermission(modelName, user, action, instance) {
 
 		let permission = 'deny';
 
@@ -251,9 +255,13 @@ class dbHandler extends EventEmitter {
 		var userRoles = ['*'];
 
 		if (user.Roles) {
+			userRoles.push('registered');
 			for (let i = 0; i < user.Roles.length; i++) {
 				userRoles.push(user.Roles[i].description);
 			}
+		}
+		else {
+			userRoles.push('anonymous');
 		}
 
 		for (let i in acl) {
@@ -262,9 +270,19 @@ class dbHandler extends EventEmitter {
 			if (rule.actions.indexOf(action) !== -1 || rule.actions.indexOf('*') !== -1) {
 				for (let j in rule.roles) {
 					let role = rule.roles[j];
-					// rule applies to user's role ?
-					if (userRoles.indexOf(role) !== -1) {
-						permission = rule.permission;
+
+					// 'owner' role requires special case check that
+					// userId in the instance is the current user
+					if ((action === 'view' || action === 'update' || action === 'delete') && role === 'owner' && instance) {
+						if (instance.userId === user.id) {
+							permission = rule.permission;
+						}
+					}
+					else {
+						// rule applies to user's role ?
+						if (userRoles.indexOf(role) !== -1) {
+							permission = rule.permission;
+						}
 					}
 				}
 			}
