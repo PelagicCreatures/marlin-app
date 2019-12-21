@@ -35,10 +35,6 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		lookupId: {
 			type: Sequelize.INTEGER,
-			references: {
-				model: "AdminTestLookup",
-				key: "id"
-			},
 			ADMIN: {
 				selectRelated: {
 					order: [
@@ -59,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		ADMIN: {
-			behavior: 'parent',
 			listColumns: ['textcolumn', 'profilePhoto', 'lookupId'],
 			ACL: [{
 				permission: 'deny',
@@ -74,6 +69,11 @@ module.exports = (sequelize, DataTypes) => {
 	});
 
 	AdminTest.associate = function (models) {
+		AdminTest.belongsTo(models.AdminTestLookup, {
+			foreignKey: 'lookupId',
+			as: 'Type'
+		});
+
 		AdminTest.hasMany(models.AdminTestChild, {
 			foreignKey: 'testId'
 		});

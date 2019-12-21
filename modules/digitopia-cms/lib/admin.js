@@ -861,9 +861,11 @@ class adminTable extends EventEmitter {
 					[this.name]: relationship.foreignKey
 				});
 
-				mapAssociation(this.name, 'parent', {
-					[relationship.target.name]: relationship.foreignKey
-				});
+				if (_.get(relationship, 'options.ADMIN.behavior') === 'child') {
+					mapAssociation(this.name, 'parent', {
+						[relationship.target.name]: relationship.foreignKey
+					});
+				}
 			}
 			if (type === 'BelongsToMany' && relationship.throughModel) {
 
