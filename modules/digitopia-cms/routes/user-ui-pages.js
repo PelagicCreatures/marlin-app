@@ -53,7 +53,6 @@ module.exports = function mount(app) {
 		if (!req.antisocialUser) {
 			return res.sendStatus(401);
 		}
-
 		handlePut(app, 'User', req.antisocialUser.id, req.body['User'], ['profilePhoto'], req, res, next);
 	})
 
