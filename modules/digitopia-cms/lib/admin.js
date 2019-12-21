@@ -212,6 +212,227 @@ async function getReferences(modelName, instance) {
 	return result;
 }
 
+function handlePost(app, table, payload, req, res, next) {
+	let admin = adminTables[table];
+	if (!adminTables[table]) {
+		return next(new VError('admin for ' + table + ' not defined'));
+	}
+
+	if (!app.db.checkPermission(table, req.antisocialUser, 'create')) {
+		return next(new VError('you don\'t have permission to create ' + table));
+	}
+
+	let sanitized = sanitizePayload(payload, admin.getSanitizers(), {});
+	let validations = admin.getValidations();
+	let additionalProps = admin.getAdditionalPayloadProperties();
+
+	let errors = validatePayload(sanitized.values, validations, {
+		strict: true,
+		additionalProperties: additionalProps
+	});
+
+	if (errors.length) {
+		return res
+			.status(422)
+			.json({
+				status: 'error',
+				errors: errors
+			});
+	}
+
+	app.db.newInstance(table, sanitized.values, function (err, instance) {
+		if (err) {
+			return res.send({
+				status: 'error',
+				flashLevel: 'danger',
+				flashMessage: 'Error creating row',
+				errors: [err.message]
+			});
+		}
+
+		admin.handleUpdate(instance, req.body[table], (err, dirty) => {
+			if (err) {
+				return res.send({
+					status: 'error',
+					flashLevel: 'danger',
+					flashMessage: 'Error doing admin handleUpdate',
+					errors: [err.message]
+				});
+			}
+
+			if (Object.keys(dirty).length === 0) {
+				return res.send({
+					status: 'ok',
+					flashLevel: 'info',
+					flashMessage: 'created',
+					id: instance.id
+				});
+			}
+
+			app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
+				if (err) {
+					return res.send({
+						status: 'error',
+						flashLevel: 'danger',
+						flashMessage: 'Error saving row after admin handleUpdate',
+						errors: [err.message]
+					});
+				}
+
+				return res.send({
+					status: 'ok',
+					flashLevel: 'info',
+					flashMessage: 'created',
+					id: instance.id,
+					warnings: sanitized.warnings
+				});
+			});
+		})
+	});
+}
+
+function handlePut(app, table, id, payload, props, req, res, next) {
+	let admin = adminTables[table];
+	if (!adminTables[table]) {
+		return next(new VError('admin for ' + table + ' not defined'));
+	}
+
+	if (!app.db.checkPermission(table, req.antisocialUser, 'edit')) {
+		return next(new VError('you don\'t have permission to edit ' + table));
+	}
+
+	let sanitized = sanitizePayload(payload, admin.getSanitizers(), {});
+	let validations = admin.getValidations(props);
+	let additionalProps = admin.getAdditionalPayloadProperties(props);
+
+	let errors = validatePayload(sanitized.values, validations, {
+		strict: true,
+		additionalProperties: additionalProps
+	});
+
+	if (errors.length) {
+		return res
+			.status(422)
+			.json({
+				status: 'error',
+				errors: errors
+			});
+	}
+
+	app.db.updateInstance(table, id, sanitized.values, function (err, instance) {
+		if (err) {
+			return res.send({
+				status: 'error',
+				flashLevel: 'danger',
+				flashMessage: 'Error saving row',
+				errors: [err.message]
+			});
+		}
+
+		admin.handleUpdate(instance, sanitized.values, (err, dirty) => {
+			if (err) {
+				return res.send({
+					status: 'error',
+					flashLevel: 'danger',
+					flashMessage: 'Error doing admin handleUpdate',
+					errors: [err.message]
+				});
+			}
+
+			if (Object.keys(dirty).length === 0) {
+				return res.send({
+					status: 'ok',
+					flashLevel: 'info',
+					flashMessage: 'saved'
+				});
+			}
+
+			app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
+				if (err) {
+					return res.send({
+						status: 'error',
+						flashLevel: 'danger',
+						flashMessage: 'Error saving row after admin handleUpdate',
+						errors: [err.message]
+					});
+				}
+
+				return res.send({
+					status: 'ok',
+					flashLevel: 'info',
+					flashMessage: 'saved',
+					warnings: sanitized.warnings
+				});
+			});
+		});
+	});
+};
+
+function handleDelete(app, table, id, req, res, next) {
+
+	let admin = adminTables[table];
+	if (!adminTables[table]) {
+		return next(new VError('admin for ' + table + ' not defined'));
+	}
+
+	if (!app.db.checkPermission(table, req.antisocialUser, 'delete')) {
+		return next(new VError('you don\'t have permission to delete ' + table));
+	}
+
+	async.waterfall([
+		// read  row
+		(cb) => {
+			app.db.getInstances(table, {
+				where: {
+					id: id
+				}
+			}, (err, rows) => {
+				if (err) {
+					return cb(new VError(err, 'error reading row'));
+				}
+				if (!rows.length) {
+					return cb(new VError('row not found'))
+				}
+				cb(null, rows[0]);
+			})
+		},
+		// give admin a chance to cleanup images, etc.
+		(instance, cb) => {
+			admin.handleDelete(instance, (err) => {
+				if (err) {
+					return cb(new VError(err, 'admin handleDelete failed'));
+				}
+				cb(null, instance);
+			})
+		},
+		// delete the row
+		(instance, cb) => {
+			app.db.deleteInstance(table, id, function (err, instance) {
+				if (err) {
+					return cb(new VError(err, 'deleteInstance error'));
+				}
+				cb();
+			})
+		}
+	], (err) => {
+
+		if (err) {
+			return res.send({
+				status: 'error',
+				flashLevel: 'danger',
+				flashMessage: 'Error deleting row',
+				errors: [err.message]
+			});
+		}
+
+		return res.send({
+			status: 'ok',
+			flashLevel: 'info',
+			flashMessage: 'deleted'
+		});
+	});
+}
+
 function mount(app, options) {
 	let router = express.Router();
 
@@ -477,232 +698,29 @@ function mount(app, options) {
 		debug('mounting admin POST /:table')
 		router.post('/:table', express.json({
 			limit: '20mb'
-		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, (req, res, next) => {
 			let table = req.params.table;
-
-			let admin = adminTables[table];
-			if (!adminTables[table]) {
-				return next(new VError('admin for ' + table + ' not defined'));
-			}
-
-			if (!app.db.checkPermission(table, req.antisocialUser, 'create')) {
-				return next(new VError('you don\'t have permission to create ' + table));
-			}
-
-			let sanitized = sanitizePayload(req.body[table], admin.getSanitizers(), {});
-
-			let validations = admin.getValidations();
-
-			let errors = validatePayload(sanitized.values, validations, {});
-
-			if (errors.length) {
-				return res
-					.status(422)
-					.json({
-						status: 'error',
-						errors: errors
-					});
-			}
-
-			app.db.newInstance(table, sanitized.values, function (err, instance) {
-				if (err) {
-					return res.send({
-						status: 'error',
-						flashLevel: 'danger',
-						flashMessage: 'Error creating row',
-						errors: [err.message]
-					});
-				}
-
-				admin.handleUpdate(instance, req.body[table], (err, dirty) => {
-					if (err) {
-						return res.send({
-							status: 'error',
-							flashLevel: 'danger',
-							flashMessage: 'Error doing admin handleUpdate',
-							errors: [err.message]
-						});
-					}
-
-					if (Object.keys(dirty).length === 0) {
-						return res.send({
-							status: 'ok',
-							flashLevel: 'info',
-							flashMessage: 'created',
-							id: instance.id
-						});
-					}
-
-					app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
-						if (err) {
-							return res.send({
-								status: 'error',
-								flashLevel: 'danger',
-								flashMessage: 'Error saving row after admin handleUpdate',
-								errors: [err.message]
-							});
-						}
-
-						return res.send({
-							status: 'ok',
-							flashLevel: 'info',
-							flashMessage: 'created',
-							id: instance.id,
-							warnings: sanitized.warnings
-						});
-					});
-				})
-			});
+			let payload = req.body[table];
+			handlePost(app, table, payload, req, res, next);
 		});
 
 		// update a row
-		debug('mounting admin PUT /:table/:rowId')
+		debug('mounting admin PUT /:table/:rowId');
 		router.put('/:table/:rowId', express.json({
 			limit: '20mb'
-		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, (req, res, next) => {
 			let table = req.params.table;
 			let id = req.params.rowId;
-
-			let admin = adminTables[table];
-			if (!adminTables[table]) {
-				return next(new VError('admin for ' + table + ' not defined'));
-			}
-
-			if (!app.db.checkPermission(table, req.antisocialUser, 'edit')) {
-				return next(new VError('you don\'t have permission to edit ' + table));
-			}
-
-			let sanitized = sanitizePayload(req.body[table], admin.getSanitizers(), {});
-
-			let validations = admin.getValidations();
-
-			let errors = validatePayload(sanitized.values, validations, {});
-
-			if (errors.length) {
-				return res
-					.status(422)
-					.json({
-						status: 'error',
-						errors: errors
-					});
-			}
-
-			app.db.updateInstance(table, id, sanitized.values, function (err, instance) {
-				if (err) {
-					return res.send({
-						status: 'error',
-						flashLevel: 'danger',
-						flashMessage: 'Error saving row',
-						errors: [err.message]
-					});
-				}
-
-				admin.handleUpdate(instance, sanitized.values, (err, dirty) => {
-					if (err) {
-						return res.send({
-							status: 'error',
-							flashLevel: 'danger',
-							flashMessage: 'Error doing admin handleUpdate',
-							errors: [err.message]
-						});
-					}
-
-					if (Object.keys(dirty).length === 0) {
-						return res.send({
-							status: 'ok',
-							flashLevel: 'info',
-							flashMessage: 'saved'
-						});
-					}
-
-					app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
-						if (err) {
-							return res.send({
-								status: 'error',
-								flashLevel: 'danger',
-								flashMessage: 'Error saving row after admin handleUpdate',
-								errors: [err.message]
-							});
-						}
-
-						return res.send({
-							status: 'ok',
-							flashLevel: 'info',
-							flashMessage: 'saved',
-							warnings: sanitized.warnings
-						});
-					});
-				});
-			});
+			let payload = req.body[table];
+			handlePut(app, table, id, payload, null, req, res, next);
 		});
 
 		// delete a row
 		debug('mounting admin DELETE /:table/:rowId')
-		router.delete('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
+		router.delete('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, (req, res, next) => {
 			let table = req.params.table;
 			let id = req.params.rowId;
-
-			let admin = adminTables[table];
-			if (!adminTables[table]) {
-				return next(new VError('admin for ' + table + ' not defined'));
-			}
-
-			if (!app.db.checkPermission(table, req.antisocialUser, 'delete')) {
-				return next(new VError('you don\'t have permission to delete ' + table));
-			}
-
-			async.waterfall([
-				// read  row
-				(cb) => {
-					app.db.getInstances(table, {
-						where: {
-							id: id
-						}
-					}, (err, rows) => {
-						if (err) {
-							return cb(new VError(err, 'error reading row'));
-						}
-						if (!rows.length) {
-							return cb(new VError('row not found'))
-						}
-						cb(null, rows[0]);
-					})
-				},
-				// give admin a chance to cleanup images, etc.
-				(instance, cb) => {
-					admin.handleDelete(instance, (err) => {
-						if (err) {
-							return cb(new VError(err, 'admin handleDelete failed'));
-						}
-						cb(null, instance);
-					})
-				},
-				// delete the row
-				(instance, cb) => {
-					app.db.deleteInstance(table, id, function (err, instance) {
-						if (err) {
-							return cb(new VError(err, 'deleteInstance error'));
-						}
-						cb();
-					})
-				}
-			], (err) => {
-
-				if (err) {
-					return res.send({
-						status: 'error',
-						flashLevel: 'danger',
-						flashMessage: 'Error deleting row',
-						errors: [err.message]
-					});
-				}
-
-				return res.send({
-					status: 'ok',
-					flashLevel: 'info',
-					flashMessage: 'deleted'
-				});
-			});
+			handleDelete(app, table, id, req, res, next);
 		});
 
 		debug('mounting admin on %s', options.MOUNTPOINT);
@@ -758,24 +776,38 @@ class adminTable extends EventEmitter {
 		return allOptions;
 	}
 
-	getValidations() {
+	getValidations(cols) {
 		let validations = {};
 		for (let column in this.columns) {
-			if (this.columns[column].options.validate) {
-				validations[column] = JSON.parse(JSON.stringify(this.columns[column].options.validate));
+			if (!cols || cols.indexOf(column) !== -1) {
+				if (this.columns[column].options.validate) {
+					validations[column] = JSON.parse(JSON.stringify(this.columns[column].options.validate));
+				}
 			}
 		}
 		return validations;
 	}
 
-	getSanitizers() {
-		let validations = {};
+	getAdditionalPayloadProperties(cols) {
+		let additionalProps = ['_csrf'];
 		for (let column in this.columns) {
-			if (this.columns[column].options.sanitizers) {
-				validations[column] = JSON.parse(JSON.stringify(this.columns[column].options.sanitizers));
+			if (!cols || cols.indexOf(column) !== -1) {
+				additionalProps = additionalProps.concat(this.columns[column].getAdditionalPayloadProperties());
 			}
 		}
-		return validations;
+		return additionalProps;
+	}
+
+	getSanitizers(cols) {
+		let sanitizers = {};
+		for (let column in this.columns) {
+			if (!cols || cols.indexOf(column) !== -1) {
+				if (this.columns[column].options.sanitizers) {
+					sanitizers[column] = JSON.parse(JSON.stringify(this.columns[column].options.sanitizers));
+				}
+			}
+		}
+		return sanitizers;
 	}
 
 	build() {
@@ -1036,6 +1068,10 @@ class adminColumn extends EventEmitter {
 		return setImmediate(cb);
 	}
 
+	getAdditionalPayloadProperties() {
+		return [];
+	}
+
 	getForm(instance, data, options) {
 		// return input html for edit and create form
 	}
@@ -1051,6 +1087,12 @@ class adminColumn extends EventEmitter {
 class adminUploadableColumn extends adminColumn {
 	constructor(table, name, options) {
 		super(table, name, options);
+	}
+
+	getAdditionalPayloadProperties() {
+		let props = super.getAdditionalPayloadProperties();
+		props.push(this.name + '_upload');
+		return props;
 	}
 
 	handleUpdate(instance, input, dirty, done) {
@@ -1160,6 +1202,11 @@ class adminImageColumn extends adminUploadableColumn {
 	constructor(table, name, options) {
 		super(table, name, options);
 		this.getValueProducesMarkup = true;
+	}
+
+	getAdditionalPayloadProperties() {
+		let props = super.getAdditionalPayloadProperties();
+		return props.concat([this.name + '_width', this.name + '_height']);
 	}
 
 	handleUpdate(instance, input, dirty, done) {
@@ -1357,6 +1404,12 @@ class adminJoin extends adminColumn {
 		super(table, name, options);
 	}
 
+	getAdditionalPayloadProperties() {
+		let props = super.getAdditionalPayloadProperties();
+		props.push(this.name + '_selected')
+		return props;
+	}
+
 	// get list of selectable options
 	prepare(instance, data, cb) {
 		let query = _.has(this, 'options.selectRelated') ? this.options.selectRelated : {};
@@ -1429,5 +1482,8 @@ module.exports = {
 	getAdmin: getAdmin,
 	associationsMap: associationsMap,
 	getDependants: getDependants,
-	getJoins: getJoins
+	getJoins: getJoins,
+	handlePost: handlePost,
+	handlePut: handlePut,
+	handleDelete: handleDelete
 }

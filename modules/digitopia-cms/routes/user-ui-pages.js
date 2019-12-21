@@ -3,7 +3,9 @@ const router = express.Router();
 const async = require('async');
 const VError = require('verror').VError;
 const csrf = require('csurf');
-const getAdmin = require('../lib/admin').getAdmin;
+const {
+	handlePut, getAdmin
+} = require('../lib/admin');
 const path = require('path');
 
 const csrfProtection = csrf({
@@ -52,37 +54,7 @@ module.exports = function mount(app) {
 			return res.sendStatus(401);
 		}
 
-		let admin = getAdmin('User').getColumn('profilePhoto');
-
-		let patch = {};
-
-		admin.handleUpdate(req.antisocialUser, req.body.User, patch, (err) => {
-			if (err) {
-				return res.send({
-					status: 'error',
-					flashLevel: 'danger',
-					flashMessage: 'Error saving profile photo',
-					errors: [err.message]
-				});
-			}
-
-			app.db.updateInstance('User', req.antisocialUser.id, patch, function (err) {
-				if (err) {
-					return res.send({
-						status: 'error',
-						flashLevel: 'danger',
-						flashMessage: 'Error saving profile photo',
-						errors: [err.message]
-					});
-				}
-
-				return res.send({
-					status: 'ok',
-					flashLevel: 'info',
-					flashMessage: 'saved'
-				});
-			});
-		});
+		handlePut(app, 'User', req.antisocialUser.id, req.body['User'], ['profilePhoto'], req, res, next);
 	})
 
 	router.get('/users/settings', getUserForRequestMiddleware(app), function (req, res, next) {
