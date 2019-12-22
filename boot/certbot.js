@@ -8,7 +8,7 @@ module.exports = function autopost(server) {
 	}
 	debug('starting letsencrypt renewal daemon');
 	cron.schedule('0 3 * * *', function () {
-		var command = '/usr/local/bin/certbot-auto --no-bootstrap renew --deploy-hook "supervisorctl restart ' + process.env.SUPERVISOR_SERVICE_NAME + '"';
+		var command = '/usr/bin/certbot --no-bootstrap renew --deploy-hook "supervisorctl restart ' + process.env.SUPERVISOR_SERVICE_NAME + '"';
 		exec(command, function (err, stdout, stderr) {});
 	});
 };

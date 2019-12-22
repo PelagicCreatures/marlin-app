@@ -1,11 +1,11 @@
 const path = require('path');
-var exec = require('child_process').exec;
+const exec = require('child_process').exec;
+const fs = require('fs');
 
 let variables = [
 	'ENVFILE',
 	'NODE_ENV',
 	'PORT',
-	'SSL_PORT',
 	'DB_DIALECT',
 	'DB_HOST',
 	'DB_USER',
@@ -42,17 +42,17 @@ require('dotenv').config({
 
 if(!process.env.CERTBOT_EMAIL || !process.env.CERTBOT_HOSTNAME) {
 	console.log('missing env CERTBOT_EMAIL and/or CERTBOT_DOMAIN');
-	exit(0);
+	process.exit(0);
 }
 
-var command = '/usr/local/bin/certbot-auto certonly --dry-run --debug --webroot -w ' + path.join(__dirname,'../','public') + ' -m ' + process.env.CERTBOT_EMAIL + ' -d ' + process.env.CERTBOT_HOSTNAME + ' --agree-tos';
+var command = '/usr/bin/certbot certonly --dry-run --debug --webroot -w ' + path.join(__dirname,'../','public') + ' -m ' + process.env.CERTBOT_EMAIL + ' -d ' + process.env.CERTBOT_HOSTNAME + ' --agree-tos';
 
 console.log('executing: ' + command);
 
 exec(command, function (err, stdout, stderr) {
 	if (err) {
 		console.log(err, stdout, stderr);
-		exit(0);
+		process.exit(0);
 	}
 
 	process.env['SSL_KEY_PATH'] = '/etc/letsencrypt/live/' + process.env.CERTBOT_HOSTNAME + '/privkey.pem';
