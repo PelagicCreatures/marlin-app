@@ -72,7 +72,7 @@ exec(command, function (err, stdout, stderr) {
 			console.log('error: ', err);
 			process.exit();
 		}
-		console.log('SSL configured. Restart server then go here https://' + domain);
+		console.log('SSL configured. Restart server then go here ' + process.env['PUBLIC_HOST']);
 		process.exit();
 	});
 });

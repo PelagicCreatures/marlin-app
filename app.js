@@ -19,6 +19,8 @@ const app = express();
 // setup configuration from config file for environment
 let config = require('./config/' + app.get('env'))(app);
 
+app.config = config;
+
 // app.locals properties are exposed to pug templates
 app.locals.sitename = config.siteName;
 app.locals.publicOptions = config.publicOptions;

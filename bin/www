@@ -37,7 +37,7 @@ app.start(() => {
 
 		http.createServer(function (req, res) {
 			res.writeHead(302, {
-				'Location': app.config.publicOptions.PUBLIC_HOST + req.url
+				'Location': app.locals.publicOptions.PUBLIC_HOST + req.url
 			});
 			res.end();
 		}).listen(80);
