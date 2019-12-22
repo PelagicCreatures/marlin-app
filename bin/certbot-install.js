@@ -40,12 +40,12 @@ require('dotenv').config({
 	path: process.env.ENVFILE
 });
 
-if(!process.env.CERTBOT_EMAIL || !process.env.CERTBOT_HOSTNAME) {
+if (!process.env.CERTBOT_EMAIL || !process.env.CERTBOT_HOSTNAME) {
 	console.log('missing env CERTBOT_EMAIL and/or CERTBOT_DOMAIN');
 	process.exit(0);
 }
 
-var command = '/usr/bin/certbot certonly --dry-run --debug --webroot -w ' + path.join(__dirname,'../','public') + ' -m ' + process.env.CERTBOT_EMAIL + ' -d ' + process.env.CERTBOT_HOSTNAME + ' --agree-tos';
+var command = '/usr/bin/certbot certonly --debug --webroot -w ' + path.join(__dirname, '../', 'public') + ' -m ' + process.env.CERTBOT_EMAIL + ' -d ' + process.env.CERTBOT_HOSTNAME + ' --agree-tos';
 
 console.log('executing: ' + command);
 
@@ -69,9 +69,10 @@ exec(command, function (err, stdout, stderr) {
 
 	fs.writeFile(process.env.ENVFILE, toSave, function (err) {
 		if (err) {
-			return res.sendStatus(500);
+			console.log('error: ', err);
+			process.exit();
 		}
-		res.send('SSL configured. Restarting server - please wait a bit then <a href="https://' + domain + '/environment">Click Here</a> to continue.');
+		console.log('SSL configured. Restart server then go here https://' + domain);
 		process.exit();
 	});
 });
