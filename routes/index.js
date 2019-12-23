@@ -1,11 +1,10 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express')
+var router = express.Router()
 
-module.exports = function mount(app) {
-
+module.exports = function mount (app) {
   router.get('/', function (req, res, next) {
-    res.render('index', {});
-  });
+    res.render('index', {})
+  })
 
-  return router;
+  return router
 }
