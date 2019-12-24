@@ -93,7 +93,9 @@ function didLogIn () {
 // call whenever logout occurs
 var didLogOut = () => {
   checkSubscription()
-  flashAjaxStatus('success', 'Logged out')
+  if (Cookies.get('have-account')) {
+    flashAjaxStatus('success', 'Logged out')
+  }
   $('body').removeClass('is-logged-in').addClass('is-logged-out')
   Cookies.remove('access_token', cookieOptions)
   $('.DigitopiaInstance').trigger('DidLogOut')
