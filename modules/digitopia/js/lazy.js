@@ -181,8 +181,6 @@ var digitopiaLazyImg = function (element, options) {
 						}, 250)
 					}, 0)
 				}
-			}).error(function () {
-				// $(this).attr('src','/digitopia/images/lazy.gif');
 			})
 		}
 		this.loaded = true
