@@ -1,37 +1,31 @@
-## Using letsencrypt
+### Using certbot
 
-install supervisord if not preinstalled
+Certbot is the easiest way to get and maintain an ssl cert for web services.
+
+This assumes that your service is already running under supervisord
 
 install certbot
 ```
 sudo yum install -y certbot python2-certbot
 ```
 
-in this example the service name is antisocial
+Set up your environment to run on port 80, open your firewall for http and https and Start the webservice - it needs to be running and publicly accessible on the domain you want the cert for.
 
-save in supervisord.d/antisocial.ini
 ```
-[program:antisocial]
-autorestart=true
-directory=/usr/local/testbench/user-boilerplate
-stdout_logfile=/dev/stdout
-stdout_logfile_maxbytes=0
-stderr_logfile=/dev/stderr
-stderr_logfile_maxbytes=0
-environment=ENVFILE="./environment-local.env"
-command=/bin/npm run local
+supervisorctl start <your service name>
 ```
 
-Set up your environment to run on port 80, open your firewall and Start the webservice - it needs to be running and publicly accessible on the domain you want the cert for.
+get the cert: supply the host.domain and email address of the admin for the domain
 ```
-supervisorctl start antisocial
-```
-
-get the cert:
-```
-ENVFILE=./environment-local.env CERTBOT_EMAIL=some@email.address CERTBOT_HOSTNAME=hostname npm run getcert
+ENVFILE=./environment-production.env CERTBOT_EMAIL=<admin email address> CERTBOT_HOSTNAME=<host.domain to secure> npm run getcert
 ```
 
-this puts a key in the public directory which certbot downloads to verify that you control the domain. It then puts the key and cert on the server. This script then updates the environment file with the path to the keys so when the server is restarted it will use the certificate and run under https.
+getcert puts a file in the public directory which certbot then downloads to verify that you control the domain. It then saves the private key and cert on the server. This script then updates the environment file with the path to the keys so when the server is restarted it will use the certificate and run under https.
 
-the system periodically runs certbot renew and restarts webservice if needed (set SUPERVISOR_SERVICE_NAME to the service name)
+```
+supervisorctl restart antisocial
+```
+
+You should now be able to contact the service using https. All http connections will redirect to https.
+
+The system periodically runs `certbot renew` and restarts webservice if needed to keep the certificate fresh.
