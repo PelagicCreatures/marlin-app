@@ -1119,6 +1119,7 @@ class adminUploadableColumn extends adminColumn {
 		// new file data base64 encoded
 		const data = input[this.name + '_upload']
 		if (!data) {
+			dirty[this.name] = toJSONObject(instance[this.name])
 			return setImmediate(done)
 		}
 
@@ -1228,6 +1229,7 @@ class adminImageColumn extends adminUploadableColumn {
 	handleUpdate (instance, input, dirty, done) {
 		const data = input[this.name + '_upload']
 		if (!data) {
+			dirty[this.name] = toJSONObject(instance[this.name])
 			return setImmediate(done)
 		}
 
