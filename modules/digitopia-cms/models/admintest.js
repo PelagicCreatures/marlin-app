@@ -1,7 +1,6 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
-
 	const AdminTest = sequelize.define('AdminTest', {
 		id: {
 			type: Sequelize.INTEGER,
@@ -44,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		},
 		profilePhoto: {
-			type: Sequelize.STRING(512),
+			type: Sequelize.JSON,
 			ADMIN: {
 				inputType: 'image',
 				accepts: 'image/*'
@@ -66,23 +65,23 @@ module.exports = (sequelize, DataTypes) => {
 				actions: ['create', 'view', 'edit', 'delete']
 			}]
 		}
-	});
+	})
 
 	AdminTest.associate = function (models) {
 		AdminTest.belongsTo(models.AdminTestLookup, {
 			foreignKey: 'lookupId',
 			as: 'Type'
-		});
+		})
 
 		AdminTest.hasMany(models.AdminTestChild, {
 			foreignKey: 'testId'
-		});
+		})
 
 		AdminTest.belongsToMany(models.AdminTestMulti, {
 			through: 'MultiJoin',
 			foreignKey: 'testId'
-		});
-	};
+		})
+	}
 
-	return AdminTest;
-};
+	return AdminTest
+}

@@ -20,7 +20,6 @@ block content
 			p Hi, why not <a href="/users/subscription">subscribe now</a>!
 
 		if user.profilePhoto
-			p= user.profilePhoto
-			-let metadata = JSON.parse(user.profilePhoto)
-			if metadata.filename
-				img.profile-photo(src= '/uploads/' + metadata.filename)
+			p= JSON.stringify(user.profilePhoto)
+			if user.profilePhoto.filename
+				img.profile-photo(src= '/uploads/' + user.profilePhoto.filename)

@@ -64,95 +64,121 @@
 
 */
 
-const debug = require('debug')('antisocial-admin');
-const VError = require('verror').VError;
-const pug = require('pug');
-const EventEmitter = require('events');
-const express = require('express');
-const _ = require('lodash');
-const async = require('async');
-const mime = require('mime/lite');
-const fs = require('fs');
-const path = require('path');
-const Op = require('sequelize').Op;
+const debug = require('debug')('antisocial-admin')
+const VError = require('verror').VError
+const pug = require('pug')
+const EventEmitter = require('events')
+const express = require('express')
+const _ = require('lodash')
+const async = require('async')
+const mime = require('mime/lite')
+const fs = require('fs')
+const path = require('path')
+const Op = require('sequelize').Op
 const MarkdownIt = require('markdown-it')
-const uuid = require('uuid');
-const dns = require('dns');
+const uuid = require('uuid')
+const dns = require('dns')
 
 const {
 	validatePayload, sanitizePayload
-} = require('./validator-extensions');
+} = require('./validator-extensions')
 
-const csrf = require('csurf');
+const csrf = require('csurf')
 const csrfProtection = csrf({
 	cookie: {
 		signed: true,
 		httpOnly: true
 	},
 	ignoreMethods: process.env.TESTING ? ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'] : ['GET', 'HEAD', 'OPTIONS']
-});
+})
 
-const validationKeys = ['is', 'not', 'isEmail', 'isUrl', 'isIP', 'isIPv4', 'isIPv6', 'isAlpha', 'isAlphanumeric', 'isNumeric', 'isInt', 'isFloat', 'isDecimal', 'isLowercase', 'isUppercase', 'notNull', 'isNull', 'notEmpty', 'equals', 'contains', 'notIn', 'isIn', 'notContains', 'len', 'isUUID', 'isDate', 'isAfter', 'isBefore', 'max', 'min', 'isCreditCard'];
-let expressApp = null;
+const validationKeys = ['is', 'not', 'isEmail', 'isUrl', 'isIP', 'isIPv4', 'isIPv6', 'isAlpha', 'isAlphanumeric', 'isNumeric', 'isInt', 'isFloat', 'isDecimal', 'isLowercase', 'isUppercase', 'notNull', 'isNull', 'notEmpty', 'equals', 'contains', 'notIn', 'isIn', 'notContains', 'len', 'isUUID', 'isDate', 'isAfter', 'isBefore', 'max', 'min', 'isCreditCard']
+let expressApp = null
 
-let adminTables = {};
-let associationsMap = {};
+const adminTables = {}
+const associationsMap = {}
 
-let UPLOAD_PATH = '';
-let UPLOAD_URI_PREFIX = '';
-let ITEMS_PER_PAGE = 20;
-let MOUNTPOINT = '';
+let UPLOAD_PATH = ''
+let UPLOAD_URI_PREFIX = ''
+const ITEMS_PER_PAGE = 20
+let MOUNTPOINT = ''
 
-let viewsPath = path.join(__dirname, '../', 'views');
+const viewsPath = path.join(__dirname, '../', 'views')
 
 const {
 	getUserForRequestMiddleware
-} = require('../../digitopia-cms/lib/get-user-for-request-middleware');
+} = require('../../digitopia-cms/lib/get-user-for-request-middleware')
 
-function ensureRoleMiddleware(req, res, next) {
+function toJSONObject (input) {
+	let val = input || '{}'
+	if (typeof val === 'string') {
+		try {
+			val = JSON.parse(val)
+		} catch (err) {
+			debug('JSON value in unexpected format %j', val)
+			val = {}
+		}
+	}
+	return val
+}
+
+function toJSONString (input) {
+	let val = input || {}
+	if (typeof val === 'object') {
+		try {
+			val = JSON.stringify(val, '', 2)
+		} catch (err) {
+			debug('JSON value in unexpected format %j', val)
+			val = '{}'
+		}
+	}
+	return val
+}
+
+function ensureRoleMiddleware (req, res, next) {
 	if (!req.antisocialUser) {
-		return next(new VError('You must be logged in as an admin user'));
+		return next(new VError('You must be logged in as an admin user'))
 	}
 
 	if (req.isAdmin || req.isSuperUser) {
-		return next();
+		return next()
 	}
 
-	next(new VError('You must be logged in as an admin user'));
+	next(new VError('You must be logged in as an admin user'))
 }
 
-async function getDependants(modelName, instance) {
-	let references = {}
-	let assoc = associationsMap[modelName] ? associationsMap[modelName].dependants : [];
+async function getDependants (modelName, instance) {
+	const references = {}
+	const assoc = associationsMap[modelName] ? associationsMap[modelName].dependants : []
 
-	let statsPromises = assoc.map(async reference => {
-		let t = Object.keys(reference)[0];
-		let fk = reference[t];
+	const statsPromises = assoc.map(async reference => {
+		const t = Object.keys(reference)[0]
+		const fk = reference[t]
 		return expressApp.db.getModel(t).findAndCountAll({
 			where: {
 				[fk]: instance.id
 			},
 			limit: 10
-		});
-	});
+		})
+	})
 
-	let stats = await Promise.all(statsPromises);
+	const stats = await Promise.all(statsPromises)
 
-	let result = {}
+	const result = {}
 	for (let i = 0; i < assoc.length; i++) {
-		let reference = assoc[i];
-		let t = Object.keys(reference)[0];
+		const reference = assoc[i]
+		const t = Object.keys(reference)[0]
 		result[t] = {
 			table: t,
 			fk: reference[t],
 			rows: stats[i]
-		};
+		}
 	}
 
-	return result;
+	return result
 }
 
-async function getJoins(modelName, instance) {
+async function getJoins (modelName, instance) {
 	let references = []
 
 	if (!adminTables[modelName]) {
@@ -160,16 +186,16 @@ async function getJoins(modelName, instance) {
 	}
 
 	references = adminTables[modelName].options.joins.map(async reference => {
-		return instance[reference.accessors.get]();
-	});
+		return instance[reference.accessors.get]()
+	})
 
-	let resolved = await Promise.all(references);
+	const resolved = await Promise.all(references)
 
-	let result = {}
+	const result = {}
 
 	for (let i = 0; i < adminTables[modelName].options.joins.length; i++) {
 		if (resolved[i].length) {
-			let k = adminTables[modelName].options.joins[i].as;
+			const k = adminTables[modelName].options.joins[i].as
 			result[k] = {
 				table: adminTables[modelName].options.joins[i].table,
 				target: adminTables[modelName].options.joins[i].target,
@@ -177,59 +203,59 @@ async function getJoins(modelName, instance) {
 			}
 		}
 	}
-	return result;
+	return result
 }
 
-async function getReferences(modelName, instance) {
-	let references = {}
-	let assoc = associationsMap[modelName] ? associationsMap[modelName].references : [];
+async function getReferences (modelName, instance) {
+	const references = {}
+	const assoc = associationsMap[modelName] ? associationsMap[modelName].references : []
 
-	let statsPromises = assoc.map(async reference => {
-		let t = Object.keys(reference)[0];
-		let fk = reference[t];
+	const statsPromises = assoc.map(async reference => {
+		const t = Object.keys(reference)[0]
+		const fk = reference[t]
 		return expressApp.db.getModel(t).findAndCountAll({
 			where: {
 				[fk]: instance.id
 			},
 			limit: 10
-		});
-	});
+		})
+	})
 
-	let stats = await Promise.all(statsPromises);
+	const stats = await Promise.all(statsPromises)
 
-	let result = {}
+	const result = {}
 	for (let i = 0; i < assoc.length; i++) {
 		if (stats[i].count) {
-			let reference = assoc[i];
-			let t = Object.keys(reference)[0];
+			const reference = assoc[i]
+			const t = Object.keys(reference)[0]
 			result[t] = {
 				table: t,
 				fk: reference[t],
 				rows: stats[i]
-			};
+			}
 		}
 	}
-	return result;
+	return result
 }
 
-function handlePost(app, table, payload, req, res, next) {
-	let admin = adminTables[table];
+function handlePost (app, table, payload, req, res, next) {
+	const admin = adminTables[table]
 	if (!adminTables[table]) {
-		return next(new VError('admin for ' + table + ' not defined'));
+		return next(new VError('admin for ' + table + ' not defined'))
 	}
 
 	if (!app.db.checkPermission(table, req.antisocialUser, 'create')) {
-		return next(new VError('you don\'t have permission to create ' + table));
+		return next(new VError('you don\'t have permission to create ' + table))
 	}
 
-	let sanitized = sanitizePayload(payload, admin.getSanitizers(), {});
-	let validations = admin.getValidations();
-	let additionalProps = admin.getAdditionalPayloadProperties();
+	const sanitized = sanitizePayload(payload, admin.getSanitizers(), {})
+	const validations = admin.getValidations()
+	const additionalProps = admin.getAdditionalPayloadProperties()
 
-	let errors = validatePayload(sanitized.values, validations, {
+	const errors = validatePayload(sanitized.values, validations, {
 		strict: true,
 		additionalProperties: additionalProps
-	});
+	})
 
 	if (errors.length) {
 		return res
@@ -237,7 +263,7 @@ function handlePost(app, table, payload, req, res, next) {
 			.json({
 				status: 'error',
 				errors: errors
-			});
+			})
 	}
 
 	app.db.newInstance(table, sanitized.values, function (err, instance) {
@@ -247,7 +273,7 @@ function handlePost(app, table, payload, req, res, next) {
 				flashLevel: 'danger',
 				flashMessage: 'Error creating row',
 				errors: [err.message]
-			});
+			})
 		}
 
 		admin.handleUpdate(instance, req.body[table], (err, dirty) => {
@@ -257,7 +283,7 @@ function handlePost(app, table, payload, req, res, next) {
 					flashLevel: 'danger',
 					flashMessage: 'Error doing admin handleUpdate',
 					errors: [err.message]
-				});
+				})
 			}
 
 			if (Object.keys(dirty).length === 0) {
@@ -266,7 +292,7 @@ function handlePost(app, table, payload, req, res, next) {
 					flashLevel: 'info',
 					flashMessage: 'created',
 					id: instance.id
-				});
+				})
 			}
 
 			app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
@@ -276,7 +302,7 @@ function handlePost(app, table, payload, req, res, next) {
 						flashLevel: 'danger',
 						flashMessage: 'Error saving row after admin handleUpdate',
 						errors: [err.message]
-					});
+					})
 				}
 
 				return res.send({
@@ -285,30 +311,30 @@ function handlePost(app, table, payload, req, res, next) {
 					flashMessage: 'created',
 					id: instance.id,
 					warnings: sanitized.warnings
-				});
-			});
+				})
+			})
 		})
-	});
+	})
 }
 
-function handlePut(app, table, id, payload, props, req, res, next) {
-	let admin = adminTables[table];
+function handlePut (app, table, id, payload, props, req, res, next) {
+	const admin = adminTables[table]
 	if (!adminTables[table]) {
-		return next(new VError('admin for ' + table + ' not defined'));
+		return next(new VError('admin for ' + table + ' not defined'))
 	}
 
 	if (!app.db.checkPermission(table, req.antisocialUser, 'edit')) {
-		return next(new VError('you don\'t have permission to edit ' + table));
+		return next(new VError('you don\'t have permission to edit ' + table))
 	}
 
-	let sanitized = sanitizePayload(payload, admin.getSanitizers(), {});
-	let validations = admin.getValidations(props);
-	let additionalProps = admin.getAdditionalPayloadProperties(props);
+	const sanitized = sanitizePayload(payload, admin.getSanitizers(), {})
+	const validations = admin.getValidations(props)
+	const additionalProps = admin.getAdditionalPayloadProperties(props)
 
-	let errors = validatePayload(sanitized.values, validations, {
+	const errors = validatePayload(sanitized.values, validations, {
 		strict: true,
 		additionalProperties: additionalProps
-	});
+	})
 
 	if (errors.length) {
 		return res
@@ -316,7 +342,7 @@ function handlePut(app, table, id, payload, props, req, res, next) {
 			.json({
 				status: 'error',
 				errors: errors
-			});
+			})
 	}
 
 	app.db.updateInstance(table, id, sanitized.values, function (err, instance) {
@@ -326,7 +352,7 @@ function handlePut(app, table, id, payload, props, req, res, next) {
 				flashLevel: 'danger',
 				flashMessage: 'Error saving row',
 				errors: [err.message]
-			});
+			})
 		}
 
 		admin.handleUpdate(instance, sanitized.values, (err, dirty) => {
@@ -336,7 +362,7 @@ function handlePut(app, table, id, payload, props, req, res, next) {
 					flashLevel: 'danger',
 					flashMessage: 'Error doing admin handleUpdate',
 					errors: [err.message]
-				});
+				})
 			}
 
 			if (Object.keys(dirty).length === 0) {
@@ -344,7 +370,7 @@ function handlePut(app, table, id, payload, props, req, res, next) {
 					status: 'ok',
 					flashLevel: 'info',
 					flashMessage: 'saved'
-				});
+				})
 			}
 
 			app.db.updateInstance(table, instance.id, dirty, function (err, instance) {
@@ -354,7 +380,7 @@ function handlePut(app, table, id, payload, props, req, res, next) {
 						flashLevel: 'danger',
 						flashMessage: 'Error saving row after admin handleUpdate',
 						errors: [err.message]
-					});
+					})
 				}
 
 				return res.send({
@@ -362,21 +388,20 @@ function handlePut(app, table, id, payload, props, req, res, next) {
 					flashLevel: 'info',
 					flashMessage: 'saved',
 					warnings: sanitized.warnings
-				});
-			});
-		});
-	});
+				})
+			})
+		})
+	})
 };
 
-function handleDelete(app, table, id, req, res, next) {
-
-	let admin = adminTables[table];
+function handleDelete (app, table, id, req, res, next) {
+	const admin = adminTables[table]
 	if (!adminTables[table]) {
-		return next(new VError('admin for ' + table + ' not defined'));
+		return next(new VError('admin for ' + table + ' not defined'))
 	}
 
 	if (!app.db.checkPermission(table, req.antisocialUser, 'delete')) {
-		return next(new VError('you don\'t have permission to delete ' + table));
+		return next(new VError('you don\'t have permission to delete ' + table))
 	}
 
 	async.waterfall([
@@ -388,111 +413,109 @@ function handleDelete(app, table, id, req, res, next) {
 				}
 			}, (err, rows) => {
 				if (err) {
-					return cb(new VError(err, 'error reading row'));
+					return cb(new VError(err, 'error reading row'))
 				}
 				if (!rows.length) {
 					return cb(new VError('row not found'))
 				}
-				cb(null, rows[0]);
+				cb(null, rows[0])
 			})
 		},
 		// give admin a chance to cleanup images, etc.
 		(instance, cb) => {
 			admin.handleDelete(instance, (err) => {
 				if (err) {
-					return cb(new VError(err, 'admin handleDelete failed'));
+					return cb(new VError(err, 'admin handleDelete failed'))
 				}
-				cb(null, instance);
+				cb(null, instance)
 			})
 		},
 		// delete the row
 		(instance, cb) => {
 			app.db.deleteInstance(table, id, function (err, instance) {
 				if (err) {
-					return cb(new VError(err, 'deleteInstance error'));
+					return cb(new VError(err, 'deleteInstance error'))
 				}
-				cb();
+				cb()
 			})
 		}
 	], (err) => {
-
 		if (err) {
 			return res.send({
 				status: 'error',
 				flashLevel: 'danger',
 				flashMessage: 'Error deleting row',
 				errors: [err.message]
-			});
+			})
 		}
 
 		return res.send({
 			status: 'ok',
 			flashLevel: 'info',
 			flashMessage: 'deleted'
-		});
-	});
+		})
+	})
 }
 
-function mount(app, options) {
-	let router = express.Router();
+function mount (app, options) {
+	const router = express.Router()
 
-	expressApp = app;
+	expressApp = app
 
-	let userForRequestMiddleware = getUserForRequestMiddleware({
+	const userForRequestMiddleware = getUserForRequestMiddleware({
 		db: app.db
-	});
+	})
 
-	UPLOAD_PATH = path.join(__dirname, '../../../', 'public', options.UPLOAD_PATH);
-	UPLOAD_URI_PREFIX = options.UPLOAD_PATH;
-	MOUNTPOINT = options.MOUNTPOINT;
+	UPLOAD_PATH = path.join(__dirname, '../../../', 'public', options.UPLOAD_PATH)
+	UPLOAD_URI_PREFIX = options.UPLOAD_PATH
+	MOUNTPOINT = options.MOUNTPOINT
 
 	// create admin for models defined in /models skipping auto generated join tables
-	for (let model in app.db.modelDefs) {
-		let AdminTable = new adminTable(app, app.db.sequelize.models[model]);
+	for (const model in app.db.modelDefs) {
+		const AdminTable = new adminTable(app, app.db.sequelize.models[model])
 	}
 
-	debug('associationsMap: %j', associationsMap);
+	debug('associationsMap: %j', associationsMap)
 
 	if (options.MOUNTPOINT) {
 		debug('mounting admin /menu')
 		router.get('/menu', userForRequestMiddleware, ensureRoleMiddleware, function (req, res) {
-
-			let tables = []
+			const tables = []
 			for (table in adminTables) {
 				if (!adminTables[table].options.hidden) {
 					if (app.db.checkPermission(table, req.antisocialUser, 'view')) {
-						tables.push(adminTables[table].name);
+						tables.push(adminTables[table].name)
 					}
 				}
 			}
 
 			res.render(viewsPath + '/admin/menu', {
 				tables: tables
-			});
-		});
+			})
+		})
 
 		// list rows
 		debug('mounting admin /table')
 		router.get('/:table', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-			let table = req.params.table;
-			let admin = adminTables[table];
+			const table = req.params.table
+			const admin = adminTables[table]
 			if (!adminTables[table]) {
-				return next(new VError('admin for ' + table + ' not defined'));
+				return next(new VError('admin for ' + table + ' not defined'))
 			}
 
 			if (!app.db.checkPermission(table, req.antisocialUser, 'view')) {
-				return next(new VError('you don\'t have permission to view ' + table));
+				return next(new VError('you don\'t have permission to view ' + table))
 			}
 
-			let page = req.query.p ? parseInt(req.query.p) : 1;
+			const page = req.query.p ? parseInt(req.query.p) : 1
 
-			let query = {}
-			query.limit = ITEMS_PER_PAGE;
-			query.offset = (page - 1) * ITEMS_PER_PAGE;
+			const query = {}
+			query.limit = ITEMS_PER_PAGE
+			query.offset = (page - 1) * ITEMS_PER_PAGE
 
 			// searching
 			if (req.query.q) {
-				let searchCol = req.query.property;
+				const searchCol = req.query.property
 				query.where = {
 					[searchCol]: {
 						[Op.like]: req.query.q + '%'
@@ -502,12 +525,12 @@ function mount(app, options) {
 
 			app.db.getInstances(table, query, (err, rows, count) => {
 				if (err) {
-					return res.status(500).send('error: ' + err.message);
+					return res.status(500).send('error: ' + err.message)
 				}
 
-				let pages = count ? Math.ceil(count / ITEMS_PER_PAGE) : 0;
+				const pages = count ? Math.ceil(count / ITEMS_PER_PAGE) : 0
 
-				let pagination = {
+				const pagination = {
 					count: count,
 					pages: pages,
 					page: page,
@@ -516,10 +539,10 @@ function mount(app, options) {
 					uri: '?q=' + (req.q ? encodeURIComponent(req.q) : '') + '&property=' + (req.query.property ? encodeURIComponent(req.query.property) : '')
 				}
 
-				let prepared = {};
+				const prepared = {}
 				async.map(rows, (row, cb) => {
 					prepared[row.id] = {}
-					admin.resolve(row, prepared[row.id], cb);
+					admin.resolve(row, prepared[row.id], cb)
 				}, (err) => {
 					res.render(viewsPath + '/admin/list', {
 						admin: admin,
@@ -528,33 +551,33 @@ function mount(app, options) {
 						pagination: pagination,
 						mountpoint: options.MOUNTPOINT,
 						prepared: prepared
-					});
-				});
-			});
-		});
+					})
+				})
+			})
+		})
 
 		// new row
 		debug('mounting admin /:table/create')
 		router.get('/:table/create', csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-			let table = req.params.table;
+			const table = req.params.table
 
-			let admin = adminTables[table];
+			const admin = adminTables[table]
 			if (!adminTables[table]) {
-				return next(new VError('admin for ' + table + ' not defined'));
+				return next(new VError('admin for ' + table + ' not defined'))
 			}
 
 			if (!app.db.checkPermission(table, req.antisocialUser, 'create')) {
-				return next(new VError('you don\'t have permission to create ' + table));
+				return next(new VError('you don\'t have permission to create ' + table))
 			}
 
-			let pt, fk;
-			let parent = associationsMap[table] ? associationsMap[table].parent : {};
+			let pt, fk
+			const parent = associationsMap[table] ? associationsMap[table].parent : {}
 			if (parent.length) {
-				pt = Object.keys(parent[0])[0];
-				fk = parent[0][pt];
+				pt = Object.keys(parent[0])[0]
+				fk = parent[0][pt]
 			}
 
-			let prepared = {};
+			const prepared = {}
 			admin.prepare(null, prepared, (err) => {
 				res.render(viewsPath + '/admin/create', {
 					admin: admin,
@@ -565,58 +588,57 @@ function mount(app, options) {
 					pt: pt,
 					fk: fk,
 					csrfToken: req.csrfToken()
-				});
-			});
-		});
+				})
+			})
+		})
 
 		// view row
 		debug('mounting admin /:table/:rowId')
 		router.get('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-			let table = req.params.table;
-			let id = parseInt(req.params.rowId);
+			const table = req.params.table
+			const id = parseInt(req.params.rowId)
 
-			let admin = adminTables[table];
+			const admin = adminTables[table]
 			if (!adminTables[table]) {
-				return next(new VError('admin for ' + table + ' not defined'));
+				return next(new VError('admin for ' + table + ' not defined'))
 			}
 
 			if (!app.db.checkPermission(table, req.antisocialUser, 'view')) {
-				return next(new VError('you don\'t have permission to view ' + table));
+				return next(new VError('you don\'t have permission to view ' + table))
 			}
 
-			let query = {
+			const query = {
 				where: {
 					id: id
 				}
-			};
+			}
 
-			app.db.getInstances(table, query, async(err, rows) => {
+			app.db.getInstances(table, query, async (err, rows) => {
 				if (err) {
-					return res.status(500).send('error: ' + err.message);
+					return res.status(500).send('error: ' + err.message)
 				}
 
 				if (!rows || !rows.length) {
-					return res.status(404).send('error: row not found in ' + table);
+					return res.status(404).send('error: row not found in ' + table)
 				}
 
-				let refs, deps, joins;
+				let refs, deps, joins
 				try {
-					refs = await getReferences(table, rows[0]);
-					deps = await getDependants(table, rows[0]);
-					joins = await getJoins(table, rows[0]);
-				}
-				catch (err) {
+					refs = await getReferences(table, rows[0])
+					deps = await getDependants(table, rows[0])
+					joins = await getJoins(table, rows[0])
+				} catch (err) {
 					return res.status(500).send('error resolving data ' + err.message)
 				}
 
-				let pt, fk;
-				let parent = associationsMap[table] ? associationsMap[table].parent : {};
+				let pt, fk
+				const parent = associationsMap[table] ? associationsMap[table].parent : {}
 				if (parent.length) {
-					pt = Object.keys(parent[0])[0];
-					fk = parent[0][pt];
+					pt = Object.keys(parent[0])[0]
+					fk = parent[0][pt]
 				}
 
-				let prepared = {};
+				const prepared = {}
 				admin.resolve(rows[0], prepared, (err) => {
 					res.render(viewsPath + '/admin/view', {
 						admin: admin,
@@ -631,52 +653,51 @@ function mount(app, options) {
 						assoc: associationsMap[table],
 						pt: pt,
 						fk: fk
-					});
-				});
-			});
-		});
+					})
+				})
+			})
+		})
 
 		// edit row form
 		debug('mounting admin /:table/:rowId/edit')
 		router.get('/:table/:rowId/edit', csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, function (req, res, next) {
-			let table = req.params.table;
-			let id = parseInt(req.params.rowId);
+			const table = req.params.table
+			const id = parseInt(req.params.rowId)
 
-			let admin = adminTables[table];
+			const admin = adminTables[table]
 			if (!adminTables[table]) {
-				return next(new VError('admin for ' + table + ' not defined'));
+				return next(new VError('admin for ' + table + ' not defined'))
 			}
 
 			if (!app.db.checkPermission(table, req.antisocialUser, 'edit')) {
-				return next(new VError('you don\'t have permission to edit ' + table));
+				return next(new VError('you don\'t have permission to edit ' + table))
 			}
 
 			app.db.getInstances(table, {
 				where: {
 					id: id
 				}
-			}, async(err, rows) => {
+			}, async (err, rows) => {
 				if (err) {
-					return res.status(500).send('error: ' + err.message);
+					return res.status(500).send('error: ' + err.message)
 				}
 
-				let refs, joins;
+				let refs, joins
 				try {
-					refs = await getReferences(table, rows[0]);
-					joins = await getJoins(table, rows[0]);
-				}
-				catch (err) {
+					refs = await getReferences(table, rows[0])
+					joins = await getJoins(table, rows[0])
+				} catch (err) {
 					return res.status(500).send('error resolving data ' + err.message)
 				}
 
-				let pt, fk;
-				let parent = associationsMap[table] ? associationsMap[table].parent : {};
+				let pt, fk
+				const parent = associationsMap[table] ? associationsMap[table].parent : {}
 				if (parent.length) {
-					pt = Object.keys(parent[0])[0];
-					fk = parent[0][pt];
+					pt = Object.keys(parent[0])[0]
+					fk = parent[0][pt]
 				}
 
-				let prepared = {};
+				const prepared = {}
 				admin.prepare(rows[0], prepared, (err) => {
 					res.render(viewsPath + '/admin/edit', {
 						admin: admin,
@@ -689,47 +710,47 @@ function mount(app, options) {
 						pt: pt,
 						fk: fk,
 						csrfToken: req.csrfToken()
-					});
-				});
-			});
-		});
+					})
+				})
+			})
+		})
 
 		// create a row
 		debug('mounting admin POST /:table')
 		router.post('/:table', express.json({
 			limit: '20mb'
 		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, (req, res, next) => {
-			let table = req.params.table;
-			let payload = req.body[table];
-			handlePost(app, table, payload, req, res, next);
-		});
+			const table = req.params.table
+			const payload = req.body[table]
+			handlePost(app, table, payload, req, res, next)
+		})
 
 		// update a row
-		debug('mounting admin PUT /:table/:rowId');
+		debug('mounting admin PUT /:table/:rowId')
 		router.put('/:table/:rowId', express.json({
 			limit: '20mb'
 		}), csrfProtection, userForRequestMiddleware, ensureRoleMiddleware, (req, res, next) => {
-			let table = req.params.table;
-			let id = req.params.rowId;
-			let payload = req.body[table];
-			handlePut(app, table, id, payload, null, req, res, next);
-		});
+			const table = req.params.table
+			const id = req.params.rowId
+			const payload = req.body[table]
+			handlePut(app, table, id, payload, null, req, res, next)
+		})
 
 		// delete a row
 		debug('mounting admin DELETE /:table/:rowId')
 		router.delete('/:table/:rowId', userForRequestMiddleware, ensureRoleMiddleware, (req, res, next) => {
-			let table = req.params.table;
-			let id = req.params.rowId;
-			handleDelete(app, table, id, req, res, next);
-		});
+			const table = req.params.table
+			const id = req.params.rowId
+			handleDelete(app, table, id, req, res, next)
+		})
 
-		debug('mounting admin on %s', options.MOUNTPOINT);
+		debug('mounting admin on %s', options.MOUNTPOINT)
 
-		app.use(options.MOUNTPOINT, router);
+		app.use(options.MOUNTPOINT, router)
 	}
 }
 
-function mapAssociation(name, type, details) {
+function mapAssociation (name, type, details) {
 	if (!associationsMap[name]) {
 		associationsMap[name] = {
 			dependants: [],
@@ -739,142 +760,139 @@ function mapAssociation(name, type, details) {
 	}
 
 	for (let i = 0; i < associationsMap[name][type].length; i++) {
-		let assoc = associationsMap[name][type][i];
-		let t = Object.keys(assoc)[0];
-		let fk = assoc[t];
+		const assoc = associationsMap[name][type][i]
+		const t = Object.keys(assoc)[0]
+		const fk = assoc[t]
 		if (details[t] && details[t] === fk) {
-			return; // dupe
+			return // dupe
 		}
 	}
 
-	associationsMap[name][type].push(details);
+	associationsMap[name][type].push(details)
 }
 
 class adminTable extends EventEmitter {
+	constructor (app, model) {
+		// debug('adminTable create %s', model.name);
+		super()
 
-	constructor(app, model) {
-		//debug('adminTable create %s', model.name);
-		super();
+		this.app = app
+		this.name = model.tableName
+		this.options = model.options && model.options.ADMIN ? JSON.parse(JSON.stringify(model.options.ADMIN)) : {}
+		this.model = model
+		this.columns = {}
+		this.associations = {}
+		this.build()
 
-		this.app = app;
-		this.name = model.tableName;
-		this.options = model.options && model.options.ADMIN ? JSON.parse(JSON.stringify(model.options.ADMIN)) : {};
-		this.model = model;
-		this.columns = {};
-		this.associations = {};
-		this.build();
-
-		adminTables[model.tableName] = this;
+		adminTables[model.tableName] = this
 	}
 
-	getOptions() {
-		let allOptions = JSON.parse(JSON.stringify(this.options));
-		allOptions.columns = {};
-		for (let column in this.columns) {
-			allOptions.columns[column] = JSON.parse(JSON.stringify(this.columns[column].options));
+	getOptions () {
+		const allOptions = JSON.parse(JSON.stringify(this.options))
+		allOptions.columns = {}
+		for (const column in this.columns) {
+			allOptions.columns[column] = JSON.parse(JSON.stringify(this.columns[column].options))
 		}
-		return allOptions;
+		return allOptions
 	}
 
-	getValidations(cols) {
-		let validations = {};
-		for (let column in this.columns) {
+	getValidations (cols) {
+		const validations = {}
+		for (const column in this.columns) {
 			if (!cols || cols.indexOf(column) !== -1) {
 				if (this.columns[column].options.validate) {
-					validations[column] = JSON.parse(JSON.stringify(this.columns[column].options.validate));
+					validations[column] = JSON.parse(JSON.stringify(this.columns[column].options.validate))
 				}
 			}
 		}
-		return validations;
+		return validations
 	}
 
-	getAdditionalPayloadProperties(cols) {
-		let additionalProps = ['_csrf'];
-		for (let column in this.columns) {
+	getAdditionalPayloadProperties (cols) {
+		let additionalProps = ['_csrf']
+		for (const column in this.columns) {
 			if (!cols || cols.indexOf(column) !== -1) {
-				additionalProps = additionalProps.concat(this.columns[column].getAdditionalPayloadProperties());
+				additionalProps = additionalProps.concat(this.columns[column].getAdditionalPayloadProperties())
 			}
 		}
-		return additionalProps;
+		return additionalProps
 	}
 
-	getSanitizers(cols) {
-		let sanitizers = {};
-		for (let column in this.columns) {
+	getSanitizers (cols) {
+		const sanitizers = {}
+		for (const column in this.columns) {
 			if (!cols || cols.indexOf(column) !== -1) {
 				if (this.columns[column].options.sanitizers) {
-					sanitizers[column] = JSON.parse(JSON.stringify(this.columns[column].options.sanitizers));
+					sanitizers[column] = JSON.parse(JSON.stringify(this.columns[column].options.sanitizers))
 				}
 			}
 		}
-		return sanitizers;
+		return sanitizers
 	}
 
-	build() {
+	build () {
+		let buildListColumns = false
+		let buildViewColumns = false
+		let buildEditColumns = false
 
-		let buildListColumns = false;
-		let buildViewColumns = false;
-		let buildEditColumns = false;
-
-		let foreignKeys = {};
+		const foreignKeys = {}
 
 		if (!this.options.listColumns) {
-			buildListColumns = true;
-			this.options.listColumns = [];
+			buildListColumns = true
+			this.options.listColumns = []
 		}
 
 		if (!this.options.viewColumns) {
-			buildViewColumns = true;
-			this.options.viewColumns = [];
+			buildViewColumns = true
+			this.options.viewColumns = []
 		}
 
 		if (!this.options.editColumns) {
-			buildEditColumns = true;
-			this.options.editColumns = [];
+			buildEditColumns = true
+			this.options.editColumns = []
 		}
 
 		if (!this.options.searchColumns) {
-			this.options.searchColumns = [];
+			this.options.searchColumns = []
 			if (this.options.defaultColumn) {
-				this.options.searchColumns.push(this.options.defaultColumn);
+				this.options.searchColumns.push(this.options.defaultColumn)
 			}
 		}
 
-		this.options.joins = [];
+		this.options.joins = []
 
-		for (let assoc in this.model.associations) {
-			let relationship = this.model.associations[assoc];
-			let type = relationship.constructor.name;
+		for (const assoc in this.model.associations) {
+			const relationship = this.model.associations[assoc]
+			const type = relationship.constructor.name
 
 			if (type === 'HasOne') {
 				mapAssociation(this.name, 'dependants', {
 					[relationship.target.name]: relationship.foreignKey
-				});
+				})
 			}
 			if (type === 'HasMany') {
 				mapAssociation(this.name, 'dependants', {
 					[relationship.target.name]: relationship.foreignKey
-				});
+				})
 			}
 			if (type === 'BelongsTo') {
 				mapAssociation(relationship.target.name, 'references', {
 					[this.name]: relationship.foreignKey
-				});
+				})
 
 				if (_.get(relationship, 'options.ADMIN.behavior') === 'child') {
 					mapAssociation(this.name, 'parent', {
 						[relationship.target.name]: relationship.foreignKey
-					});
+					})
 				}
 			}
 			if (type === 'BelongsToMany' && relationship.throughModel) {
-
 				this.options.joins.push({
 					table: relationship.throughModel.name,
 					target: relationship.target.name,
 					as: relationship.as,
 					accessors: relationship.accessors
-				});
+				})
 
 				// make an input handler for editing join
 				new adminJoin(this, relationship.as, {
@@ -882,285 +900,284 @@ class adminTable extends EventEmitter {
 					as: relationship.as,
 					accessors: relationship.accessors,
 					validate: {}
-				});
+				})
 
 				mapAssociation(relationship.throughModel.name, 'parent', {
 					[this.name]: relationship.foreignKey
-				});
+				})
 			}
 		}
 
-		for (let col in this.model.fieldRawAttributesMap) {
+		for (const col in this.model.fieldRawAttributesMap) {
+			const attr = this.model.tableAttributes[col]
+			const adminOptions = {}
 
-			let attr = this.model.tableAttributes[col];
-			let adminOptions = {};
-
-			adminOptions.type = attr.type.constructor.name;
-			adminOptions.inputType = 'text';
+			adminOptions.type = attr.type.constructor.name
+			adminOptions.inputType = 'text'
 
 			if (attr.references) {
 				mapAssociation(attr.references.model, 'references', {
 					[this.name]: col
-				});
-				adminOptions.references = attr.references;
+				})
+				adminOptions.references = attr.references
 				adminOptions.inputType = 'reference'
 			}
 
 			if (adminOptions.type === 'TEXT') {
-				adminOptions.inputType = 'textarea';
+				adminOptions.inputType = 'textarea'
 			}
 
 			if (adminOptions.type === 'BOOLEAN') {
-				adminOptions.inputType = 'checkbox';
+				adminOptions.inputType = 'checkbox'
 			}
 
 			if (adminOptions.type === 'DATE') {
-				adminOptions.inputHTMLType = 'date';
+				adminOptions.inputHTMLType = 'date'
 			}
 
-			adminOptions.id = (col === 'id');
+			if (adminOptions.type === 'JSONTYPE') {
+				adminOptions.inputType = 'JSON'
+			}
 
-			adminOptions.label = col;
+			adminOptions.id = (col === 'id')
+
+			adminOptions.label = col
 
 			// make the first text column the default if not defined in table options
 			if (!this.options.defaultColumn && !adminOptions.id && adminOptions.inputType === 'text') {
-				this.options.defaultColumn = col;
+				this.options.defaultColumn = col
 			}
 
 			if (adminOptions.id) {
-				adminOptions.hidden = true;
+				adminOptions.hidden = true
 			}
 
 			if (col === 'createdAt' || col === 'updatedAt') {
-				adminOptions.readOnly = true;
+				adminOptions.readOnly = true
 			}
 
 			if (attr.options) {
-				adminOptions.length = attr.options.length;
+				adminOptions.length = attr.options.length
 			}
 
-			adminOptions.validate = {};
+			adminOptions.validate = {}
 			for (let i = 0; i < validationKeys.length; i++) {
 				if (attr[validationKeys[i]]) {
-					adminOptions.validate[validationKeys[i]] = attr[validationKeys[i]];
+					adminOptions.validate[validationKeys[i]] = attr[validationKeys[i]]
 				}
 			}
 
 			if (attr.allowNull === false) {
-				adminOptions.validate['notEmpty'] = true;
+				adminOptions.validate.notEmpty = true
 			}
 
 			if (_.get(attr, 'ADMIN.notHTML') === true) {
-				adminOptions.validate['notHTML'] = true;
+				adminOptions.validate.notHTML = true
 			}
 
-			adminOptions.sanitizers = {};
+			adminOptions.sanitizers = {}
 
 			// override from ADMIN options in model definition
 			if (attr.ADMIN) {
-				for (let a in attr.ADMIN) {
-					adminOptions[a] = attr.ADMIN[a];
+				for (const a in attr.ADMIN) {
+					adminOptions[a] = attr.ADMIN[a]
 				}
 			}
 
 			if (buildListColumns && !adminOptions.hidden) {
-				this.options.listColumns.push(col);
+				this.options.listColumns.push(col)
 			}
 			if (buildViewColumns && !adminOptions.hidden) {
-				this.options.viewColumns.push(col);
+				this.options.viewColumns.push(col)
 			}
 			if (buildEditColumns && !adminOptions.id && !adminOptions.hidden && !adminOptions.readOnly) {
-				this.options.editColumns.push(col);
+				this.options.editColumns.push(col)
 			}
 
-			var adminColumn = new classes[adminOptions.inputType](this, col, adminOptions);
+			var adminColumn = new classes[adminOptions.inputType](this, col, adminOptions)
 		}
 	}
 
-	getColumn(name) {
-		return this.columns[name];
+	getColumn (name) {
+		return this.columns[name]
 	}
 
-	addColumn(column) {
+	addColumn (column) {
 		// debug('%s.%s adminOptions: %j', this.model.name, column.name, column.options)
 
-		let isAnAdminColumn = column instanceof adminColumn;
+		const isAnAdminColumn = column instanceof adminColumn
 		if (!isAnAdminColumn) {
-			throw (new VError('adminTable.addColumn %s, column is not an adminTableColumn', this.name));
-			return;
+			throw (new VError('adminTable.addColumn %s, column is not an adminTableColumn', this.name))
+			return
 		}
 
 		if (this.getColumn(column.name)) {
-			throw (new VError('adminTable.addColumn %s, column %s already defined', this.name, column.name));
-			return;
+			throw (new VError('adminTable.addColumn %s, column %s already defined', this.name, column.name))
+			return
 		}
 
-		this.columns[column.name] = column;
+		this.columns[column.name] = column
 	}
 
-	resolve(instance, data, done) {
+	resolve (instance, data, done) {
 		async.each(this.columns, (col, cb) => {
-			data[col.name] = {};
+			data[col.name] = {}
 			col.resolve(instance, data[col.name], cb)
 		}, (err) => {
-			done(err);
+			done(err)
 		})
 	}
 
-	prepare(instance, data, done) {
+	prepare (instance, data, done) {
 		async.each(this.columns, (col, cb) => {
-			data[col.name] = {};
+			data[col.name] = {}
 			col.prepare(instance, data[col.name], cb)
 		}, (err) => {
-			done(err);
+			done(err)
 		})
 	}
 
-	handleUpdate(instance, input, done) {
-		let dirty = {};
+	handleUpdate (instance, input, done) {
+		const dirty = {}
 		async.each(this.columns, (col, cb) => {
 			col.handleUpdate(instance, input, dirty, cb)
 		}, (err) => {
-			done(err, dirty);
+			done(err, dirty)
 		})
 	}
 
-	handleDelete(instance, done) {
+	handleDelete (instance, done) {
 		async.each(this.columns, (col, cb) => {
 			col.handleDelete(instance, cb)
 		}, (err) => {
-			done(err);
+			done(err)
 		})
 	}
 }
 
 class adminColumn extends EventEmitter {
-	constructor(table, name, options) {
-		super();
-		this.name = name;
-		this.options = options;
-		this.setTable(table);
-		this.getValueProducesMarkup = false;
+	constructor (table, name, options) {
+		super()
+		this.name = name
+		this.options = options
+		this.setTable(table)
+		this.getValueProducesMarkup = false
 	}
 
-	setTable(table) {
-		this.table = table;
-		table.addColumn(this);
+	setTable (table) {
+		this.table = table
+		table.addColumn(this)
 	}
 
-	handleUpdate(instance, body, dirty, done) {
+	handleUpdate (instance, body, dirty, done) {
 		// any actions to perform on save.
 		// eg. uploads would save file
-		return setImmediate(done);
+		return setImmediate(done)
 	}
 
-	handleDelete(instance, done) {
+	handleDelete (instance, done) {
 		// any actions to perform on delete.
 		// eg. uploads would delete file
-		return setImmediate(done);
+		return setImmediate(done)
 	}
 
-	resolve(instance, data, cb) {
+	resolve (instance, data, cb) {
 		// do async things before getForm
-		return setImmediate(cb);
+		return setImmediate(cb)
 	}
 
-	prepare(instance, data, cb) {
+	prepare (instance, data, cb) {
 		// do async things before getForm
-		return setImmediate(cb);
+		return setImmediate(cb)
 	}
 
-	getAdditionalPayloadProperties() {
-		return [];
+	getAdditionalPayloadProperties () {
+		return []
 	}
 
-	getForm(instance, data, options) {
+	getForm (instance, data, options) {
 		// return input html for edit and create form
 	}
 
-	getDisplayValue(instance, data, options) {
-		if (this.options.type === 'JSONTYPE') {
-			return JSON.stringify(instance[this.name] ? instance[this.name] : {}, '', 2)
-		}
-		return instance[this.name];
+	getDisplayValue (instance, data, options) {
+		return instance[this.name]
 	}
 }
 
 class adminUploadableColumn extends adminColumn {
-	constructor(table, name, options) {
-		super(table, name, options);
+	constructor (table, name, options) {
+		super(table, name, options)
 	}
 
-	getAdditionalPayloadProperties() {
-		let props = super.getAdditionalPayloadProperties();
-		props.push(this.name + '_upload');
-		return props;
+	getAdditionalPayloadProperties () {
+		const props = super.getAdditionalPayloadProperties()
+		props.push(this.name + '_upload')
+		return props
 	}
 
-	handleUpdate(instance, input, dirty, done) {
+	handleUpdate (instance, input, dirty, done) {
 		// new file data base64 encoded
-		let data = input[this.name + '_upload'];
+		const data = input[this.name + '_upload']
 		if (!data) {
-			return setImmediate(done);
+			return setImmediate(done)
 		}
 
-		let v = instance[this.name] ? instance[this.name] : '{}';
-		let metadata = JSON.parse(v);
+		let metadata = toJSONObject(instance[this.name])
 
-		let pair = data.split(';base64,');
+		const pair = data.split(';base64,')
 
 		if (!pair[1] || !pair[0].match(/^data:/)) {
 			return done(new VError('incoming data is not in expected format'))
 		}
 
-		let type = pair[0].replace(/^data:/, '');
-		let encoded = pair[1];
+		const type = pair[0].replace(/^data:/, '')
+		const encoded = pair[1]
 
-		let extension = mime.getExtension(type);
+		const extension = mime.getExtension(type)
 
 		if (!extension) {
-			return done(new VError('no extension for mime type; ' + type));
+			return done(new VError('no extension for mime type; ' + type))
 		}
 
 		if (!metadata.version) {
-			metadata.version = 0;
+			metadata.version = 0
 		}
 
-		++metadata.version;
+		++metadata.version
 
-		let path = this.table.name + '/' + this.name;
-		let filename = path + '/' + instance.id + '-' + metadata.version + '.' + extension;
+		const path = this.table.name + '/' + this.name
+		const filename = path + '/' + instance.id + '-' + metadata.version + '.' + extension
 
 		async.series([(cb) => {
 			fs.mkdir(UPLOAD_PATH + '/' + path, {
 				recursive: true
 			}, (err) => {
 				if (err) {
-					return cb(new VError(err, 'error creating directories for path ' + path));
+					return cb(new VError(err, 'error creating directories for path ' + path))
 				}
-				cb();
-			});
+				cb()
+			})
 		}, (cb) => {
 			fs.writeFile(UPLOAD_PATH + '/' + filename, encoded, 'base64', (err) => {
 				if (err) {
-					return cb(new VError(err, 'error writing file'));
+					return cb(new VError(err, 'error writing file'))
 				}
-				cb();
-			});
+				cb()
+			})
 		}, (cb) => {
 			if (!metadata.filename) {
-				return setImmediate(cb);
+				return setImmediate(cb)
 			}
 
 			fs.unlink(UPLOAD_PATH + '/' + metadata.filename, (err) => {
 				if (err) {
-					return cb(new VError(err, 'error deleting old file'));
+					return cb(new VError(err, 'error deleting old file'))
 				};
-				cb();
-			});
+				cb()
+			})
 		}], (err) => {
 			if (err) {
-				return done(new VError(err, 'error saving %s.%s', this.table.name, this.name));
+				return done(new VError(err, 'error saving %s.%s', this.table.name, this.name))
 			}
 
 			metadata = {
@@ -1170,82 +1187,80 @@ class adminUploadableColumn extends adminColumn {
 				type: type
 			}
 
-			dirty[this.name] = JSON.stringify(metadata);
+			dirty[this.name] = metadata // toJSONString(metadata)
 
-			return done();
-		});
+			return done()
+		})
 	}
 
-	handleDelete(instance, done) {
-		let v = instance[this.name] ? instance[this.name] : '{}';
-		let metadata = JSON.parse(v);
+	handleDelete (instance, done) {
+		const metadata = toJSONObject(instance[this.name])
 
 		if (!metadata.filename) {
-			return setImmediate(done);
+			return setImmediate(done)
 		}
 
 		fs.unlink(UPLOAD_PATH + '/' + metadata.filename, (err) => {
 			if (err) {
-				return done(new VError(err, 'error deleting old file'));
+				return done(new VError(err, 'error deleting old file'))
 			};
-			done();
-		});
+			done()
+		})
 	}
 
-	getDisplayValue(instance, data, options) {
-		let v = instance && instance[this.name] ? instance[this.name] : '{}';
-		metadata = JSON.parse(v);
-		return JSON.stringify(metadata);
+	getDisplayValue (instance, data, options) {
+		const metadata = toJSONObject(instance[this.name])
+		return toJSONString(metadata)
 	}
-
 }
 
 class adminImageColumn extends adminUploadableColumn {
-	constructor(table, name, options) {
-		super(table, name, options);
-		this.getValueProducesMarkup = true;
+	constructor (table, name, options) {
+		super(table, name, options)
+		this.getValueProducesMarkup = true
 	}
 
-	getAdditionalPayloadProperties() {
-		let props = super.getAdditionalPayloadProperties();
-		return props.concat([this.name + '_width', this.name + '_height']);
+	getAdditionalPayloadProperties () {
+		const props = super.getAdditionalPayloadProperties()
+		return props.concat([this.name + '_width', this.name + '_height'])
 	}
 
-	handleUpdate(instance, input, dirty, done) {
-		let data = input[this.name + '_upload'];
+	handleUpdate (instance, input, dirty, done) {
+		const data = input[this.name + '_upload']
 		if (!data) {
-			return setImmediate(done);
+			return setImmediate(done)
 		}
 
 		super.handleUpdate(instance, input, dirty, (err) => {
 			if (err) {
-				return done(new VError(err, 'image upload failed'));
+				return done(new VError(err, 'image upload failed'))
 			}
 
-			let meta = JSON.parse(dirty[this.name]);
-			meta.width = input[this.name + '_width'];
-			meta.height = input[this.name + '_height'];
-			dirty[this.name] = JSON.stringify(meta);
+			const meta = toJSONObject(dirty[this.name])
 
-			done();
-		});
+			meta.width = input[this.name + '_width']
+			meta.height = input[this.name + '_height']
+			dirty[this.name] = meta // toJSONString(meta)
+
+			done()
+		})
 	}
 
-	getDisplayValue(instance, data, options) {
-		let v = instance && instance[this.name] ? instance[this.name] : '{}';
-		let metadata = JSON.parse(v);
+	getDisplayValue (instance, data, options) {
+		const metadata = toJSONObject(instance ? instance[this.name] : null)
+
 		if (!metadata.filename) {
-			return null;
+			return null
 		}
-		return '<img src="' + UPLOAD_URI_PREFIX + '/' + metadata.filename + '" width="' + metadata.width + '" height="' + metadata.height + '">';
+		return '<img src="' + UPLOAD_URI_PREFIX + '/' + metadata.filename + '" width="' + metadata.width + '" height="' + metadata.height + '">'
 	}
 
-	getForm(instance, data, options) {
-		let v = instance && instance[this.name] ? instance[this.name] : '{}';
-		let metadata = JSON.parse(v);
-		let thumb = '';
+	getForm (instance, data, options) {
+		const metadata = toJSONObject(instance ? instance[this.name] : null)
+
+		let thumb = ''
 		if (metadata.filename) {
-			thumb = '<img src="' + UPLOAD_URI_PREFIX + '/' + metadata.filename + '" width="' + metadata.width + '" height="' + metadata.height + '">';
+			thumb = '<img src="' + UPLOAD_URI_PREFIX + '/' + metadata.filename + '" width="' + metadata.width + '" height="' + metadata.height + '">'
 		}
 		return pug.renderFile(viewsPath + '/admin/type-image.pug', {
 			columnName: this.name,
@@ -1255,32 +1270,32 @@ class adminImageColumn extends adminUploadableColumn {
 			heightName: this.table.name + '[' + this.name + '_height]',
 			options: this.options,
 			related: this.related,
-			value: v,
+			value: toJSONString(metadata),
 			metadata: metadata,
 			thumb: thumb
-		});
+		})
 	}
 }
 
 class adminBinaryColumn extends adminUploadableColumn {
-	constructor(table, name, options) {
-		super(table, name, options);
+	constructor (table, name, options) {
+		super(table, name, options)
 	}
 }
 
 class adminReferenceColumn extends adminColumn {
-	constructor(table, name, options) {
-		super(table, name, options);
-		this.getValueProducesMarkup = true;
+	constructor (table, name, options) {
+		super(table, name, options)
+		this.getValueProducesMarkup = true
 	}
 
-	resolve(instance, data, cb) {
+	resolve (instance, data, cb) {
 		if (!instance) {
-			return cb();
+			return cb()
 		}
 
 		if (!instance[this.name]) {
-			return cb();
+			return cb()
 		}
 
 		this.table.app.db.getInstances(this.options.references.model, {
@@ -1289,30 +1304,30 @@ class adminReferenceColumn extends adminColumn {
 			}
 		}, (err, related) => {
 			if (err) {
-				return cb(err);
+				return cb(err)
 			}
 
-			data.value = related[0][adminTables[this.options.references.model].options.defaultColumn];
-			cb();
-		});
+			data.value = related[0][adminTables[this.options.references.model].options.defaultColumn]
+			cb()
+		})
 	}
 
-	prepare(instance, data, cb) {
-		let query = _.has(this, 'options.selectRelated') ? this.options.selectRelated : {};
+	prepare (instance, data, cb) {
+		const query = _.has(this, 'options.selectRelated') ? this.options.selectRelated : {}
 
 		this.table.app.db.getInstances(this.options.references.model, query, (err, related) => {
 			if (err) {
-				cb(new VError(err, 'Could not build form for column'));
+				cb(new VError(err, 'Could not build form for column'))
 			}
 
-			data.related = related;
+			data.related = related
 			cb()
-		});
+		})
 	}
 
-	getForm(instance, data, options) {
-		let relAdmin = adminTables[this.options.references.model]
-		let defaultColumn = relAdmin.options.defaultColumn
+	getForm (instance, data, options) {
+		const relAdmin = adminTables[this.options.references.model]
+		const defaultColumn = relAdmin.options.defaultColumn
 
 		return pug.renderFile(viewsPath + '/admin/type-related.pug', {
 			name: this.table.name + '[' + this.name + ']',
@@ -1320,123 +1335,148 @@ class adminReferenceColumn extends adminColumn {
 			options: this.options,
 			related: data.related,
 			defaultColumn: defaultColumn
-		});
+		})
 	}
 
-	getDisplayValue(instance, data, options) {
+	getDisplayValue (instance, data, options) {
 		if (!instance) {
-			return '';
+			return ''
 		}
 
 		if (!instance[this.name]) {
-			return '';
+			return ''
 		}
 
-		return '<a href="' + MOUNTPOINT + '/' + this.options.references.model + '/' + instance[this.name] + '">' + data.value + '</a>';
+		return '<a href="' + MOUNTPOINT + '/' + this.options.references.model + '/' + instance[this.name] + '">' + data.value + '</a>'
 	}
 }
 
 class adminTextColumn extends adminColumn {
-
-	constructor(table, name, options) {
-		super(table, name, options);
+	constructor (table, name, options) {
+		super(table, name, options)
 	}
 
 	// default input is type="text"
-	getForm(instance, data, options) {
+	getForm (instance, data, options) {
 		return pug.renderFile(viewsPath + '/admin/type-input.pug', {
 			name: this.table.name + '[' + this.name + ']',
 			value: instance ? instance[this.name] : '',
 			options: this.options
-		});
+		})
 	}
 }
 
 class adminTextAreaColumn extends adminColumn {
-	constructor(table, name, options) {
-		super(table, name, options);
+	constructor (table, name, options) {
+		super(table, name, options)
 	}
 
-	getForm(instance, data, options) {
+	getForm (instance, data, options) {
 		return pug.renderFile(viewsPath + '/admin/type-textarea.pug', {
 			name: this.table.name + '[' + this.name + ']',
 			value: instance ? instance[this.name] : '',
 			options: this.options
-		});
+		})
+	}
+}
+
+class adminJSONColumn extends adminColumn {
+	constructor (table, name, options) {
+		super(table, name, options)
+		this.getValueProducesMarkup = true
+	}
+
+	getForm (instance, data, options) {
+		const val = toJSONString(instance ? instance[this.name] : null)
+		return pug.renderFile(viewsPath + '/admin/type-textarea.pug', {
+			name: this.table.name + '[' + this.name + ']',
+			value: val,
+			options: this.options
+		})
+	}
+
+	handleUpdate (instance, input, dirty, done) {
+		const val = toJSONObject(input[this.name])
+		dirty[this.name] = val
+		return done()
+	}
+
+	getDisplayValue (instance, data, options) {
+		const val = toJSONString(instance[this.name])
+		return '<pre>' + val + '</pre>'
 	}
 }
 
 class adminMarkdownColumn extends adminColumn {
-	constructor(table, name, options) {
-		super(table, name, options);
-		this.getValueProducesMarkup = true;
+	constructor (table, name, options) {
+		super(table, name, options)
+		this.getValueProducesMarkup = true
 	}
 
-	getDisplayValue(instance, data, options) {
-		let md = new MarkdownIt();
-		return md.render(instance[this.name] ? instance[this.name] : "");
+	getDisplayValue (instance, data, options) {
+		const md = new MarkdownIt()
+		return md.render(instance[this.name] ? instance[this.name] : '')
 	};
 
-	getForm(instance, data, options) {
+	getForm (instance, data, options) {
 		return pug.renderFile(viewsPath + '/admin/type-markdown.pug', {
 			name: this.table.name + '[' + this.name + ']',
 			value: instance ? instance[this.name] : '',
 			options: this.options
-		});
+		})
 	}
 }
 
 class adminCheckboxColumn extends adminColumn {
-	constructor(table, name, options) {
-		super(table, name, options);
+	constructor (table, name, options) {
+		super(table, name, options)
 	}
 
-	getForm(instance, data, options) {
+	getForm (instance, data, options) {
 		return pug.renderFile(viewsPath + '/admin/type-checkbox.pug', {
 			name: this.table.name + '[' + this.name + ']',
 			value: instance ? instance[this.name] : '',
 			options: this.options
-		});
+		})
 	}
 }
 
 class adminJoin extends adminColumn {
-
-	constructor(table, name, options) {
-		super(table, name, options);
+	constructor (table, name, options) {
+		super(table, name, options)
 	}
 
-	getAdditionalPayloadProperties() {
-		let props = super.getAdditionalPayloadProperties();
+	getAdditionalPayloadProperties () {
+		const props = super.getAdditionalPayloadProperties()
 		props.push(this.name + '_selected')
-		return props;
+		return props
 	}
 
 	// get list of selectable options
-	prepare(instance, data, cb) {
-		let query = _.has(this, 'options.selectRelated') ? this.options.selectRelated : {};
+	prepare (instance, data, cb) {
+		const query = _.has(this, 'options.selectRelated') ? this.options.selectRelated : {}
 
 		this.table.app.db.getInstances(this.options.table, query, (err, related) => {
 			if (err) {
-				cb(new VError(err, 'Could not build form for column'));
+				cb(new VError(err, 'Could not build form for column'))
 			}
 
-			data.related = related;
+			data.related = related
 			cb()
-		});
+		})
 	}
 
 	// present the UI for editing ManyThrough relationships
-	getForm(instance, data, options) {
+	getForm (instance, data, options) {
 		var selectedRows = []
 		if (options.resolved) {
 			for (let i = 0; i < options.resolved.rows.length; i++) {
-				selectedRows.push(options.resolved.rows[i].id);
+				selectedRows.push(options.resolved.rows[i].id)
 			}
 		}
 
-		let relAdmin = adminTables[this.options.table]
-		let defaultColumn = relAdmin.options.defaultColumn
+		const relAdmin = adminTables[this.options.table]
+		const defaultColumn = relAdmin.options.defaultColumn
 
 		return pug.renderFile(viewsPath + '/admin/type-many-through.pug', {
 			name: this.table.name + '[' + this.name + '_selected]',
@@ -1444,20 +1484,20 @@ class adminJoin extends adminColumn {
 			related: data.related,
 			selectedRows: selectedRows,
 			defaultColumn: defaultColumn
-		});
+		})
 	}
 
 	// process input from edit UI
-	handleUpdate(instance, input, dirty, done) {
+	handleUpdate (instance, input, dirty, done) {
 		if (!input[this.name + '_selected']) {
-			return done(null, dirty);
+			return done(null, dirty)
 		}
-		var selected = input[this.name + '_selected'].split(',');
+		var selected = input[this.name + '_selected'].split(',')
 		instance[this.options.accessors.set](selected)
 			.then(() => {
 				done(null, dirty)
 			}).catch((err) => {
-				done(err);
+				done(err)
 			})
 	}
 }
@@ -1470,11 +1510,12 @@ var classes = {
 	image: adminImageColumn,
 	binary: adminBinaryColumn,
 	checkbox: adminCheckboxColumn,
+	JSON: adminJSONColumn,
 	adminJoin: adminJoin
 }
 
-function getAdmin(table) {
-	return adminTables[table];
+function getAdmin (table) {
+	return adminTables[table]
 }
 
 module.exports = {

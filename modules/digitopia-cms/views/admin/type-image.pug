@@ -9,11 +9,11 @@
 			
 		input(type="hidden" data-name= columnName name= name value= value)
 		input(type="hidden" data-name= columnName + '-upload' name= uploadName)
-		input(type="hidden" data-name=columnName + '-width' name= widthName)
-		input(type="hidden" data-name=columnName + '-height' name= heightName)
-		label.file-upload-label(for=columnName)
+		input(type="hidden" data-name= columnName + '-width' name= widthName)
+		input(type="hidden" data-name= columnName + '-height' name= heightName)
+		label.file-upload-label(for= columnName)
 			i.material-icons cloud_upload
 			!= '&nbsp;&nbsp;Choose file to upload'
-		input.uploadable-input(id=columnName data-column-name= columnName data-jsclass="uploadableImage" data-target='[data-name=' + columnName + '-upload]' data-send-resized=(options.sendResized ? 'true': 'false') data-max-width=options.maxWidth data-max-height=options.maxHeight type="file" name= name + '-uploadable' accept= options.accepts)
+		input.uploadable-input(id= columnName data-column-name= columnName data-jsclass="uploadableImage" data-target='[data-name=' + columnName + '-upload]' data-send-resized=(options.sendResized ? 'true': 'false') data-max-width=options.maxWidth data-max-height=options.maxHeight type="file" name= name + '-uploadable' accept= options.accepts)
 		.input-ok-indicator.material-icons check_circle
 		.validation-help

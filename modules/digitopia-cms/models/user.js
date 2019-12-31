@@ -1,8 +1,7 @@
-const debug = require('debug')('antisocial-db');
-const Sequelize = require('sequelize');
+const debug = require('debug')('antisocial-db')
+const Sequelize = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
-
 	const User = sequelize.define('User', {
 		id: {
 			type: Sequelize.INTEGER,
@@ -37,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		},
 		profilePhoto: {
-			type: Sequelize.STRING(512),
+			type: Sequelize.JSON,
 			allowNull: true,
 			ADMIN: {
 				inputType: 'image',
@@ -81,17 +80,17 @@ module.exports = (sequelize, DataTypes) => {
 				actions: ['view', 'edit', 'delete']
 			}]
 		}
-	});
+	})
 
 	User.associate = function (models) {
 		User.hasMany(models.Token, {
 			foreignKey: 'userId'
-		});
+		})
 		User.belongsToMany(models.Role, {
 			through: 'UserRole',
 			foreignKey: 'userId'
-		});
-	};
+		})
+	}
 
-	return User;
-};
+	return User
+}
