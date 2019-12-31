@@ -51,6 +51,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		boolean: {
 			type: Sequelize.BOOLEAN
+		},
+		dateColumn: {
+			type: Sequelize.DATE
 		}
 	}, {
 		ADMIN: {

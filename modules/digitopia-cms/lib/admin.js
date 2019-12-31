@@ -78,6 +78,7 @@ const Op = require('sequelize').Op
 const MarkdownIt = require('markdown-it')
 const uuid = require('uuid')
 const dns = require('dns')
+const moment = require('moment')
 
 const {
 	validatePayload, sanitizePayload
@@ -1360,9 +1361,13 @@ class adminTextColumn extends adminColumn {
 
 	// default input is type="text"
 	getForm (instance, data, options) {
+		let value = instance ? instance[this.name] : ''
+		if (this.options.inputHTMLType === 'date') {
+			value = moment(value).format('YYYY-MM-DD')
+		}
 		return pug.renderFile(viewsPath + '/admin/type-input.pug', {
 			name: this.table.name + '[' + this.name + ']',
-			value: instance ? instance[this.name] : '',
+			value: value,
 			options: this.options
 		})
 	}
