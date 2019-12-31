@@ -108,12 +108,12 @@ module.exports = function (app) {
 			directives: {
 				defaultSrc: ['\'self\''],
 				'connect-src': ['\'self\''],
-				scriptSrc: ['\'self\'', 'js.stripe.com', '\'unsafe-eval\'', function (req, res) {
+				scriptSrc: ['\'self\'', '\'unsafe-eval\'', function (req, res) {
 					return '\'nonce-' + app.locals.nonce + '\''
 				}],
-				fontSrc: ['\'self\'', 'fonts.gstatic.com'],
-				styleSrc: ['\'self\'', 'fonts.googleapis.com', '\'unsafe-inline\''],
-				frameSrc: ['\'self\'', 'js.stripe.com'],
+				fontSrc: ['\'self\''],
+				styleSrc: ['\'self\'', '\'unsafe-inline\''],
+				frameSrc: ['\'self\'', 'js.stripe.com', 'www.google.com'],
 				mediaSrc: ['\'self\''],
 				imgSrc: ['\'self\'', 'data:'],
 				sandbox: ['allow-forms', 'allow-scripts', 'allow-same-origin', 'allow-modals'],

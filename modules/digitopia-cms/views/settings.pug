@@ -21,6 +21,7 @@ block content
 
 			a.mdc-list-item(href="/users/password-change") Change Password
 
-			a.mdc-list-item(href="/users/subscription") Subscription
+			if publicOptions.STRIPE_PUBLIC
+				a.mdc-list-item(href="/users/subscription") Subscription
 
 			a.nav-item.mdc-list-item(href="#" data-jsclass="ajaxButton" data-endpoint="/api/users/delete" data-method="delete" data-confirm="#confirm-dialog" data-confirm-prompt="Delete your account?" data-no-hijax="true" data-redirect="/") Delete Account (Warning: can not be undone!)
