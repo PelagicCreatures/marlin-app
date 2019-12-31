@@ -4,7 +4,7 @@ block content
 	.reg-form-container.centered
 		h2 <i class="material-icons">person_add</i>  User Registration 
 	
-		form.form.form-validation(action="/api/users/register" method="PUT" data-jsclass="formValidator,formController" data-submitter="#submitter")
+		form.form.form-validation(action="/api/users/register" method="PUT" data-jsclass="formValidator,formController" data-submitter="#submitter" data-recaptcha= publicOptions.RECAPTCHA_PUBLIC)
 			input(type="hidden" name="_csrf" value= csrfToken)
 				
 			.reg-form.clear-fix.mdc-elevation--z1

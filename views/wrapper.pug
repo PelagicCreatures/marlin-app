@@ -65,11 +65,11 @@ html
     
     if publicOptions.STRIPE_PUBLIC
       // stripe for subscriptions
-      script(src="https://js.stripe.com/v3/")
+      script(nonce= nonce src="https://js.stripe.com/v3/")
       
     if publicOptions.RECAPTCHA_PUBLIC
       // CAPTCHA for forms
-      script(src="https://www.google.com/recaptcha/api.js?render=" + publicOptions.RECAPTCHA_PUBLIC)
+      script(nonce= nonce src="https://www.google.com/recaptcha/api.js?render=" + publicOptions.RECAPTCHA_PUBLIC)
     
     if env === 'production'
       script(src="/dist/js/userapp.min.js")
