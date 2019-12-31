@@ -1236,7 +1236,7 @@ class adminImageColumn extends adminUploadableColumn {
 				return done(new VError(err, 'image upload failed'))
 			}
 
-			const meta = toJSONObject(dirty[this.name])
+			const meta = dirty[this.name]
 
 			meta.width = input[this.name + '_width']
 			meta.height = input[this.name + '_height']
