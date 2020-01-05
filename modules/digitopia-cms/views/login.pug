@@ -4,7 +4,7 @@ block content
 	.reg-form-container.centered
 		h2 <i class="material-icons">person</i>  User Login 
 		
-		form.form.form-validation(action="/api/users/login" method="PUT" data-jsclass="formValidator,formController" data-submitter="#submitter")
+		form.form.form-validation(action="/api/users/login" method="PUT" data-responsive-class="formValidator,formController" data-submitter="#submitter")
 			input(type="hidden" name="_csrf" value= csrfToken)
 
 			.reg-form.clear-fix.mdc-elevation--z1

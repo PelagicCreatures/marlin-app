@@ -2,12 +2,39 @@ import * as MDC from './MDC'
 import $ from 'jquery'
 import Cookies from 'js-cookie'
 
+import {
+	bootResponsive
+}
+	from '../../../responsive'
+
 var MDCInstanciateOnce = 0
 var flashTimer = null
 var snackBar, linearProgress
 var linearProgressTimer = null
 
+let loadPage, reloadPage
+
 const boot = () => {
+	loadPage = bootResponsive({
+		hijax: {
+			onError: (level, message) => {
+				flashAjaxStatus(level, message)
+			},
+			onLoading: function () {
+				progressBar(this.readyState !== 4)
+			},
+			onExitPage: () => {},
+			onEnterPage: () => {
+				checkSubscription()
+				instantiateMaterialDesignElements($('body'))
+			}
+		}
+	})
+
+	reloadPage = (url) => {
+		loadPage(url, true)
+	}
+
 	// set up digitopia framework for HIJAX
 	var options = {
 		coverResize: false,
@@ -28,7 +55,7 @@ const boot = () => {
 			}]
 		},
 		hijax: {
-			enabled: true,
+			enabled: false,
 			disableScrollAnimation: true
 		},
 		cookieDomain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : null
@@ -227,16 +254,6 @@ var progressBar = (show) => {
 			linearProgress.close()
 		}
 	}
-}
-
-// load a page programatically
-const loadPage = (href) => {
-	$('body').trigger('DigitopiaLoadPage', href)
-}
-
-// reload current page programatically
-const reloadPage = () => {
-	$('body').trigger('DigitopiaReloadPage')
 }
 
 /*
