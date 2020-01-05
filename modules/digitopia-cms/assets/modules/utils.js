@@ -7,6 +7,11 @@ import {
 }
 	from '../../../responsive'
 
+import {
+	digitopiaAnalytics
+}
+	from './digitopia-analytics.js'
+
 var MDCInstanciateOnce = 0
 var flashTimer = null
 var snackBar, linearProgress
@@ -64,14 +69,13 @@ const boot = () => {
 	$('body').digitopiaController(options)
 
 	if (publicOptions.USER_BEHAVIOR) {
-		$('body').digitopiaAnalytics(publicOptions.USER_BEHAVIOR)
+		const anal = new digitopiaAnalytics(document.body, publicOptions.USER_BEHAVIOR)
 	}
 
 	// Things to do when HIJAX loads a new page
 	$('body').on('DigitopiaDidLoadNewPage', function (e) {
 		if (e.target === this) {
 			checkSubscription()
-
 			instantiateMaterialDesignElements($('body'))
 		}
 	})

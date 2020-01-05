@@ -1,114 +1,114 @@
-import $ from "jquery";
+import $ from 'jquery'
+
 import {
-	GetJQueryPlugin
+	ResponsiveElement, registerClass
 }
-from '../../../digitopia/js/controller.js';
+	from '../../../responsive/lib/ResponsiveElement'
 
-import * as Utils from './utils';
-import * as MDC from './MDC';
+import * as Utils from './utils'
+import * as MDC from './MDC'
 
-function ajaxButton(elem, options) {
-	this.element = $(elem);
-	var self = this;
-	self.endpoint = self.element.data('endpoint');
-	self.redirect = self.element.data('redirect') ? self.element.data('redirect') : '/users/home';
-	self.method = self.element.data('method') ? self.element.data('method') : 'POST';
-	self.confirm = self.element.data('confirm') ? self.element.data('confirm') : false;
-	self.confirmPrompt = self.element.data('confirm-prompt') ? self.element.data('confirm-prompt') : 'Are you sure?';
-	self.start = function () {
-		self.element.on('click', function (e) {
-			e.preventDefault();
+class ajaxButton extends ResponsiveElement {
+	constructor (elem, options) {
+		super(elem, options)
 
-			if (self.confirm) {
-				let html = confirmDialogTemplate({
+		this.jqElement = $(elem)
+		this.endpoint = this.jqElement.data('endpoint')
+		this.redirect = this.jqElement.data('redirect') ? this.jqElement.data('redirect') : '/users/home'
+		this.method = this.jqElement.data('method') ? this.jqElement.data('method') : 'POST'
+		this.confirm = this.jqElement.data('confirm') ? this.jqElement.data('confirm') : false
+		this.confirmPrompt = this.jqElement.data('confirm-prompt') ? this.jqElement.data('confirm-prompt') : 'Are you sure?'
+	}
+
+	start () {
+		super.start()
+		this.jqElement.on('click', (e) => {
+			e.preventDefault()
+
+			if (this.confirm) {
+				const html = confirmDialogTemplate({
 					title: 'Please Confirm',
-					prompt: self.confirmPrompt
-				});
+					prompt: this.confirmPrompt
+				})
 
-				$('#ephemeral').append($(html));
+				$('#ephemeral').append($(html))
 
-				let dialog = MDC.MDCDialog.attachTo(document.querySelector(self.confirm));
-				$(self.confirm).data('mdc-dialog', dialog);
+				const dialog = MDC.MDCDialog.attachTo(document.querySelector(this.confirm))
+				$(this.confirm).data('mdc-dialog', dialog)
 
-				dialog.listen('MDCDialog:closed', function (e) {
-					$('body').removeClass('modal-open');
+				dialog.listen('MDCDialog:closed', (e) => {
+					$('body').removeClass('modal-open')
 					if (e.detail.action === 'accept') {
-						self.doIt();
+						this.doIt()
 					}
 
-					dialog.destroy();
-					$('#ephemeral').empty();
-				});
-				$('body').addClass('modal-open');
-				dialog.open();
+					dialog.destroy()
+					$('#ephemeral').empty()
+				})
+				$('body').addClass('modal-open')
+				dialog.open()
+			} else {
+				this.doIt()
 			}
-			else {
-				self.doIt();
-			}
-		});
+		})
 	};
 
-	self.stop = function () {
-		self.element.off('click');
+	sleep () {
+		this.element.off('click')
 	};
 
-	self.doIt = function () {
+	doIt () {
 		$.ajax({
-				'method': self.method,
-				'url': self.endpoint,
-				'headers': {
-					'x-digitopia-hijax': 'true'
-				}
-			})
-			.done(function (data, textStatus, jqXHR) {
-				var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel;
-				var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage;
-				var loggedIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didLogin;
-				var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout;
+			method: this.method,
+			url: this.endpoint,
+			headers: {
+				'x-digitopia-hijax': 'true'
+			}
+		}).done((data, textStatus, jqXHR) => {
+			var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel
+			var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage
+			var loggedIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didLogin
+			var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout
 
-				if (loggedIn) {
-					Utils.didLogIn();
-				}
+			if (loggedIn) {
+				Utils.didLogIn()
+			}
 
-				if (loggedOut) {
-					Utils.didLogOut();
-				}
+			if (loggedOut) {
+				Utils.didLogOut()
+			}
 
-				if (data.status === 'ok') {
-					Utils.flashAjaxStatus('success', flashMessage);
-					if (self.redirect === location.pathname) {
-						Utils.reloadPage();
-					}
-					else {
-						Utils.loadPage(self.redirect);
-					}
+			if (data.status === 'ok') {
+				Utils.flashAjaxStatus('success', flashMessage)
+				if (this.redirect === location.pathname) {
+					Utils.reloadPage()
+				} else {
+					Utils.loadPage(this.redirect)
 				}
-				else {
-					Utils.flashAjaxStatus(flashLevel, flashMessage);
-				}
-			})
-			.fail(function (jqXHR, textStatus, errorThrown) {
-				var message = errorThrown;
-				if (jqXHR.responseJSON) {
-					if (jqXHR.responseJSON.errors) {
-						message = '';
-						for (var i = 0; i < jqXHR.responseJSON.errors.length; i++) {
-							if (message) {
-								message += ', ';
-							}
-							message += jqXHR.responseJSON.errors[i];
+			} else {
+				Utils.flashAjaxStatus(flashLevel, flashMessage)
+			}
+		}).fail((jqXHR, textStatus, errorThrown) => {
+			var message = errorThrown
+			if (jqXHR.responseJSON) {
+				if (jqXHR.responseJSON.errors) {
+					message = ''
+					for (var i = 0; i < jqXHR.responseJSON.errors.length; i++) {
+						if (message) {
+							message += ', '
 						}
+						message += jqXHR.responseJSON.errors[i]
 					}
-					else {
-						message = jqXHR.responseJSON.status;
-					}
+				} else {
+					message = jqXHR.responseJSON.status
 				}
-				Utils.flashAjaxStatus('error', message);
-			});
+			}
+			Utils.flashAjaxStatus('error', message)
+		})
 	};
 };
 
-$.fn.ajaxButton = GetJQueryPlugin('ajaxButton', ajaxButton);
+registerClass('ajaxButton', ajaxButton)
 
 export {
 	ajaxButton

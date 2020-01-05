@@ -26,5 +26,5 @@ block content
 							li!= currentToken === token.token ? '<i class="material-icons">check</i>' : ''
 							li
 								if currentToken !== token.token
-									a(href="#" data-jsclass="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Delete login?" data-endpoint='/api/users/token-delete?token='+token.id data-method="DELETE" data-no-hijax="true" data-redirect="/users/tokens")
+									a(href="#" data-responsive-class="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Delete login?" data-endpoint='/api/users/token-delete?token='+token.id data-method="DELETE" data-no-hijax="true" data-redirect="/users/tokens")
 										<i class="material-icons">delete</i>

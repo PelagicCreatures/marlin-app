@@ -65,11 +65,11 @@ class ResponsiveElement {
 		}
 	}
 
-	notifyElement (element, event) {
+	notifyElement (element, event, params) {
 		for (let i = 0; i < this.element.registeredResponsiveControllers.length; i++) {
 			const peer = this.element.registeredResponsiveControllers[i]
 			if (peer[event]) {
-				peer[event]()
+				peer[event].apply(peer, params)
 			}
 		}
 	}
@@ -194,6 +194,8 @@ class ResponsiveElement {
 	enterFullscreen () {}
 
 	exitFullscreen () {}
+
+	newPage (oldPath, newPath) {}
 
 	// utilities
 

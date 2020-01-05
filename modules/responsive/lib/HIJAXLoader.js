@@ -41,14 +41,14 @@ class HijaxLoader extends ResponsiveElement {
 				link.setAttribute('data-hijaxed', true)
 				link.addEventListener('click', (e) => {
 					e.preventDefault()
-					history.pushState(null, null, href)
-					this.watchPopState()
+					this.setPage(href)
 				}, false)
 			}
 		}
 	}
 
 	setPage (url) {
+		this.notifyElement(document.body, document.location, url)
 		history.pushState(null, null, url)
 		this.watchPopState()
 	}
@@ -63,8 +63,7 @@ class HijaxLoader extends ResponsiveElement {
 		xhr.onload = () => {
 			if (xhr.status === 301 || xhr.status === 302 || xhr.getResponseHeader('x-digitopia-hijax-location')) {
 				var location = xhr.getResponseHeader('x-digitopia-hijax-location')
-				history.pushState(null, null, location)
-				this.watchPopState()
+				this.setPage(location)
 			} else if (xhr.status === 200) {
 				scrollTo(0, 0)
 				this.mergePage(xhr.responseText)
