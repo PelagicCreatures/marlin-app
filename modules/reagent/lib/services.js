@@ -168,14 +168,14 @@ class OrientationWatcher extends ObserverSubscriptionManager {
 	wakeup () {
 		super.wakeup()
 		if ('onorientationchange' in window) {
-			window.addEventListener('onorientationchange', this.debounce, false)
+			window.addEventListener('orientationchange', this.debounce, false)
 		}
 	}
 
 	sleep () {
 		super.sleep()
 		if ('onorientationchange' in window) {
-			window.removeEventListener('onorientationchange', this.debounce)
+			window.removeEventListener('orientationchange', this.debounce)
 		}
 	}
 
