@@ -42,6 +42,7 @@ class ReagentSupervisor extends Reagent {
 	}
 
 	DOMChanged () {
+		super.DOMChanged()
 		const elements = document.querySelectorAll('[data-responsive-class]')
 		for (const element of elements) {
 			this.instantiate(element)

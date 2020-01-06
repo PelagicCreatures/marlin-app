@@ -31,7 +31,7 @@ class digitopiaAnalytics extends Reagent {
 		this.send('pageview', oldPath, newPath)
 	}
 
-	watchScale (scale) {
+	didBreakpoint (scale) {
 		this.scale = scale
 	}
 

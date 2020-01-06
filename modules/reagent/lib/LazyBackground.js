@@ -39,6 +39,7 @@ class LazyBackground extends Reagent {
 	}
 
 	enterViewport () {
+		super.enterViewport()
 		const frame = () => {
 			this.element.style.backgroundImage = 'url(' + this.element.getAttribute('data-src') + ')'
 			this.destroy() // we're done. That was easy.

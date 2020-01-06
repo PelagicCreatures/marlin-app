@@ -61,11 +61,8 @@ class Breakpoints extends Reagent {
 		this.detectGeometry()
 	};
 
-	sleep () {
-		super.sleep()
-	};
-
 	didResize () {
+		super.didResize()
 		this.detectGeometry()
 	}
 

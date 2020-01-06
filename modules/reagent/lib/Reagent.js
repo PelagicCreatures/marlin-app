@@ -29,6 +29,11 @@ const registerClass = (className, object) => {
 	registeredClasses[className] = object
 }
 
+const tracing = true
+const trace = (obj, message) => {
+	console.log(obj.constructor.name, obj.uid, message)
+}
+
 class Reagent {
 	constructor (element, options = {}) {
 		this.uid = ++unique
@@ -48,6 +53,8 @@ class Reagent {
 	}
 
 	start () {
+		if (tracing) trace(this, 'start')
+
 		if (this.options.watchDOM) {
 			theDOMWatcher.subscribe(this)
 		}
@@ -128,6 +135,8 @@ class Reagent {
 	}
 
 	destroy () {
+		if (tracing) trace(this, 'destroy')
+
 		this.flushQueue()
 
 		this.sleep()
@@ -190,22 +199,31 @@ class Reagent {
 
 	// Override these methods in your subclass to take action on these events
 
+	// something changed on the page
 	DOMChanged () {}
 
+	// scroll occured
 	didScroll () {}
 
+	// resize occured
 	didResize () {}
 
+	// new breakpoint
 	didBreakpoint () {}
 
+	// element entered the viewport
 	enterViewport () {}
 
+	// element exited the viewport
 	exitViewport () {}
 
+	// element entered fullscreen
 	enterFullscreen () {}
 
+	// element exited fullscreen
 	exitFullscreen () {}
 
+	// page changed
 	newPage (oldPath, newPath) {}
 
 	// utilities

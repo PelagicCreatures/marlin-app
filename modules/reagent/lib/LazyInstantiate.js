@@ -25,10 +25,12 @@ class LazyInstantiate extends Reagent {
 	}
 
 	didResize () {
+		super.didResize()
 		this.lazyHandler()
 	}
 
 	didScroll () {
+		super.didScroll()
 		this.lazyHandler()
 	}
 

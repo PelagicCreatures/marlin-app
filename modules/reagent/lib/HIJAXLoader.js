@@ -48,7 +48,7 @@ class HijaxLoader extends Reagent {
 	}
 
 	setPage (url) {
-		this.notifyAll(document.body, 'newPage', [location.pathname + location.search, url])
+		this.notifyAll('newPage', [location.pathname + location.search, url])
 		history.pushState(null, null, url)
 		this.watchPopState()
 	}
