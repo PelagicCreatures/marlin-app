@@ -22,8 +22,7 @@
 	content changes using the browser's animation frame event loop resulting
 	in smooth page updates.
 
-	There are many older frameworks that implement some of this functionality
-	but this one uses the advanced features of modern browsers to maximum effect.
+	This framework uses the advanced features of modern browsers to maximum effect.
 
 	Using these classes:
 	-------------------
