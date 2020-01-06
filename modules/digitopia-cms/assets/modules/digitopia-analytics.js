@@ -23,21 +23,16 @@ class digitopiaAnalytics extends ResponsiveElement {
 	}
 
 	start () {
-		this.element.on('DigitopiaScaleChanged', (e, scale) => {
-			if (e.target === this) {
-				this.scale = scale
-			}
-		})
-
+		super.start()
 		this.send('pageview', '', location.pathname + location.search)
-	}
-
-	stop () {
-		this.element.off('DigitopiaScaleChanged')
 	}
 
 	newPage (oldPath, newPath) {
 		this.send('pageview', oldPath, newPath)
+	}
+
+	watchScale (scale) {
+		this.scale = scale
 	}
 
 	send (type, oldPath, path) {
