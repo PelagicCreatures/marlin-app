@@ -1,10 +1,11 @@
 /*
-	Shared event watchers used by Reagent
-	when these have subscribers they watch for events
-	and notify hte subscriber's specific event handler
+	Shared event observers used by Reagent classes.
+
+	When these observers have subscribers they watch for events
+	and notify the subscriber's specific event handler
 	method when they occur.
 
-	Subscribers to these services must define handler methods
+	Subscribers to these services must imlement handler methods
 	EG. watchDOM, watchScroll, watchResize, watchOrientation
 */
 

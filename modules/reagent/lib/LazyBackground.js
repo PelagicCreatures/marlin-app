@@ -1,11 +1,13 @@
 /*
-	Responsive images impelmented as a background-image which always
+	LazyBackground
+
+	Reagent class that impelments lazy loaded images using background-image which always
 	fits image within its container's dimensions
 
 	The image is not loaded until visible in viewport
 
 	<div class="my-container">
-		div class="my-responsive-image" data-responsive-class="LazyBackground" data-src="/path-to-image.jpg"></div>
+		div class="my-responsive-image" data-reagent-class="LazyBackground" data-src="/path-to-image.jpg"></div>
 	</div>
 
 	.my-container { width: 30vw; height: 30vh; }

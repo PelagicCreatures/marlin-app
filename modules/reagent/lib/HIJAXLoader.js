@@ -1,3 +1,11 @@
+/**
+	HijaxLoader
+
+	Reagent class that captures links on the page and loads pages
+	using AJAX only replacing elements on the page that are marked
+	with data-hijax attributes.
+**/
+
 import {
 	Reagent, registerReagentClass
 }

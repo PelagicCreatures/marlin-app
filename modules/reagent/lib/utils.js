@@ -1,3 +1,7 @@
+/**
+	Utility routines for Reagent classes
+**/
+
 const _hasClass = (element, cssClass) => {
 	const className = element.className || ''
 	const classes = className.split(' ')

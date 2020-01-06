@@ -1,7 +1,7 @@
 /**
 	Reagent
 
-	Base class for responsive element controllers. Subclass this to
+	Base class for responsive Reagent element controllers. Subclass this to
 	define specific behavior. If you mutate the DOM in your code you
 	should use frames for best results. EG. LazyBackground
 **/

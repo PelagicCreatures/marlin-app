@@ -1,18 +1,32 @@
 /*
 	Reagent
 
-	Simple, Fast, Reactive Javascript controllers for html elements.
+	Simple, Fast, Reactive, supervised Javascript controllers for html elements.
 
-	* @author Michael Rhodes 🐡 (except where noted)
+	* @author Michael Rhodes (except where noted)
 	* @license MIT
-	* Made in Barbados 🇧🇧, © 2020 by Michael Rhodes
+	* Made in Barbados 🇧🇧
 
-	Sometime HTML element need a nervous system. The classic example is lazy
-	loaded images but many things are possible once DOM elements are coupled
-	with Reagent classes.
+	Sometimes HTML elements need a nervous system - many things are possible
+	once DOM elements are coupled with Reagent classes – Lazy Loading,
+	size appropriate images and content, parallax scrolling effects, form
+	validators, API endpoint controllers to name a few.
 
-	Booting this library:
-	---------------------
+	This framework implements a sophisticated HIJAX page loading scheme
+	which supports deep linking and lighning fast page loads where only
+	only content areas are updated between pages leaving css, js and wrapper
+	elementes intact.
+
+	Performance is optimized with shared event listeners which are fully
+	debounced during large updates and services are provided to schedule
+	content changes using the browser's animation frame event loop resulting
+	in smooth page updates.
+
+	There are many older frameworks that implement some of this functionality
+	but this one uses the advanced features of modern browsers to maximum effect.
+
+	Using these classes:
+	-------------------
 	import {
 		bootReagent
 	} from './modules/reagent'
@@ -27,15 +41,15 @@
 	}
 	bootReagent(options)
 
-	ReagentSupervisor watches the DOM for any elements with 'data-responsive-class'
+	ReagentSupervisor watches the DOM for any elements with 'data-reagent-class'
 	and instantiates the object, hooking up the appropriate observers. It also destroys
 	any dangling objects when the underlying element is removed from the DOM.
 
-	<div data-responsive-class="mySubclass"></div>
+	<div data-reagent-class="mySubclass"></div>
 
 	You can also defer the instantiation using the lazy method:
 
-	<div data-lazy-responsive-class="mySubclass"></div>
+	<div data-lazy-reagent-class="mySubclass"></div>
 
 	Defining SubClasses:
 	--------------------
@@ -85,6 +99,29 @@
 			this.queueFrame(frame)
 		}
 	}
+
+	---
+
+	Copyright 2020 Michael Rhodes
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is furnished
+	to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+	FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	---
 */
 
 import {

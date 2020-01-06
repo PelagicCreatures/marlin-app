@@ -1,9 +1,10 @@
 /**
 	ReagentSupervisor
 
-	Watch the document for new content and instantiate class in
-	data-responsive-class as needed skipping elements with class
-	lazy-instantiate-responsive (those are handled by LazyInstantiate)
+	Reagent class which watches the document for new content and instantiates
+	Reagent classes liested in element's data-reagent-class attribute.
+	Once instantiated, Reagent objects are trash collected when element is
+	removed from the DOM
 **/
 
 import {
@@ -32,18 +33,18 @@ class ReagentSupervisor extends Reagent {
 	}
 
 	instantiate (element) {
-		const cls = element.getAttribute('data-responsive-class').split(/\s*,\s*/)
+		const cls = element.getAttribute('data-reagent-class').split(/\s*,\s*/)
 		for (let i = 0; i < cls.length; i++) {
 			const thing = new registeredClasses[cls[i]](element)
 			thing.start()
 		}
 
-		element.removeAttribute('data-responsive-class')
+		element.removeAttribute('data-reagent-class')
 	}
 
 	DOMChanged () {
 		super.DOMChanged()
-		const elements = document.querySelectorAll('[data-responsive-class]')
+		const elements = document.querySelectorAll('[data-reagent-class]')
 		for (const element of elements) {
 			this.instantiate(element)
 		}

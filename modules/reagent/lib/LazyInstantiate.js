@@ -1,8 +1,9 @@
 /**
 	LazyInstantiate
 
-	Watch elements with class lazy-instantiate-responsive and instantiate
-	class in data-responsive-class when they scroll into view
+	Reagent class watches the document for new content and instantiates
+	Reagent classes liested in element's data-lazy-reagent-class only when
+	the element scrolls into view
 **/
 
 import {
@@ -36,16 +37,16 @@ class LazyInstantiate extends Reagent {
 
 	// watch viewport and instantiate lazy-instantiate-responsive things when visible
 	lazyHandler () {
-		const els = document.querySelectorAll('[data-lazy-responsive-class]')
+		const els = document.querySelectorAll('[data-lazy-reagent-class]')
 		for (let i = 0; i < els.length; i++) {
 			const element = els[i]
 			if (elementTools.inViewPort(element)) {
-				const cls = element.getAttribute('data-lazy-responsive-class').split(/\s*,\s*/)
+				const cls = element.getAttribute('data-lazy-reagent-class').split(/\s*,\s*/)
 				for (let j = 0; j < cls.length; j++) {
 					const thing = new registeredClasses[cls[j]](els[i])
 					thing.start()
 				}
-				element.removeAttribute('data-lazy-responsive-class')
+				element.removeAttribute('data-lazy-reagent-class')
 			}
 		}
 	}

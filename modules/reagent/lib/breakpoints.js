@@ -1,3 +1,10 @@
+/**
+	Breakpoints
+
+	Reagent class that maintains css classes on the document body
+	to be used in css rules for implementing visibility and
+	responsive behavior
+**/
 import $ from 'jquery'
 
 import {

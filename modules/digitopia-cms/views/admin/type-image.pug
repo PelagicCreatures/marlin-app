@@ -14,6 +14,6 @@
 		label.file-upload-label(for= columnName)
 			i.material-icons cloud_upload
 			!= '&nbsp;&nbsp;Choose file to upload'
-		input.uploadable-input(id= columnName data-column-name= columnName data-responsive-class="uploadableImage" data-target='[data-name=' + columnName + '-upload]' data-send-resized=(options.sendResized ? 'true': 'false') data-max-width=options.maxWidth data-max-height=options.maxHeight type="file" name= name + '-uploadable' accept= options.accepts)
+		input.uploadable-input(id= columnName data-column-name= columnName data-reagent-class="uploadableImage" data-target='[data-name=' + columnName + '-upload]' data-send-resized=(options.sendResized ? 'true': 'false') data-max-width=options.maxWidth data-max-height=options.maxHeight type="file" name= name + '-uploadable' accept= options.accepts)
 		.input-ok-indicator.material-icons check_circle
 		.validation-help
