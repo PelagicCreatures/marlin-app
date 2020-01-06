@@ -75,7 +75,7 @@ class Reagent {
 	notifyAll (event, params) {
 		for (let i = 0; i < liveElements.length; i++) {
 			const peer = liveElements[i]
-			if (peer[event]) {
+			if (peer !== this && peer[event]) {
 				peer[event].apply(peer, params)
 			}
 		}
@@ -84,7 +84,7 @@ class Reagent {
 	notifyElement (element, event, params) {
 		for (let i = 0; i < this.element.registeredResponsiveControllers.length; i++) {
 			const peer = this.element.registeredResponsiveControllers[i]
-			if (peer[event]) {
+			if (peer !== this && peer[event]) {
 				peer[event].apply(peer, params)
 			}
 		}

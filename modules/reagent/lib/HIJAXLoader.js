@@ -17,6 +17,7 @@ class HijaxLoader extends Reagent {
 		super(element, options)
 		this.mortal = false
 		this.excludeRegex = new RegExp('^(//|http|javascript|mailto|#)', 'i')
+		this.currentPage = location.pathname + location.search
 	}
 
 	start () {
@@ -32,7 +33,9 @@ class HijaxLoader extends Reagent {
 	}
 
 	watchPopState (e) {
-		this.loadPage(location.pathname + location.search)
+		if (location.pathname + location.search !== this.currentPage) {
+			this.loadPage(location.pathname + location.search)
+		}
 	}
 
 	hijaxLinks () {
@@ -65,19 +68,20 @@ class HijaxLoader extends Reagent {
 		if (this.options.onExitPage) {
 			this.options.onExitPage()
 		}
-		var xhr = new XMLHttpRequest()
+		const xhr = new XMLHttpRequest()
 		xhr.open('GET', url)
 		xhr.onreadystatechange = this.options.onLoading
 		xhr.onload = () => {
 			if (xhr.status === 301 || xhr.status === 302 || xhr.getResponseHeader('x-digitopia-hijax-location')) {
-				var location = xhr.getResponseHeader('x-digitopia-hijax-location')
-				this.setPage(location)
+				const loc = xhr.getResponseHeader('x-digitopia-hijax-location')
+				this.setPage(loc)
 			} else if (xhr.status === 200) {
+				this.currentPage = location.pathname + location.search
 				scrollTo(0, 0)
 				this.mergePage(xhr.responseText)
 			} else {
-				var flashLevel = xhr.getResponseHeader('x-digitopia-hijax-flash-level') || 'danger'
-				var flashMessage = xhr.getResponseHeader('x-digitopia-hijax-flash-message') || xhr.statusText
+				const flashLevel = xhr.getResponseHeader('x-digitopia-hijax-flash-level') || 'danger'
+				let flashMessage = xhr.getResponseHeader('x-digitopia-hijax-flash-message') || xhr.statusText
 				if (!flashMessage) {
 					flashMessage = 'Could not connect to server.'
 				}
@@ -92,9 +96,9 @@ class HijaxLoader extends Reagent {
 	}
 
 	mergePage (html) {
-		var doc = html.split(/(<body[^>]*>|<\/body>)/ig)
-		var fragment = makeFragment(doc[2])
-		var containers = document.querySelectorAll('[data-hijax]')
+		const doc = html.split(/(<body[^>]*>|<\/body>)/ig)
+		const fragment = makeFragment(doc[2])
+		const containers = document.querySelectorAll('[data-hijax]')
 		for (let i = 0; i < containers.length; i++) {
 			const container = containers[i]
 			const id = containers[i].getAttribute('id')
