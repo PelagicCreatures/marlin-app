@@ -37,9 +37,9 @@ class uploadableImage extends ResponsiveElement {
 		var reader = new FileReader()
 
 		// make a thumbnail once data is loaded
-		reader.onload = function (readerEvent) {
+		reader.onload = (readerEvent) => {
 			var image = new Image()
-			image.onload = function (imageEvent) {
+			image.onload = (imageEvent) => {
 				var canvas = document.createElement('canvas')
 				var w = image.width
 				var h = image.height

@@ -54,7 +54,7 @@ class ajaxButton extends ResponsiveElement {
 	};
 
 	sleep () {
-		this.element.off('click')
+		this.jqElement.off('click')
 	};
 
 	doIt () {
