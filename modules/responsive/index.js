@@ -41,7 +41,7 @@
 			super(element, {
 				watchDOM: [true:false],
 				watchScroll: [true:false],
-				watchSize: [true:false],
+				watchResize: [true:false],
 				watchOrientation: [true:false],
 				watchViewport: [true:false]
 			})
@@ -81,11 +81,20 @@ import {
 }
 	from './lib/HijaxLoader'
 
+import {
+	Breakpoints
+}
+	from './lib/Breakpoints'
+
 let loadPage
 
 const bootResponsive = (options) => {
 	const supervisor = new ResponsiveSupervisor(document.body)
 	supervisor.start()
+	if (options.breakpoints) {
+		const breakpoints = new Breakpoints(document.body, options.breakpoints)
+		breakpoints.start()
+	}
 	if (options.hijax) {
 		const hijax = new HijaxLoader(document.body, options.hijax)
 		hijax.start()

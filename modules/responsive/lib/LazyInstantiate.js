@@ -19,7 +19,7 @@ class LazyInstantiate extends ResponsiveElement {
 	constructor (element, options = {}) {
 		super(element, {
 			watchScroll: true,
-			watchSize: true
+			watchResize: true
 		})
 		this.mortal = false
 	}

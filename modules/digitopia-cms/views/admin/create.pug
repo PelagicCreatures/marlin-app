@@ -7,7 +7,7 @@ block content
 	
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
-			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-redirect= back)
+			div(data-responsive-class="adminController" data-mountpoint= mountpoint data-model= admin.name data-redirect= back)
 			
 				.page-header
 					h2
@@ -22,7 +22,7 @@ block content
 
 							if fk
 								input(type="hidden" name= admin.name + '['+fk+']' value= belongsTo)
-							.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+							.flextable(data-responsive-class="flexTable" data-break="screen-xsmall,screen-small")
 								ul
 									li
 									li

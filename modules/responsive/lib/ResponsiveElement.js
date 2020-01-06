@@ -56,12 +56,21 @@ class ResponsiveElement {
 			theScrollWatcher.subscribe(this)
 		}
 
-		if (this.options.watchSize || this.options.watchViewport) {
+		if (this.options.watchResize || this.options.watchViewport) {
 			theResizeWatcher.subscribe(this)
 		}
 
 		if (this.options.watchOrientation || this.options.watchViewport) {
 			theOrientationWatcher.subscribe(this)
+		}
+	}
+
+	notifyAll (event, params) {
+		for (let i = 0; i < liveElements.length; i++) {
+			const peer = liveElements[i]
+			if (peer[event]) {
+				peer[event].apply(peer, params)
+			}
 		}
 	}
 
@@ -109,7 +118,7 @@ class ResponsiveElement {
 			theScrollWatcher.unSubscribe(this)
 		}
 
-		if (this.options.watchSize || this.options.watchViewport) {
+		if (this.options.watchResize || this.options.watchViewport) {
 			theResizeWatcher.unSubscribe(this)
 		}
 
@@ -186,6 +195,8 @@ class ResponsiveElement {
 	didScroll () {}
 
 	didResize () {}
+
+	didBreakpoint () {}
 
 	enterViewport () {}
 

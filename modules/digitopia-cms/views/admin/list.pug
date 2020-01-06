@@ -8,7 +8,7 @@ block fab
 block content
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
-			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name)
+			div(data-responsive-class="adminController" data-mountpoint= mountpoint data-model= admin.name)
 				
 				.page-header
 					h2
@@ -47,7 +47,7 @@ block content
 								p No rows found
 					else
 						.admin-form
-							.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+							.flextable(data-responsive-class="flexTable" data-break="screen-xsmall,screen-small")
 								ul
 									li id
 									for property in admin.options.listColumns

@@ -3,7 +3,7 @@ import $ from 'jquery'
 import Cookies from 'js-cookie'
 
 import {
-	bootResponsive
+	bootResponsive, Breakpoints
 }
 	from '../../../responsive'
 
@@ -21,6 +21,21 @@ let loadPage, reloadPage
 
 const boot = () => {
 	loadPage = bootResponsive({
+		breakpoints: {
+			breakpoints: [{
+				className: 'screen-xsmall',
+				maxWidth: 600
+			}, {
+				className: 'screen-small',
+				maxWidth: 960
+			}, {
+				className: 'screen-medium',
+				maxWidth: 1280
+			}, {
+				className: 'screen-large',
+				maxWidth: undefined
+			}]
+		},
 		hijax: {
 			onError: (level, message) => {
 				flashAjaxStatus(level, message)
@@ -40,6 +55,7 @@ const boot = () => {
 		loadPage(url, true)
 	}
 
+	/*
 	// set up digitopia framework for HIJAX
 	var options = {
 		coverResize: false,
@@ -67,6 +83,7 @@ const boot = () => {
 	}
 
 	$('body').digitopiaController(options)
+	*/
 
 	if (publicOptions.USER_BEHAVIOR) {
 		const anal = new digitopiaAnalytics(document.body, publicOptions.USER_BEHAVIOR)
@@ -155,7 +172,6 @@ var checkSubscription = () => {
 // call when you inject content into the DOM programatically
 var didInjectContent = (element) => {
 	$('body').trigger('DigitopiaInstantiate')
-	$('body').data('digitopiaHijax').hijaxLinks(element)
 	instantiateMaterialDesignElements(element)
 }
 

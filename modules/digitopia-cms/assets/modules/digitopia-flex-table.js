@@ -1,122 +1,121 @@
-import $ from "jquery";
+import $ from 'jquery'
+
 import {
-	GetJQueryPlugin
+	ResponsiveElement, registerClass
 }
-from '../../../digitopia/js/controller.js';
+	from '../../../responsive/lib/ResponsiveElement'
 
 import {
 	didInjectContent
 }
-from './utils';
+	from './utils'
 
-function flexTable(elem, options) {
-	this.element = $(elem);
-	this.data = $(this.element).clone(true, true);
-	var self = this;
-
-	self.breakOn = $(this.element).data('break') ? $(this.element).data('break').split(/,/) : []
-
-	this.start = function () {
-		this.element.on('DigitopiaScaleChanged', function (e, scale) {
-			if (e.target === this) {
-				self.draw(scale);
-			}
-		});
-	};
-
-	this.stop = function () {
-		this.element.off('DigitopiaScaleChanged');
-	};
-
-	this.cloneAttr = function (from, to) {
-		var dataAttributes = $(from).data();
-		for (let prop in dataAttributes) {
-			to.attr('data-' + prop, dataAttributes[prop])
-		}
-		var classes = $(from).attr('class');
-		to.addClass(classes);
+class flexTable extends ResponsiveElement {
+	constructor (elem, options) {
+		super(elem, options)
+		this.jqElement = $(elem)
+		this.data = this.jqElement.clone(true, true)
+		this.breakOn = this.jqElement.data('break') ? this.jqElement.data('break').split(/,/) : []
 	}
 
-	this.draw = function (scale) {
-		if (self.breakOn.indexOf(scale) !== -1) {
-			self.element.addClass('folded');
+	start () {
+		super.start()
+	};
+
+	sleep () {
+		super.sleep()
+	};
+
+	didBreakpoint (scale) {
+		this.draw(scale)
+	}
+
+	cloneAttr (from, to) {
+		const dataAttributes = $(from).data()
+		for (const prop in dataAttributes) {
+			to.attr('data-' + prop, dataAttributes[prop])
 		}
-		else {
-			self.element.removeClass('folded');
+		const classes = $(from).attr('class')
+		to.addClass(classes)
+	}
+
+	draw (scale) {
+		if (this.breakOn.indexOf(scale) !== -1) {
+			this.jqElement.addClass('folded')
+		} else {
+			this.jqElement.removeClass('folded')
 		}
 
-		var structure = $(this.data).children('ul');
-
-		var head = $(structure[0]).children('li');
-		var rows = []
-		var rowheaders = []
-		var r = $(structure[1]).children('li');
-		for (var i = 0; i < r.length; i++) {
-			let td = $('<td class="flextable-row-header">');
-			if (self.breakOn.indexOf(scale) !== -1) {
-				td.attr('colspan', 2);
+		const structure = $(this.data).children('ul')
+		const head = $(structure[0]).children('li')
+		const rows = []
+		const rowheaders = []
+		const r = $(structure[1]).children('li')
+		for (let i = 0; i < r.length; i++) {
+			const td = $('<td class="flextable-row-header">')
+			if (this.breakOn.indexOf(scale) !== -1) {
+				td.attr('colspan', 2)
 			}
 			if ($(head[0]).html()) {
-				td.html($(head[0]).html() + ': ' + r[i].firstChild.data);
+				td.html($(head[0]).html() + ': ' + r[i].firstChild.data)
+			} else {
+				td.html(r[i].firstChild.data)
 			}
-			else {
-				td.html(r[i].firstChild.data);
-			}
 
-			self.cloneAttr(r[i], td);
+			this.cloneAttr(r[i], td)
 
-			rowheaders.push(td);
+			rowheaders.push(td)
 
-			rows.push($(r[i]).children('ul')[0]);
+			rows.push($(r[i]).children('ul')[0])
 		}
 
-		var html = '';
-		if (self.breakOn.indexOf(scale) === -1) {
-			var html = '<table class="table table-bordered flextable-table"><tr class="flextable-row">';
-			for (var h = 0; h < head.length; h++) {
+		var html = ''
+		if (this.breakOn.indexOf(scale) === -1) {
+			html = '<table class="table table-bordered flextable-table"><tr class="flextable-row">'
+			for (let h = 0; h < head.length; h++) {
 				if ($(head[h]).html()) {
-					html += '<th class="flextable-header">' + $(head[h]).html() + '</th>';
+					html += '<th class="flextable-header">' + $(head[h]).html() + '</th>'
 				}
 			}
-			html += '</tr>';
-			for (var r = 0; r < rows.length; r++) {
-				var cols = $(rows[r]).children('li');
+			html += '</tr>'
+			for (let r = 0; r < rows.length; r++) {
+				var cols = $(rows[r]).children('li')
 
 				html += '<tr class="flextable-row">'
-				html += rowheaders[r][0].outerHTML;
+				html += rowheaders[r][0].outerHTML
 				for (var c = 0; c < cols.length; c++) {
-					let td = $('<td class="flextable-cell">');
-					td.html($(cols[c]).html());
-					self.cloneAttr($(cols[c]), td)
-					html += td[0].outerHTML;
+					const td = $('<td class="flextable-cell">')
+					td.html($(cols[c]).html())
+					this.cloneAttr($(cols[c]), td)
+					html += td[0].outerHTML
 				}
 				html += '</tr>'
 			}
 			html += '</table>'
-		}
-		else {
-			var html = '<table class="table table-bordered flextable-table">';
-			for (var r = 0; r < rows.length; r++) {
-				html += '<tr class="flextable-row">' + rowheaders[r][0].outerHTML + '</tr>';
-				var cols = $(rows[r]).children('li');
-				for (var c = 0; c < cols.length; c++) {
-					html += '<tr class="flextable-row">';
+		} else {
+			html = '<table class="table table-bordered flextable-table">'
+			for (let r = 0; r < rows.length; r++) {
+				html += '<tr class="flextable-row">' + rowheaders[r][0].outerHTML + '</tr>'
+				const cols = $(rows[r]).children('li')
+				for (let c = 0; c < cols.length; c++) {
+					html += '<tr class="flextable-row">'
 					if ($(head[c + 1]).html()) {
-						html += '<td class="flextable-header">' + $(head[c + 1]).html() + '</td>';
+						html += '<td class="flextable-header">' + $(head[c + 1]).html() + '</td>'
 					}
-					html += '<td class="flextable-cell">' + $(cols[c]).html() + '</td>';
+					html += '<td class="flextable-cell">' + $(cols[c]).html() + '</td>'
 					html += '</tr>'
 				}
 			}
 			html += '</table>'
 		}
 
-		$(this.element).html(html);
-		$(this.element).show();
-		didInjectContent(this.element);
+		this.jqElement.html(html)
+		this.jqElement.show()
+		didInjectContent(this.jqElement)
 	}
 }
-$.fn.flexTable = GetJQueryPlugin('flexTable', flexTable);
+
+registerClass('flexTable', flexTable)
 
 export {
 	flexTable
