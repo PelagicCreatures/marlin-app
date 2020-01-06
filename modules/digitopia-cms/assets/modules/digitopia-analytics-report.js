@@ -1,42 +1,43 @@
-import $ from "jquery";
+import $ from 'jquery'
+
 import {
-	GetJQueryPlugin
+	Reagent, registerReagentClass
 }
-from '../../../digitopia/js/controller.js';
+	from '../../../reagent/lib/Reagent'
 
-function digitopiaAnalyticsReport(elem, options) {
-	this.element = $(elem);
-
-	var self = this;
-
-	this.endpoint = this.element.data('endpoint');
-
-	this.start = function () {
-		self.load();
+class digitopiaAnalyticsReport extends Reagent {
+	constructor (elem, options) {
+		super(elem, options)
+		this.jqElement = $(elem)
+		this.endpoint = this.jqElement.data('endpoint')
 	}
 
-	this.stop = function () {
+	start () {
+		super.start()
+		this.load()
+	}
+
+	sleep () {
 
 	}
 
-	this.load = function () {
-		let payload = {};
+	load () {
+		const payload = {}
 		$.ajax({
-				method: 'POST',
-				url: self.endpoint,
-				dataType: 'json',
-				contentType: 'application/json',
-				data: JSON.stringify(payload),
+			method: 'POST',
+			url: this.endpoint,
+			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify(payload)
+		})
+			.done((data, textStatus, jqXHR) => {
+				this.jqElement.html('<pre>' + JSON.stringify(data, '', 2) + '</pre>')
 			})
-			.done(function (data, textStatus, jqXHR) {
-				self.element.html('<pre>' + JSON.stringify(data, '', 2) + '</pre>')
-			})
-			.fail(function (jqXHR, textStatus, errorThrown) {});
+			.fail((jqXHR, textStatus, errorThrown) => {})
 	}
 }
 
-
-$.fn.digitopiaAnalyticsReport = GetJQueryPlugin('digitopiaAnalyticsReport', digitopiaAnalyticsReport);
+registerReagentClass('digitopiaAnalyticsReport', digitopiaAnalyticsReport)
 
 export {
 	digitopiaAnalyticsReport

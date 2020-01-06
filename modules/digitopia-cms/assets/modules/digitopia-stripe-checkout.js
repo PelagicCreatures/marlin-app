@@ -1,51 +1,56 @@
-import $ from "jquery";
+import $ from 'jquery'
+
 import {
-	GetJQueryPlugin
+	Reagent, registerReagentClass
 }
-from '../../../digitopia/js/controller.js';
+	from '../../../reagent/lib/Reagent'
 
-function stripeClientCheckout(elem) {
-	this.element = $(elem);
-	var self = this;
+class stripeClientCheckout extends Reagent {
+	constructor (element, options) {
+		super(element, options)
+		this.jqElement = $(element)
 
-	this.email = this.element.data('email');
-	this.userID = this.element.data('user-id');
-	this.plan = this.element.data('plan');
-	this.customer = this.element.data('customer');
-	this.button = this.element.find('button')[0];
-	this.pk = this.element.data('stripe-pk');
-	this.host = this.element.data('host');
+		this.email = this.jqElement.data('email')
+		this.userID = this.jqElement.data('user-id')
+		this.plan = this.jqElement.data('plan')
+		this.customer = this.jqElement.data('customer')
+		this.button = this.jqElement.find('button')[0]
+		this.pk = this.jqElement.data('stripe-pk')
+	}
 
-	this.start = function () {
-		var stripe = Stripe(this.pk, {});
+	start () {
+		super.start()
 
-		self.element.on('click', function () {
+		var stripe = Stripe(this.pk, {})
+
+		this.jqElement.on('click', () => {
 			// When the customer clicks on the button, redirect
 			// them to Checkout.
 			stripe.redirectToCheckout({
-					items: [{
-						plan: self.plan,
-						quantity: 1
-					}],
-					customerEmail: self.email,
-					clientReferenceId: self.userID.toString(),
-					successUrl: window.location.protocol + '//' + self.host + '/users/subscription',
-					cancelUrl: window.location.protocol + '//' + self.host + '/users/subscription',
-				})
-				.then(function (result) {
-					if (result.error) {
-						var displayError = document.getElementById('error-message');
-						displayError.textContent = result.error.message;
-					}
-				});
-		});
+				items: [{
+					plan: this.plan,
+					quantity: 1
+				}],
+				customerEmail: this.email,
+				clientReferenceId: this.userID.toString(),
+				successUrl: publicOptions.PUBLIC_HOST + '/users/subscription',
+				cancelUrl: publicOptions.PUBLIC_HOST + '/users/subscription'
+			}).then(function (result) {
+				if (result.error) {
+					var displayError = document.getElementById('error-message')
+					displayError.textContent = result.error.message
+				}
+			})
+		})
 	}
 
-	this.stop = function () {
-		this.element.off('click');
+	sleep () {
+		this.jqElement.off('click')
+		super.sleep()
 	}
 }
-$.fn.stripeClientCheckout = GetJQueryPlugin('stripeClientCheckout', stripeClientCheckout);
+
+registerReagentClass('stripeClientCheckout', stripeClientCheckout)
 
 export {
 	stripeClientCheckout

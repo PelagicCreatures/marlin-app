@@ -1,48 +1,52 @@
 import $ from 'jquery'
+
 import {
-	GetJQueryPlugin
+	Reagent, registerReagentClass
 }
-	from '../../../digitopia/js/controller.js'
+	from '../../../reagent/lib/Reagent'
 
 import * as Utils from './utils'
 
-function formController (elem, options) {
-	this.element = $(elem)
-	var self = this
+class formController extends Reagent {
+	constructor (elem, options) {
+		super(elem, options)
+		this.jqElement = $(this.element)
+		this.endpoint = this.jqElement.attr('action')
+		this.redirect = this.jqElement.data('redirect') ? this.jqElement.data('redirect') : '/users/home'
+		this.method = this.jqElement.attr('method') ? this.jqElement.attr('method') : 'POST'
+		this.stayOnPage = !!this.jqElement.data('stay-on-page')
+		this.submitter = this.jqElement.find(this.jqElement.data('submitter'))
+		this.recaptcha = !!this.jqElement.data('recaptcha')
+	}
 
-	self.endpoint = self.element.attr('action')
-	self.redirect = self.element.data('redirect') ? self.element.data('redirect') : '/users/home'
-	self.method = self.element.attr('method') ? self.element.attr('method') : 'POST'
-	self.stayOnPage = !!self.element.data('stay-on-page')
-	self.submitter = this.element.find(this.element.data('submitter'))
-	self.recaptcha = !!self.element.data('recaptcha')
+	start () {
+		super.start()
 
-	this.start = function () {
-		if (self.recaptcha) {
+		if (this.recaptcha) {
 			$('body').addClass('show-recaptcha-badge')
 		}
-		self.element.on('submit', function (e) {
+		this.jqElement.on('submit', (e) => {
 			e.preventDefault()
-			self.pleaseWait(true)
-			const data = self.element.serializeObject()
-			data._csrf = self.element.find('[name="_csrf"]').val()
-			if (self.recaptcha && publicOptions.RECAPTCHA_PUBLIC) {
+			this.pleaseWait(true)
+			const data = this.jqElement.serializeObject()
+			data._csrf = this.jqElement.find('[name="_csrf"]').val()
+			if (this.recaptcha && publicOptions.RECAPTCHA_PUBLIC) {
 				grecaptcha.execute(publicOptions.RECAPTCHA_PUBLIC, {
 					action: 'social'
-				}).then(function (token) {
+				}).then((token) => {
 					data['g-recaptcha-response'] = token
-					self.submit(data)
+					this.submit(data)
 				})
 			} else {
-				self.submit(data)
+				this.submit(data)
 			}
 		})
 	}
 
-	self.submit = function (data) {
+	submit (data) {
 		$.ajax({
-			method: self.method,
-			url: self.endpoint,
+			method: this.method,
+			url: this.endpoint,
 			dataType: 'json',
 			contentType: 'application/json',
 			data: JSON.stringify(data),
@@ -50,7 +54,7 @@ function formController (elem, options) {
 				'x-digitopia-hijax': 'true'
 			}
 		})
-			.done(function (data, textStatus, jqXHR) {
+			.done((data, textStatus, jqXHR) => {
 				var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel
 				var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage
 				var loggedIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didLogin
@@ -66,15 +70,15 @@ function formController (elem, options) {
 
 				if (data.status === 'ok') {
 					Utils.flashAjaxStatus('success', flashMessage)
-					if (!self.stayOnPage) {
-						Utils.loadPage(self.redirect)
+					if (!this.stayOnPage) {
+						Utils.loadPage(this.redirect)
 					} else {
-						self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>')
-						self.pleaseWait(false)
+						this.jqElement.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>')
+						this.pleaseWait(false)
 					}
 				} else {
-					self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>')
-					self.pleaseWait(false)
+					this.jqElement.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>')
+					this.pleaseWait(false)
 				}
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
@@ -92,35 +96,36 @@ function formController (elem, options) {
 						message = jqXHR.responseJSON.status
 					}
 				}
-				self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-error"><i class="material-icons">error</i> ' + message + '</div>')
-				self.pleaseWait(false)
+				this.jqElement.find('.ajax-errors').html('<div class="ajax-message ajax-message-error"><i class="material-icons">error</i> ' + message + '</div>')
+				this.pleaseWait(false)
 			})
 	}
 
-	this.stop = function () {
-		if (self.recaptcha) {
+	sleep () {
+		if (this.recaptcha) {
 			$('body').removeClass('show-recaptcha-badge')
 		}
-		self.element.off('submit')
+		this.jqElement.off('submit')
+		super.sleep()
 	}
 
-	this.pleaseWait = function (on) {
+	pleaseWait (on) {
 		if (on) {
-			var element = $(self.submitter)
+			var element = $(this.submitter)
 			element.data('orig-html', element.html())
 			var w = element.width()
 			element.width(w)
 
 			element.html('<i class="fas fa-circle-notch fa-spin"></i>')
 		} else {
-			self.submitter.attr('disabled', false)
-			var element = $(self.submitter)
-			$(element).html($(element).data('orig-html'))
+			this.submitter.attr('disabled', false)
+			var e = $(this.submitter)
+			$(e).html($(element).data('orig-html'))
 		}
 	}
 }
 
-$.fn.formController = GetJQueryPlugin('formController', formController)
+registerReagentClass('formController', formController)
 
 export {
 	formController

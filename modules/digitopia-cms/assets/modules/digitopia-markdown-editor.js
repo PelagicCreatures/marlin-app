@@ -2,52 +2,57 @@ import {
 	MarkdownView,
 	ProseMirrorView
 }
-from "./prose-mirror.js"
+	from './prose-mirror.js'
 
-import $ from "jquery";
+import $ from 'jquery'
+
 import {
-	GetJQueryPlugin
+	Reagent, registerReagentClass
 }
-from '../../../digitopia/js/controller.js';
+	from '../../../reagent/lib/Reagent'
 
-function markdownEditor(elem) {
-	this.element = $(elem);
-	var self = this;
+class markdownEditor extends Reagent {
+	constructor (elem, options) {
+		super(elem, options)
+		this.jqElement = $(elem)
 
-	this.target = $(this.element.data('target'));
-	this.content = $(this.element.data('content'));
+		this.target = $(this.jqElement.data('target'))
+		this.content = $(this.jqElement.data('content'))
+	}
 
-	this.start = function () {
-		self.view = new ProseMirrorView(self.target[0], self.content.val())
+	start () {
+		super.start()
+		this.view = new ProseMirrorView(this.target[0], this.content.val())
 
-		this.target.on('input blur focus keyup paste click', '[contenteditable]', function (e) {
-			self.content.val(self.view.content).trigger('change')
+		this.target.on('input blur focus keyup paste click', '[contenteditable]', (e) => {
+			this.content.val(this.view.content).trigger('change')
 		})
 
-		this.target.on('input blur focus keyup paste', 'textarea', function (e) {
-			self.content.val(self.view.content).trigger('change')
+		this.target.on('input blur focus keyup paste', 'textarea', (e) => {
+			this.content.val(this.view.content).trigger('change')
 		})
 
-		this.element.on('change', 'input[type=radio]', function (e) {
-			let button = this;
+		const self = this
+		this.jqElement.on('change', 'input[type=radio]', function (e) {
+			const button = this
 			if (!button.checked) return
-			let View = button.value == "markdown" ? MarkdownView : ProseMirrorView
+			const View = button.value === 'markdown' ? MarkdownView : ProseMirrorView
 			if (self.view instanceof View) return
-			let content = self.view.content
+			const content = self.view.content
 			self.view.destroy()
 			self.view = new View(self.target[0], content)
 			self.view.focus()
 		})
 	}
 
-	this.stop = function () {
-		this.element.off('change', 'input[type=radio]');
-		self.view.destroy();
+	sleep () {
+		this.jqElement.off('change', 'input[type=radio]')
+		this.view.destroy()
+		super.sleep()
 	}
-
 }
 
-$.fn.markdownEditor = GetJQueryPlugin('markdownEditor', markdownEditor);
+registerReagentClass('markdownEditor', markdownEditor)
 
 export {
 	markdownEditor

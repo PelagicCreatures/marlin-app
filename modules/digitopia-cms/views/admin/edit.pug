@@ -7,7 +7,7 @@ block content
 		
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
-			div(data-jsclass="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
+			div(data-reagent-class="adminController" data-mountpoint= mountpoint data-model= admin.name data-id= row.id data-redirect= back)
 			
 				.page-header
 					h2
@@ -23,10 +23,10 @@ block content
 										
 				.page-content
 					.admin-form
-						form.form-validation(data-jsclass="formValidator" data-submitter="#submitter")
+						form.form-validation(data-reagent-class="formValidator" data-submitter="#submitter")
 							input(type="hidden" name="_csrf" value= csrfToken)
 
-							.flextable(data-jsclass="flexTable" data-break="screen-xsmall,screen-small")
+							.flextable(data-reagent-class="flexTable" data-break="screen-xsmall,screen-small")
 								ul
 									li
 									li

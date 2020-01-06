@@ -2,12 +2,60 @@ import * as MDC from './MDC'
 import $ from 'jquery'
 import Cookies from 'js-cookie'
 
+import {
+	bootReagent, Breakpoints
+}
+	from '../../../reagent'
+
+import {
+	digitopiaAnalytics
+}
+	from './digitopia-analytics.js'
+
 var MDCInstanciateOnce = 0
 var flashTimer = null
 var snackBar, linearProgress
 var linearProgressTimer = null
 
+let loadPage, reloadPage
+
 const boot = () => {
+	loadPage = bootReagent({
+		breakpoints: {
+			breakpoints: [{
+				className: 'screen-xsmall',
+				maxWidth: 600
+			}, {
+				className: 'screen-small',
+				maxWidth: 960
+			}, {
+				className: 'screen-medium',
+				maxWidth: 1280
+			}, {
+				className: 'screen-large',
+				maxWidth: undefined
+			}]
+		},
+		hijax: {
+			onError: (level, message) => {
+				flashAjaxStatus(level, message)
+			},
+			onLoading: function () {
+				progressBar(this.readyState !== 4)
+			},
+			onExitPage: () => {},
+			onEnterPage: () => {
+				checkSubscription()
+				instantiateMaterialDesignElements($('body'))
+			}
+		}
+	})
+
+	reloadPage = (url) => {
+		loadPage(url, true)
+	}
+
+	/*
 	// set up digitopia framework for HIJAX
 	var options = {
 		coverResize: false,
@@ -28,23 +76,23 @@ const boot = () => {
 			}]
 		},
 		hijax: {
-			enabled: true,
+			enabled: false,
 			disableScrollAnimation: true
 		},
 		cookieDomain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : null
 	}
 
 	$('body').digitopiaController(options)
+	*/
 
 	if (publicOptions.USER_BEHAVIOR) {
-		$('body').digitopiaAnalytics(publicOptions.USER_BEHAVIOR)
+		const anal = new digitopiaAnalytics(document.body, publicOptions.USER_BEHAVIOR)
 	}
 
 	// Things to do when HIJAX loads a new page
 	$('body').on('DigitopiaDidLoadNewPage', function (e) {
 		if (e.target === this) {
 			checkSubscription()
-
 			instantiateMaterialDesignElements($('body'))
 		}
 	})
@@ -124,7 +172,6 @@ var checkSubscription = () => {
 // call when you inject content into the DOM programatically
 var didInjectContent = (element) => {
 	$('body').trigger('DigitopiaInstantiate')
-	$('body').data('digitopiaHijax').hijaxLinks(element)
 	instantiateMaterialDesignElements(element)
 }
 
@@ -227,16 +274,6 @@ var progressBar = (show) => {
 			linearProgress.close()
 		}
 	}
-}
-
-// load a page programatically
-const loadPage = (href) => {
-	$('body').trigger('DigitopiaLoadPage', href)
-}
-
-// reload current page programatically
-const reloadPage = () => {
-	$('body').trigger('DigitopiaReloadPage')
 }
 
 /*

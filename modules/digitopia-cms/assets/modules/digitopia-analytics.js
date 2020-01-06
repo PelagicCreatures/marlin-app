@@ -1,97 +1,90 @@
-import $ from "jquery";
+import $ from 'jquery'
+
 import {
-	GetJQueryPlugin
+	Reagent, registerReagentClass
 }
-from '../../../digitopia/js/controller.js';
+	from '../../../reagent/lib/Reagent'
 
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie'
 
-import * as Utils from './utils';
+import * as Utils from './utils'
 
-function digitopiaAnalytics(elem, options) {
-	this.element = $(elem);
+class digitopiaAnalytics extends Reagent {
+	constructor (elem, options) {
+		super(elem, options)
+		this.jqElement = $(elem)
 
-	var self = this;
+		this.scope = options.scope
+		this.method = options.method
+		this.endpoint = options.endpoint
 
-	this.scope = options.scope;
-	this.method = options.method;
-	this.endpoint = options.endpoint;
-
-	this.behaviorId = Cookies.get(this.scope);
-	this.scale = Cookies.get('responsive') ? Cookies.get('responsive').split(' ')[1] : 'unknown';
-
-	this.start = function () {
-		this.element.on('DigitopiaScaleChanged', function (e, scale) {
-			if (e.target === this) {
-				self.scale = scale;
-			}
-		});
-
-		this.element.on('DigitopiaWillLoadNewPage', function (e, oldPath, newPath) {
-			if (e.target === this) {
-				self.send('pageview', oldPath, newPath)
-			}
-		});
-
-		self.send('pageview', '', location.pathname + location.search);
+		this.behaviorId = Cookies.get(this.scope)
+		this.scale = Cookies.get('responsive') ? Cookies.get('responsive').split(' ')[1] : 'unknown'
 	}
 
-	this.stop = function () {
-		this.element.off('DigitopiaScaleChanged');
-		this.element.off('DigitopiaWillLoadNewPage');
+	start () {
+		super.start()
+		this.send('pageview', '', location.pathname + location.search)
 	}
 
-	this.send = function (type, oldPath, path) {
-		let payload = {
+	newPage (oldPath, newPath) {
+		this.send('pageview', oldPath, newPath)
+	}
+
+	didBreakpoint (scale) {
+		this.scale = scale
+	}
+
+	send (type, oldPath, path) {
+		const payload = {
 			type: type,
-			behaviorId: self.behaviorId,
+			behaviorId: this.behaviorId,
 			path: path,
 			hasAccount: Cookies.get('have-account'),
-			scale: self.scale,
+			scale: this.scale,
 			referer: oldPath
 		}
 
 		$.ajax({
-				method: self.method,
-				url: self.endpoint,
-				dataType: 'json',
-				contentType: 'application/json',
-				data: JSON.stringify(payload),
-			})
-			.done(function (data, textStatus, jqXHR) {
+			method: this.method,
+			url: this.endpoint,
+			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify(payload)
+		})
+			.done((data, textStatus, jqXHR) => {
 				if (data && data.status === 'ok') {
-					if (self.behaviorId !== data.behaviorId) {
-						self.behaviorId = data.behaviorId;
-						Cookies.set(self.scope, self.behaviorId, {
+					if (this.behaviorId !== data.behaviorId) {
+						this.behaviorId = data.behaviorId
+						Cookies.set(this.scope, this.behaviorId, {
 							path: '/',
 							domain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : document.location.hostname,
 							expires: 365
-						});
+						})
 					}
 				}
 			})
-			.fail(function (jqXHR, textStatus, errorThrown) {
-				var message = errorThrown;
+			.fail((jqXHR, textStatus, errorThrown) => {
+				var message = errorThrown
 				if (jqXHR.responseJSON) {
 					if (jqXHR.responseJSON.errors) {
-						message = '';
+						message = ''
 						for (var i = 0; i < jqXHR.responseJSON.errors.length; i++) {
 							if (message) {
-								message += ', ';
+								message += ', '
 							}
-							message += jqXHR.responseJSON.errors[i];
+							message += jqXHR.responseJSON.errors[i]
 						}
-					}
-					else {
-						message = jqXHR.responseJSON.status;
+					} else {
+						message = jqXHR.responseJSON.status
 					}
 				}
-				Utils.flashAjaxStatus('error', message);
-			});
+				Utils.flashAjaxStatus('error', message)
+			})
 	}
 }
 
-$.fn.digitopiaAnalytics = GetJQueryPlugin('digitopiaAnalytics', digitopiaAnalytics);
+registerReagentClass('digitopiaAnalytics', digitopiaAnalytics)
 
 export {
 	digitopiaAnalytics
