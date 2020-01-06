@@ -3,9 +3,9 @@
 
 	Simple, Fast, Reactive Javascript controllers for html elements.
 
-	* @author Michael Rhodes 🐡
+	* @author Michael Rhodes 🐡 (except where noted)
 	* @license MIT
-	* Made in Barbados 🇧🇧, © 2020 by Michael Rhodes (except where noted)
+	* Made in Barbados 🇧🇧, © 2020 by Michael Rhodes
 
 	Sometime HTML element need a nervous system. The classic example is lazy
 	loaded images but many things are possible once DOM elements are coupled
