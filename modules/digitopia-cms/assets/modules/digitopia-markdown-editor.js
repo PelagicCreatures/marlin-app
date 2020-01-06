@@ -7,7 +7,7 @@ import {
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -52,7 +52,7 @@ class markdownEditor extends Reagent {
 	}
 }
 
-registerClass('markdownEditor', markdownEditor)
+registerReagentClass('markdownEditor', markdownEditor)
 
 export {
 	markdownEditor

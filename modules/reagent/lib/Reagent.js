@@ -25,7 +25,7 @@ const liveElements = []
 	DOM
 */
 const registeredClasses = {}
-const registerClass = (className, object) => {
+const registerReagentClass = (className, object) => {
 	registeredClasses[className] = object
 }
 
@@ -311,5 +311,5 @@ if (!document.fullscreenElement) {
 }
 
 export {
-	Reagent, registerClass, liveElements, registeredClasses
+	Reagent, registerReagentClass, liveElements, registeredClasses
 }

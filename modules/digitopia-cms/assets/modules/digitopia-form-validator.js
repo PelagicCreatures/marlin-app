@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -262,7 +262,7 @@ function getRealVal (elem) {
 	return value
 }
 
-registerClass('formValidator', formValidator)
+registerReagentClass('formValidator', formValidator)
 
 export {
 	formValidator

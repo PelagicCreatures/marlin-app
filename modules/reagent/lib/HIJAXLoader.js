@@ -1,5 +1,5 @@
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from './Reagent'
 
@@ -102,7 +102,7 @@ class HijaxLoader extends Reagent {
 	}
 }
 
-registerClass('HijaxLoader', HijaxLoader)
+registerReagentClass('HijaxLoader', HijaxLoader)
 
 // shims for borked browsers
 // =========================

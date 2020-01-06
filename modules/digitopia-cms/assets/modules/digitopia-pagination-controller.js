@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -51,7 +51,7 @@ class paginationController extends Reagent {
 	};
 }
 
-registerClass('paginationController', paginationController)
+registerReagentClass('paginationController', paginationController)
 
 export {
 	paginationController

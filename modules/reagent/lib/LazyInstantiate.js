@@ -6,7 +6,7 @@
 **/
 
 import {
-	Reagent, registerClass, registeredClasses
+	Reagent, registerReagentClass, registeredClasses
 }
 	from './Reagent'
 
@@ -51,7 +51,7 @@ class LazyInstantiate extends Reagent {
 	}
 }
 
-registerClass('LazyInstantiate', LazyInstantiate)
+registerReagentClass('LazyInstantiate', LazyInstantiate)
 
 export {
 	LazyInstantiate

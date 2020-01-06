@@ -8,8 +8,8 @@
 	* Made in Barbados 🇧🇧, © 2020 by Michael Rhodes (except where noted)
 
 	Sometime HTML element need a nervous system. The classic example is lazy
-	loaded images or other components but many things are possible once DOM
-	elements are coupled with Reagent classes.
+	loaded images but many things are possible once DOM elements are coupled
+	with Reagent classes.
 
 	Booting this library:
 	---------------------
@@ -31,16 +31,15 @@
 	and instantiates the object, hooking up the appropriate observers. It also destroys
 	any dangling objects when the underlying element is removed from the DOM.
 
-	<div data-responsive-class="mySubclass">
+	<div data-responsive-class="mySubclass"></div>
 
 	You can also defer the instantiation using the lazy method:
 
-	<div data-lazy-responsive-class="mySubclass">
+	<div data-lazy-responsive-class="mySubclass"></div>
 
 	Defining SubClasses:
 	--------------------
-	Your Reagent subclasses can subscribe to appropriate event feeds and take
-	appropriate action.
+	Your Reagent subclasses can subscribe to event feeds to be notified of events.
 
 	class mySubclass extends Reagent {
 		constructor(element,options) {
@@ -60,20 +59,36 @@
 		didResize() {}       // called if 'watchResize: true' when resize changes
 		enterViewport() {}   // called if 'watchViewport: true' when element is entering viewport
 		exitViewport() {}    // called if 'watchViewport: true' when element is exiting viewport
-		enterFullscreen() {} // called if 'watchOrientation: true' and user rotates phone or if setFullscreen is called
-		exitFullscreen() {}  // called on exit immersive
+		enterFullscreen() {} // called if 'watchOrientation: true' when user rotates phone or if setFullscreen is called
+		exitFullscreen() {}  // called on exit fullscreen
+		newPage(old,new)     // on a new page
+		didBreakpoint()      // new screen width breakpoint
 	}
 
-	registerClass('mySubclass', mySubclass)
+	registerReagentClass('mySubclass', mySubclass)
 
 	Don't do any long processes in these callbacks or things might bog down the browser UI.
-	To avoid any janky repaints you should only make DOM changes inside animation
+	To avoid any chaotic repaints you should only make DOM changes inside animation
 	frames - see LazyBackground example below.
 
+	class mySubclass extends Reagent {
+		constructor(element,options = {}) {
+			options.watchViewport = true
+			super(element,options)
+		}
+
+		enterViewport() {
+			// do some stuff such as modify element html or classes
+			let frame = () => {
+				this.element.innerHTML = '<p>Hello viewport!'
+			}
+			this.queueFrame(frame)
+		}
+	}
 */
 
 import {
-	registerClass
+	registerReagentClass
 }
 	from './lib/Reagent'
 
@@ -115,6 +130,6 @@ const bootReagent = (options) => {
 }
 
 export {
-	registerClass,
+	registerReagentClass,
 	bootReagent
 }

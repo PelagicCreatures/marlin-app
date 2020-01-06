@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -108,7 +108,7 @@ class ajaxButton extends Reagent {
 	};
 };
 
-registerClass('ajaxButton', ajaxButton)
+registerReagentClass('ajaxButton', ajaxButton)
 
 export {
 	ajaxButton

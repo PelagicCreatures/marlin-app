@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from './Reagent'
 
@@ -156,7 +156,7 @@ class Breakpoints extends Reagent {
 	};
 };
 
-registerClass('Breakpoints', Breakpoints)
+registerReagentClass('Breakpoints', Breakpoints)
 
 export {
 	Breakpoints

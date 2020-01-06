@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -37,7 +37,7 @@ class digitopiaAnalyticsReport extends Reagent {
 	}
 }
 
-registerClass('digitopiaAnalyticsReport', digitopiaAnalyticsReport)
+registerReagentClass('digitopiaAnalyticsReport', digitopiaAnalyticsReport)
 
 export {
 	digitopiaAnalyticsReport

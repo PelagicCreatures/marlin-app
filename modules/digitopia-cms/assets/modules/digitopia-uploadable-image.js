@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -84,7 +84,7 @@ class uploadableImage extends Reagent {
 	}
 }
 
-registerClass('uploadableImage', uploadableImage)
+registerReagentClass('uploadableImage', uploadableImage)
 
 export {
 	uploadableImage

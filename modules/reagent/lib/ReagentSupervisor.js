@@ -7,7 +7,7 @@
 **/
 
 import {
-	Reagent, registerClass, liveElements, registeredClasses
+	Reagent, registerReagentClass, liveElements, registeredClasses
 }
 	from './Reagent'
 
@@ -61,7 +61,7 @@ class ReagentSupervisor extends Reagent {
 	}
 }
 
-registerClass('ReagentSupervisor', ReagentSupervisor)
+registerReagentClass('ReagentSupervisor', ReagentSupervisor)
 
 export {
 	ReagentSupervisor

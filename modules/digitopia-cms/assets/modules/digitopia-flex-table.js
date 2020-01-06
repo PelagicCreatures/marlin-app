@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -124,7 +124,7 @@ class flexTable extends Reagent {
 	}
 }
 
-registerClass('flexTable', flexTable)
+registerReagentClass('flexTable', flexTable)
 
 export {
 	flexTable

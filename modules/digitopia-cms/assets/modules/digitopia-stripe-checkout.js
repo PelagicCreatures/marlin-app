@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -50,7 +50,7 @@ class stripeClientCheckout extends Reagent {
 	}
 }
 
-registerClass('stripeClientCheckout', stripeClientCheckout)
+registerReagentClass('stripeClientCheckout', stripeClientCheckout)
 
 export {
 	stripeClientCheckout

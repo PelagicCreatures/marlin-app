@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from '../../../reagent/lib/Reagent'
 
@@ -125,7 +125,7 @@ class formController extends Reagent {
 	}
 }
 
-registerClass('formController', formController)
+registerReagentClass('formController', formController)
 
 export {
 	formController

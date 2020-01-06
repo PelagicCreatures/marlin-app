@@ -27,7 +27,7 @@
 */
 
 import {
-	Reagent, registerClass
+	Reagent, registerReagentClass
 }
 	from './Reagent'
 
@@ -48,7 +48,7 @@ class LazyBackground extends Reagent {
 	}
 }
 
-registerClass('LazyBackground', LazyBackground)
+registerReagentClass('LazyBackground', LazyBackground)
 
 export {
 	LazyBackground
