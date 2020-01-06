@@ -16,11 +16,6 @@ import {
 	from './modules/serializeObject'
 
 import {
-	GetJQueryPlugin, digitopiaController
-}
-	from '../../digitopia/js/controller.js'
-
-import {
 	formController
 }
 	from './modules/digitopia-form-controller.js'
@@ -80,6 +75,5 @@ import * as Utils from './modules/utils.js'
 export {
 	Utils,
 	MDC,
-	digitopiaController,
 	digitopiaAnalytics
 }

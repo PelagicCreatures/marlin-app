@@ -1,9 +1,9 @@
 import $ from 'jquery'
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from '../../../responsive/lib/ResponsiveElement'
+	from '../../../reagent/lib/Reagent'
 
 import {
 	Validator,
@@ -13,7 +13,7 @@ import {
 
 import async from 'async'
 
-class formValidator extends ResponsiveElement {
+class formValidator extends Reagent {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(this.element)

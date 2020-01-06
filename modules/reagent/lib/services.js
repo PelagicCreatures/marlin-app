@@ -1,5 +1,5 @@
 /*
-	Shared event watchers used by ResponsiveElement
+	Shared event watchers used by Reagent
 	when these have subscribers they watch for events
 	and notify hte subscriber's specific event handler
 	method when they occur.

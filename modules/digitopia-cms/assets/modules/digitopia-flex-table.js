@@ -1,14 +1,14 @@
 import $ from 'jquery'
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from '../../../responsive/lib/ResponsiveElement'
+	from '../../../reagent/lib/Reagent'
 
 import {
 	elementTools
 }
-	from '../../../responsive/lib/utils'
+	from '../../../reagent/lib/utils'
 
 import {
 	didInjectContent
@@ -17,7 +17,7 @@ import {
 
 import Cookies from 'js-cookie'
 
-class flexTable extends ResponsiveElement {
+class flexTable extends Reagent {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)

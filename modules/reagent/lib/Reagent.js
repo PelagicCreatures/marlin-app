@@ -1,5 +1,5 @@
 /**
-	ResponsiveElement
+	Reagent
 
 	Base class for responsive element controllers. Subclass this to
 	define specific behavior. If you mutate the DOM in your code you
@@ -20,8 +20,8 @@ let unique = 0
 const liveElements = []
 
 /*
-	All subclasses of ResponsiveElement must register the class so that
-	the ResponsiveSupervisor can instantiate them when they appear in the
+	All subclasses of Reagent must register the class so that
+	the ReagentSupervisor can instantiate them when they appear in the
 	DOM
 */
 const registeredClasses = {}
@@ -29,7 +29,7 @@ const registerClass = (className, object) => {
 	registeredClasses[className] = object
 }
 
-class ResponsiveElement {
+class Reagent {
 	constructor (element, options = {}) {
 		this.uid = ++unique
 		this.element = element
@@ -293,5 +293,5 @@ if (!document.fullscreenElement) {
 }
 
 export {
-	ResponsiveElement, registerClass, liveElements, registeredClasses
+	Reagent, registerClass, liveElements, registeredClasses
 }

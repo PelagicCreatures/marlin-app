@@ -1,11 +1,11 @@
 import $ from 'jquery'
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from '../../../responsive/lib/ResponsiveElement'
+	from '../../../reagent/lib/Reagent'
 
-class paginationController extends ResponsiveElement {
+class paginationController extends Reagent {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)

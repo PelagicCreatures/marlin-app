@@ -1,13 +1,13 @@
 import $ from 'jquery'
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from './ResponsiveElement'
+	from './Reagent'
 
 import Cookies from 'js-cookie'
 
-class Breakpoints extends ResponsiveElement {
+class Breakpoints extends Reagent {
 	constructor (element, options = {}) {
 		options.watchResize = true
 		super(element, options)

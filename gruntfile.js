@@ -1,36 +1,29 @@
 module.exports = function (grunt) {
-
 	var jsFiles = [
 		'working/assets/*.js',
 		'working/templates/*.js',
 		'assets/js/*.js'
-	];
+	]
 
 	var cssFiles = [
 		'working/assets/*.css',
 		'assets/css/*.css'
-	];
+	]
 
 	var stylusFiles = [
 		'assets/stylus/*.styl'
-	];
+	]
 
 	var watchfiles = ['modules/digitopia-cms/views/shared/*.pug']
 
-	var allFiles = [];
-	allFiles = allFiles.concat(watchfiles, jsFiles, cssFiles, stylusFiles);
+	var allFiles = []
+	allFiles = allFiles.concat(watchfiles, jsFiles, cssFiles, stylusFiles)
 
 	var copyCommand = [{
 		expand: true,
 		cwd: 'node_modules/jquery/dist/',
 		src: ['jquery.js', 'jquery.min.js'],
 		dest: 'public/dist/js/',
-		filter: 'isFile'
-	}, {
-		expand: true,
-		cwd: 'modules/digitopia/',
-		src: ['images/*'],
-		dest: 'public/digitopia/',
 		filter: 'isFile'
 	}, {
 		expand: true,
@@ -44,7 +37,7 @@ module.exports = function (grunt) {
 		src: ['*.*'],
 		dest: 'public/dist/css/fonts',
 		filter: 'isFile'
-	}];
+	}]
 
 	grunt.initConfig({
 		jsDistDir: 'public/dist/js/',
@@ -88,9 +81,9 @@ module.exports = function (grunt) {
 			dist: {
 				options: {},
 				files: {
-					'<%=jsDistDir%><%= pkg.name %>.min.js': '<%=jsDistDir%><%= pkg.name %>.js',
+					'<%=jsDistDir%><%= pkg.name %>.min.js': '<%=jsDistDir%><%= pkg.name %>.js'
 				}
-			},
+			}
 		},
 		cssmin: {
 			dist: {
@@ -106,15 +99,15 @@ module.exports = function (grunt) {
 			files: allFiles,
 			tasks: ['exec', 'copy', 'stylus', 'concat']
 		}
-	});
+	})
 
-	grunt.loadNpmTasks('grunt-contrib-copy');
-	grunt.loadNpmTasks('grunt-contrib-stylus');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-terser');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-exec');
+	grunt.loadNpmTasks('grunt-contrib-copy')
+	grunt.loadNpmTasks('grunt-contrib-stylus')
+	grunt.loadNpmTasks('grunt-contrib-concat')
+	grunt.loadNpmTasks('grunt-terser')
+	grunt.loadNpmTasks('grunt-contrib-cssmin')
+	grunt.loadNpmTasks('grunt-contrib-watch')
+	grunt.loadNpmTasks('grunt-exec')
 
 	grunt.registerTask('default', [
 		'exec',
@@ -123,7 +116,7 @@ module.exports = function (grunt) {
 		'concat',
 		'cssmin',
 		'terser'
-	]);
+	])
 
 	grunt.registerTask('devel', [
 		'exec',
@@ -131,5 +124,5 @@ module.exports = function (grunt) {
 		'stylus',
 		'concat',
 		'watch'
-	]);
+	])
 }

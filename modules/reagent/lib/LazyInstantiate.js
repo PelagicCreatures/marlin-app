@@ -6,16 +6,16 @@
 **/
 
 import {
-	ResponsiveElement, registerClass, registeredClasses
+	Reagent, registerClass, registeredClasses
 }
-	from './ResponsiveElement'
+	from './Reagent'
 
 import {
 	elementTools
 }
 	from './utils'
 
-class LazyInstantiate extends ResponsiveElement {
+class LazyInstantiate extends Reagent {
 	constructor (element, options = {}) {
 		super(element, {
 			watchScroll: true,

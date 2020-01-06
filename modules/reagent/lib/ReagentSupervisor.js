@@ -1,5 +1,5 @@
 /**
-	ResponsiveSupervisor
+	ReagentSupervisor
 
 	Watch the document for new content and instantiate class in
 	data-responsive-class as needed skipping elements with class
@@ -7,16 +7,16 @@
 **/
 
 import {
-	ResponsiveElement, registerClass, liveElements, registeredClasses
+	Reagent, registerClass, liveElements, registeredClasses
 }
-	from './ResponsiveElement'
+	from './Reagent'
 
 import {
 	LazyInstantiate
 }
 	from './LazyInstantiate'
 
-class ResponsiveSupervisor extends ResponsiveElement {
+class ReagentSupervisor extends Reagent {
 	constructor (element, options = {}) {
 		super(element, {
 			watchDOM: true
@@ -60,8 +60,8 @@ class ResponsiveSupervisor extends ResponsiveElement {
 	}
 }
 
-registerClass('ResponsiveSupervisor', ResponsiveSupervisor)
+registerClass('ReagentSupervisor', ReagentSupervisor)
 
 export {
-	ResponsiveSupervisor
+	ReagentSupervisor
 }

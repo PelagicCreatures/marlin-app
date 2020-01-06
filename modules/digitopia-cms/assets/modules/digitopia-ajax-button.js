@@ -1,14 +1,14 @@
 import $ from 'jquery'
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from '../../../responsive/lib/ResponsiveElement'
+	from '../../../reagent/lib/Reagent'
 
 import * as Utils from './utils'
 import * as MDC from './MDC'
 
-class ajaxButton extends ResponsiveElement {
+class ajaxButton extends Reagent {
 	constructor (elem, options) {
 		super(elem, options)
 

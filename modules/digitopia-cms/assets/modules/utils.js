@@ -3,9 +3,9 @@ import $ from 'jquery'
 import Cookies from 'js-cookie'
 
 import {
-	bootResponsive, Breakpoints
+	bootReagent, Breakpoints
 }
-	from '../../../responsive'
+	from '../../../reagent'
 
 import {
 	digitopiaAnalytics
@@ -20,7 +20,7 @@ var linearProgressTimer = null
 let loadPage, reloadPage
 
 const boot = () => {
-	loadPage = bootResponsive({
+	loadPage = bootReagent({
 		breakpoints: {
 			breakpoints: [{
 				className: 'screen-xsmall',

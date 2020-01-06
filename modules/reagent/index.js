@@ -1,27 +1,33 @@
 /*
-	Responsive Javascript controllers for html elements.
+	Reagent
+
+	Simple, Fast, Reactive Javascript controllers for html elements.
 
 	* @author Michael Rhodes 🐡
 	* @license MIT
 	* Made in Barbados 🇧🇧, © 2020 by Michael Rhodes (except where noted)
 
-	Attach JS behavior to HTML elements using html attributes so they can
-	respond to element events such as:
-		scroll
-		resize
-		orientation
-		etc.
-
-	The classic example is lazy loading images or other components but many
-	things are possible once DOM elements are coupled with javascript objects.
+	Sometime HTML element need a nervous system. The classic example is lazy
+	loaded images or other components but many things are possible once DOM
+	elements are coupled with Reagent classes.
 
 	Booting this library:
 	---------------------
 	import {
-		boot
-	} from './modules/responsive'
+		bootReagent
+	} from './modules/reagent'
 
-	ResponsiveSupervisor watches the DOM for any elements with 'data-responsive-class'
+	let options = {
+		hijax: {
+			onError: (level, message) => {},
+			onLoading: function () {},
+			onExitPage: () => {},
+			onEnterPage: () => {}
+		}
+	}
+	bootReagent(options)
+
+	ReagentSupervisor watches the DOM for any elements with 'data-responsive-class'
 	and instantiates the object, hooking up the appropriate observers. It also destroys
 	any dangling objects when the underlying element is removed from the DOM.
 
@@ -33,10 +39,10 @@
 
 	Defining SubClasses:
 	--------------------
-	Your ResponsiveElement subclasses can subscribe to appropriate event feeds and take
+	Your Reagent subclasses can subscribe to appropriate event feeds and take
 	appropriate action.
 
-	class mySubclass extends ResponsiveElement {
+	class mySubclass extends Reagent {
 		constructor(element,options) {
 			super(element, {
 				watchDOM: [true:false],
@@ -69,12 +75,12 @@
 import {
 	registerClass
 }
-	from './lib/ResponsiveElement'
+	from './lib/Reagent'
 
 import {
-	ResponsiveSupervisor
+	ReagentSupervisor
 }
-	from './lib/ResponsiveSupervisor'
+	from './lib/ReagentSupervisor'
 
 import {
 	HijaxLoader
@@ -88,8 +94,8 @@ import {
 
 let loadPage
 
-const bootResponsive = (options) => {
-	const supervisor = new ResponsiveSupervisor(document.body)
+const bootReagent = (options) => {
+	const supervisor = new ReagentSupervisor(document.body)
 	supervisor.start()
 	if (options.breakpoints) {
 		const breakpoints = new Breakpoints(document.body, options.breakpoints)
@@ -110,5 +116,5 @@ const bootResponsive = (options) => {
 
 export {
 	registerClass,
-	bootResponsive
+	bootReagent
 }

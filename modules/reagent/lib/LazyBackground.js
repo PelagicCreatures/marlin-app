@@ -27,11 +27,11 @@
 */
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from './ResponsiveElement'
+	from './Reagent'
 
-class LazyBackground extends ResponsiveElement {
+class LazyBackground extends Reagent {
 	constructor (element, options = {}) {
 		super(element, {
 			watchViewport: true

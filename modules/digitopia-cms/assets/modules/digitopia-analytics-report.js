@@ -1,11 +1,11 @@
 import $ from 'jquery'
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from '../../../responsive/lib/ResponsiveElement'
+	from '../../../reagent/lib/Reagent'
 
-class digitopiaAnalyticsReport extends ResponsiveElement {
+class digitopiaAnalyticsReport extends Reagent {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)

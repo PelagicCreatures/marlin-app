@@ -1,9 +1,9 @@
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from './ResponsiveElement'
+	from './Reagent'
 
-class HijaxLoader extends ResponsiveElement {
+class HijaxLoader extends Reagent {
 	constructor (element, options = {}) {
 		options.watchDOM = true
 		super(element, options)

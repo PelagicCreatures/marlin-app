@@ -1,11 +1,11 @@
 import $ from 'jquery'
 
 import {
-	ResponsiveElement, registerClass
+	Reagent, registerClass
 }
-	from '../../../responsive/lib/ResponsiveElement'
+	from '../../../reagent/lib/Reagent'
 
-class stripeClientCheckout extends ResponsiveElement {
+class stripeClientCheckout extends Reagent {
 	constructor (element, options) {
 		super(element, options)
 		this.jqElement = $(element)
