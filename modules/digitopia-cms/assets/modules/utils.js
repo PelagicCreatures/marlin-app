@@ -12,6 +12,11 @@ import {
 }
 	from './digitopia-analytics.js'
 
+import {
+	NewPageHandler
+}
+	from './new-page-handler.js'
+
 var MDCInstanciateOnce = 0
 var flashTimer = null
 var snackBar, linearProgress
@@ -55,47 +60,12 @@ const boot = () => {
 		loadPage(url, true)
 	}
 
-	/*
-	// set up digitopia framework for HIJAX
-	var options = {
-		coverResize: false,
-		geometry: {
-			enabled: true,
-			breakpoints: [{
-				className: 'screen-xsmall',
-				maxWidth: 600
-			}, {
-				className: 'screen-small',
-				maxWidth: 960
-			}, {
-				className: 'screen-medium',
-				maxWidth: 1280
-			}, {
-				className: 'screen-large',
-				maxWidth: undefined
-			}]
-		},
-		hijax: {
-			enabled: false,
-			disableScrollAnimation: true
-		},
-		cookieDomain: publicOptions.COOKIE_DOMAIN ? publicOptions.COOKIE_DOMAIN : null
-	}
-
-	$('body').digitopiaController(options)
-	*/
-
 	if (publicOptions.USER_BEHAVIOR) {
 		const anal = new digitopiaAnalytics(document.body, publicOptions.USER_BEHAVIOR)
 	}
 
 	// Things to do when HIJAX loads a new page
-	$('body').on('DigitopiaDidLoadNewPage', function (e) {
-		if (e.target === this) {
-			checkSubscription()
-			instantiateMaterialDesignElements($('body'))
-		}
-	})
+	const PageHandler = new NewPageHandler(document.body)
 
 	// hook up material design element controllers
 	instantiateMaterialDesignElements($('body'))
@@ -135,7 +105,6 @@ function didLogIn () {
 	Cookies.set('have-account', 1, cookieOptions)
 	flashAjaxStatus('success', 'Logged in')
 	$('body').removeClass('is-logged-out').addClass('is-logged-in').addClass('have-account')
-	$('.DigitopiaInstance').trigger('DidLogIn')
 }
 
 // call whenever logout occurs
@@ -146,7 +115,6 @@ var didLogOut = () => {
 	}
 	$('body').removeClass('is-logged-in').addClass('is-logged-out')
 	Cookies.remove('access_token', cookieOptions)
-	$('.DigitopiaInstance').trigger('DidLogOut')
 }
 
 var checkSubscription = () => {
@@ -171,7 +139,6 @@ var checkSubscription = () => {
 
 // call when you inject content into the DOM programatically
 var didInjectContent = (element) => {
-	$('body').trigger('DigitopiaInstantiate')
 	instantiateMaterialDesignElements(element)
 }
 

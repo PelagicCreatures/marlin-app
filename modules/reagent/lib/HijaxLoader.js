@@ -72,16 +72,16 @@ class HijaxLoader extends Reagent {
 		xhr.open('GET', url)
 		xhr.onreadystatechange = this.options.onLoading
 		xhr.onload = () => {
-			if (xhr.status === 301 || xhr.status === 302 || xhr.getResponseHeader('x-digitopia-hijax-location')) {
-				const loc = xhr.getResponseHeader('x-digitopia-hijax-location')
+			if (xhr.status === 301 || xhr.status === 302 || xhr.getResponseHeader('Reagent-Location')) {
+				const loc = xhr.getResponseHeader('Reagent-Location')
 				this.setPage(loc)
 			} else if (xhr.status === 200) {
 				this.currentPage = location.pathname + location.search
 				scrollTo(0, 0)
 				this.mergePage(xhr.responseText)
 			} else {
-				const flashLevel = xhr.getResponseHeader('x-digitopia-hijax-flash-level') || 'danger'
-				let flashMessage = xhr.getResponseHeader('x-digitopia-hijax-flash-message') || xhr.statusText
+				const flashLevel = xhr.getResponseHeader('Reagent-Flash-Level') || 'danger'
+				let flashMessage = xhr.getResponseHeader('Reagent-Flash-Message') || xhr.statusText
 				if (!flashMessage) {
 					flashMessage = 'Could not connect to server.'
 				}

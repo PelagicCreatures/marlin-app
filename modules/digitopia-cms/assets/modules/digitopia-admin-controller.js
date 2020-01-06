@@ -150,8 +150,8 @@ class adminController extends Reagent {
 				'x-digitopia-hijax': 'true'
 			}
 		}).done(function (data, textStatus, jqXHR) {
-			var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel
-			var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage
+			var flashLevel = jqXHR.getResponseHeader('Reagent-Flash-Level') ? jqXHR.getResponseHeader('Reagent-Flash-Level') : data.flashLevel
+			var flashMessage = jqXHR.getResponseHeader('Reagent-Flash-Message') ? jqXHR.getResponseHeader('Reagent-Flash-Message') : data.flashMessage
 			if (data.status === 'ok') {
 				Utils.flashAjaxStatus('success', flashMessage)
 				let redir = self.redirect

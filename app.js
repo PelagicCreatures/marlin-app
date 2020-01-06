@@ -114,8 +114,8 @@ app.start = function (done) {
 			res.locals.message = err.cause && err.cause() ? err.cause().message : err.message
 
 			if (req.headers['x-digitopia-hijax']) {
-				res.set('x-digitopia-hijax-flash-level', 'danger')
-				res.set('x-digitopia-hijax-flash-message', res.locals.message)
+				res.set('Reagent-Flash-Level', 'danger')
+				res.set('Reagent-Flash-Message', res.locals.message)
 			}
 
 			// set locals, only providing error details in development

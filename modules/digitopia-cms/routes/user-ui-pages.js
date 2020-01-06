@@ -68,7 +68,7 @@ module.exports = function mount(app) {
 	router.get('/users/register', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			if (req.headers['x-digitopia-hijax']) {
-				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
+				return res.set('Reagent-Location', '/users/home').send('redirect to ' + '/users/home');
 			}
 			return res.redirect('/users/home');
 		}
@@ -81,7 +81,7 @@ module.exports = function mount(app) {
 	router.get('/users/validate', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser && req.antisocialUser.validated) {
 			if (req.headers['x-digitopia-hijax']) {
-				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
+				return res.set('Reagent-Location', '/users/home').send('redirect to ' + '/users/home');
 			}
 			return res.redirect('/users/home');
 		}
@@ -97,7 +97,7 @@ module.exports = function mount(app) {
 	router.get('/users/login', getUserForRequestMiddleware(app), csrfProtection, function (req, res) {
 		if (req.antisocialUser) {
 			if (req.headers['x-digitopia-hijax']) {
-				return res.set('x-digitopia-hijax-location', '/users/home').send('redirect to ' + '/users/home');
+				return res.set('Reagent-Location', '/users/home').send('redirect to ' + '/users/home');
 			}
 			return res.redirect('/users/home');
 		}

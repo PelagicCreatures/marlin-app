@@ -55,10 +55,10 @@ class formController extends Reagent {
 			}
 		})
 			.done((data, textStatus, jqXHR) => {
-				var flashLevel = jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-level') : data.flashLevel
-				var flashMessage = jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') ? jqXHR.getResponseHeader('x-digitopia-hijax-flash-message') : data.flashMessage
-				var loggedIn = jqXHR.getResponseHeader('x-digitopia-hijax-did-login') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-login') : data.didLogin
-				var loggedOut = jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') ? jqXHR.getResponseHeader('x-digitopia-hijax-did-logout') : data.didLogout
+				var flashLevel = jqXHR.getResponseHeader('Reagent-Flash-Level') ? jqXHR.getResponseHeader('Reagent-Flash-Level') : data.flashLevel
+				var flashMessage = jqXHR.getResponseHeader('Reagent-Flash-Message') ? jqXHR.getResponseHeader('Reagent-Flash-Message') : data.flashMessage
+				var loggedIn = jqXHR.getResponseHeader('Reagent-Did-Login') ? jqXHR.getResponseHeader('Reagent-Did-Login') : data.didLogin
+				var loggedOut = jqXHR.getResponseHeader('Reagent-Did-Logout') ? jqXHR.getResponseHeader('Reagent-Did-Logout') : data.didLogout
 
 				if (loggedIn) {
 					Utils.didLogIn()
