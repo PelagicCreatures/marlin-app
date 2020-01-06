@@ -12,10 +12,10 @@ class adminController extends ResponsiveElement {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
-		self.mountpoint = this.jqElement.data('mountpoint')
-		self.model = this.jqElement.data('model')
-		self.id = this.jqElement.data('id')
-		self.redirect = this.jqElement.data('redirect')
+		this.mountpoint = this.jqElement.data('mountpoint')
+		this.model = this.jqElement.data('model')
+		this.id = this.jqElement.data('id')
+		this.redirect = this.jqElement.data('redirect')
 	}
 
 	start () {
@@ -84,10 +84,10 @@ class adminController extends ResponsiveElement {
 				endpoint += '/' + self.id
 			}
 			const method = self.id ? 'PUT' : 'POST'
-			const data = self.element.find('form').serializeObject()
+			const data = self.jqElement.find('form').serializeObject()
 
 			// special case - serializeObject does not send false checkbox value but we need it for boolean switch
-			const checkboxes = self.element.find('.mdc-switch__native-control')
+			const checkboxes = self.jqElement.find('.mdc-switch__native-control')
 			for (let i = 0; i < checkboxes.length; i++) {
 				const cb = checkboxes[i]
 				let n = $(cb).attr('name') // field names are in the form table[column]
@@ -96,7 +96,7 @@ class adminController extends ResponsiveElement {
 				data[n][p[1]] = $(cb).is(':checked') // sets data.table.column to true or false
 			}
 
-			data._csrf = self.element.find('[name="_csrf"]').val()
+			data._csrf = self.jqElement.find('[name="_csrf"]').val()
 
 			self.API(method, endpoint, data)
 		})
@@ -161,7 +161,7 @@ class adminController extends ResponsiveElement {
 				Utils.loadPage(redir)
 			} else {
 				console.log(data)
-				self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>')
+				self.jqElement.find('.ajax-errors').html('<div class="ajax-message ajax-message-' + flashLevel + '"><i class="material-icons">info</i> ' + flashMessage + '</div>')
 			}
 		}).fail(function (jqXHR, textStatus, errorThrown) {
 			var message = errorThrown
@@ -178,7 +178,7 @@ class adminController extends ResponsiveElement {
 					message = jqXHR.responseJSON.status
 				}
 			}
-			self.element.find('.ajax-errors').html('<div class="ajax-message ajax-message-error"><i class="material-icons">error</i> ' + message + '</div>')
+			self.jqElement.find('.ajax-errors').html('<div class="ajax-message ajax-message-error"><i class="material-icons">error</i> ' + message + '</div>')
 		})
 	}
 }

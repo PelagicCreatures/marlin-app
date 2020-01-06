@@ -6,9 +6,16 @@ import {
 	from '../../../responsive/lib/ResponsiveElement'
 
 import {
+	elementTools
+}
+	from '../../../responsive/lib/utils'
+
+import {
 	didInjectContent
 }
 	from './utils'
+
+import Cookies from 'js-cookie'
 
 class flexTable extends ResponsiveElement {
 	constructor (elem, options) {
@@ -20,6 +27,8 @@ class flexTable extends ResponsiveElement {
 
 	start () {
 		super.start()
+		const scale = Cookies.get('responsive')
+		this.draw(scale)
 	};
 
 	sleep () {
