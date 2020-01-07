@@ -77,7 +77,11 @@ class HijaxLoader extends Reagent {
 			} else if (xhr.status === 200) {
 				scrollTo(0, 0)
 				this.mergePage(xhr.responseText)
-				this.notifyAll('newPage', [this.currentPage, url])
+				const oldPage = this.currentPage
+				const frame = () => {
+					this.notifyAll('newPage', [oldPage, location.pathname + location.search])
+				}
+				this.queueFrame(frame)
 				this.currentPage = location.pathname + location.search
 			} else {
 				const flashLevel = xhr.getResponseHeader('Reagent-Flash-Level') || 'danger'
