@@ -59,7 +59,6 @@ class HijaxLoader extends Reagent {
 	}
 
 	setPage (url) {
-		this.notifyAll('newPage', [location.pathname + location.search, url])
 		history.pushState(null, null, url)
 		this.watchPopState()
 	}
@@ -76,9 +75,10 @@ class HijaxLoader extends Reagent {
 				const loc = xhr.getResponseHeader('Reagent-Location')
 				this.setPage(loc)
 			} else if (xhr.status === 200) {
-				this.currentPage = location.pathname + location.search
 				scrollTo(0, 0)
 				this.mergePage(xhr.responseText)
+				this.notifyAll('newPage', [this.currentPage, url])
+				this.currentPage = location.pathname + location.search
 			} else {
 				const flashLevel = xhr.getResponseHeader('Reagent-Flash-Level') || 'danger'
 				let flashMessage = xhr.getResponseHeader('Reagent-Flash-Message') || xhr.statusText
