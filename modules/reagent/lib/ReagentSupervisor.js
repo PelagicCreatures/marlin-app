@@ -35,8 +35,12 @@ class ReagentSupervisor extends Reagent {
 	instantiate (element) {
 		const cls = element.getAttribute('data-reagent-class').split(/\s*,\s*/)
 		for (let i = 0; i < cls.length; i++) {
-			const thing = new registeredClasses[cls[i]](element)
-			thing.start()
+			try {
+				const thing = new registeredClasses[cls[i]](element)
+				thing.start()
+			} catch (e) {
+				console.log('error instantiating ' + cls[i], e, registeredClasses)
+			}
 		}
 
 		element.removeAttribute('data-reagent-class')
