@@ -11,6 +11,11 @@ import {
 }
 	from './Reagent'
 
+import {
+	elementTools
+}
+	from './utils'
+
 class HijaxLoader extends Reagent {
 	constructor (element, options = {}) {
 		options.watchDOM = true
@@ -64,6 +69,10 @@ class HijaxLoader extends Reagent {
 	}
 
 	loadPage (url) {
+		const frame = () => {
+			elementTools.addClass(document.body, 'hijax-loading')
+		}
+		this.queueFrame(frame)
 		if (this.options.onExitPage) {
 			this.options.onExitPage()
 		}
@@ -80,6 +89,7 @@ class HijaxLoader extends Reagent {
 				const oldPage = this.currentPage
 				const frame = () => {
 					this.notifyAll('newPage', [oldPage, location.pathname + location.search])
+					elementTools.removeClass(document.body, 'hijax-loading')
 				}
 				this.queueFrame(frame)
 				this.currentPage = location.pathname + location.search
