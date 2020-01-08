@@ -55,8 +55,8 @@ class DOMWatcher extends ObserverSubscriptionManager {
 		// debounce - just need to know if a change occured, not every change
 		this.mutationHandler = debounce((mutations, observer) => {
 			this.observeDOM(mutations, observer)
-		}, 250, {
-			maxWait: 500
+		}, 100, {
+			maxWait: 250
 		})
 
 		this.mutationObserver = new MutationObserver(this.mutationHandler, false)

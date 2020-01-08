@@ -46,8 +46,15 @@ class ReagentSupervisor extends Reagent {
 		element.removeAttribute('data-reagent-class')
 	}
 
+	newPage () {
+		this.doIt()
+	}
+
 	DOMChanged () {
-		super.DOMChanged()
+		this.doIt()
+	}
+
+	doIt () {
 		const elements = document.querySelectorAll('[data-reagent-class]')
 		for (const element of elements) {
 			this.instantiate(element)
