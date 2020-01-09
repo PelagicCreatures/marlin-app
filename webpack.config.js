@@ -1,6 +1,6 @@
-const autoprefixer = require('autoprefixer');
-const path = require('path');
-const WebpackNotifierPlugin = require('webpack-notifier');
+const autoprefixer = require('autoprefixer')
+const path = require('path')
+const WebpackNotifierPlugin = require('webpack-notifier')
 
 module.exports = {
 	mode: 'development',
@@ -14,7 +14,7 @@ module.exports = {
 		poll: 1000 // Check for changes every second
 	},
 	plugins: [
-		new WebpackNotifierPlugin(),
+		new WebpackNotifierPlugin()
 	],
 	target: 'web',
 	module: {
@@ -23,8 +23,8 @@ module.exports = {
 			use: [{
 				loader: 'file-loader',
 				options: {
-					name: 'bundle.css',
-				},
+					name: 'bundle.css'
+				}
 			}, {
 				loader: 'extract-loader'
 			}, {
@@ -38,17 +38,18 @@ module.exports = {
 				loader: 'sass-loader',
 				options: {
 					sassOptions: {
-						includePaths: ['./node_modules'],
+						includePaths: ['./node_modules']
 					}
-				},
-			}],
+				}
+			}]
 		}, {
 			test: /\.js$/,
 			loader: 'babel-loader',
 			exclude: /(node_modules|bower_components)/,
+			include: path.join(__dirname, 'node_modules/@antisocialnet/reagent'),
 			query: {
-				presets: ['@babel/preset-env'],
-			},
+				presets: ['@babel/preset-env']
+			}
 		}, {
 			test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
 			use: [{
@@ -58,6 +59,6 @@ module.exports = {
 					outputPath: 'fonts/'
 				}
 			}]
-		}],
-	},
-};
+		}]
+	}
+}

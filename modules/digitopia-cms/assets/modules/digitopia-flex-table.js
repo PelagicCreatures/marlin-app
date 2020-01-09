@@ -3,12 +3,7 @@ import $ from 'jquery'
 import {
 	Reagent, registerReagentClass
 }
-	from '../../../reagent/lib/Reagent'
-
-import {
-	elementTools
-}
-	from '../../../reagent/lib/utils'
+	from '@antisocialnet/reagent'
 
 import {
 	didInjectContent

@@ -1,7 +1,7 @@
 import {
 	Reagent, registerReagentClass
 }
-	from '../../../reagent/lib/Reagent'
+	from '@antisocialnet/reagent'
 
 import * as Utils from './utils'
 

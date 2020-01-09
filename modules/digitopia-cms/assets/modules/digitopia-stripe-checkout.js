@@ -3,7 +3,7 @@ import $ from 'jquery'
 import {
 	Reagent, registerReagentClass
 }
-	from '../../../reagent/lib/Reagent'
+	from '@antisocialnet/reagent'
 
 class stripeClientCheckout extends Reagent {
 	constructor (element, options) {

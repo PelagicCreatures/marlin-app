@@ -3,9 +3,9 @@ import $ from 'jquery'
 import Cookies from 'js-cookie'
 
 import {
-	bootReagent, Breakpoints
+	bootReagent
 }
-	from '../../../reagent'
+	from '@antisocialnet/reagent'
 
 import {
 	digitopiaAnalytics

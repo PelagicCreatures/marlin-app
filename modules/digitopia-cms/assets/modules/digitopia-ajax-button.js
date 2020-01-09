@@ -3,7 +3,7 @@ import $ from 'jquery'
 import {
 	Reagent, registerReagentClass
 }
-	from '../../../reagent/lib/Reagent'
+	from '@antisocialnet/reagent'
 
 import * as Utils from './utils'
 import * as MDC from './MDC'

@@ -3,7 +3,7 @@ import $ from 'jquery'
 import {
 	Reagent, registerReagentClass
 }
-	from '../../../reagent/lib/Reagent'
+	from '@antisocialnet/reagent'
 
 class digitopiaAnalyticsReport extends Reagent {
 	constructor (elem, options) {
