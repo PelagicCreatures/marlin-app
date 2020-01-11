@@ -81,7 +81,7 @@ class formController extends Reagent {
 					this.pleaseWait(false)
 				}
 			})
-			.fail(function (jqXHR, textStatus, errorThrown) {
+			.fail((jqXHR, textStatus, errorThrown) => {
 				var message = errorThrown
 				if (jqXHR.responseJSON) {
 					if (jqXHR.responseJSON.errors) {

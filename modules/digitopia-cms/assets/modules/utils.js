@@ -26,8 +26,9 @@ let loadPage, reloadPage
 
 const boot = () => {
 	loadPage = bootReagent({
+		scrollElement: document.getElementById('overscroll-wrapper') || window,
 		breakpoints: {
-			breakpoints: [{
+			widths: [{
 				className: 'screen-xsmall',
 				maxWidth: 600
 			}, {
