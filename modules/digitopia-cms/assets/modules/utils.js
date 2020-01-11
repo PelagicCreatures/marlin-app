@@ -27,21 +27,7 @@ let loadPage, reloadPage
 const boot = () => {
 	loadPage = bootReagent({
 		scrollElement: document.getElementById('overscroll-wrapper') || window,
-		breakpoints: {
-			widths: [{
-				className: 'screen-xsmall',
-				maxWidth: 600
-			}, {
-				className: 'screen-small',
-				maxWidth: 960
-			}, {
-				className: 'screen-medium',
-				maxWidth: 1280
-			}, {
-				className: 'screen-large',
-				maxWidth: undefined
-			}]
-		},
+		breakpoints: {},
 		hijax: {
 			onError: (level, message) => {
 				flashAjaxStatus(level, message)
