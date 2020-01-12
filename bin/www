@@ -35,7 +35,7 @@ app.start(() => {
 			server = spdy.createServer({
 				key: sslKey,
 				cert: sslCert
-			}, app).listen(port)
+			}, app)
 		} else {
 			const https = require('https')
 			console.log('https')
@@ -45,6 +45,7 @@ app.start(() => {
 			}, app)
 		}
 
+		// set up http-> https redirector
 		http.createServer(function (req, res) {
 			console.log('http redirect to https')
 			res.writeHead(302, {
