@@ -19,7 +19,7 @@ import {
 
 var MDCInstanciateOnce = 0
 var flashTimer = null
-var snackBar, linearProgress
+var snackBar, linearProgress, nav
 var linearProgressTimer = null
 
 let loadPage, reloadPage
@@ -137,16 +137,11 @@ var instantiateMaterialDesignElements = (element) => {
 	if (!MDCInstanciateOnce++) {
 		const topAppBar = new MDC.MDCTopAppBar(document.querySelector('.mdc-top-app-bar'))
 
-		const nav = new MDC.MDCDrawer(document.querySelector('#nav-drawer'))
+		nav = new MDC.MDCDrawer(document.querySelector('#nav-drawer'))
 
 		snackBar = new MDC.MDCSnackbar(document.querySelector('.mdc-snackbar'))
 
 		linearProgress = new MDC.MDCLinearProgress(document.querySelector('.mdc-linear-progress'))
-
-		document.querySelector('.mdc-top-app-bar__navigation-icon').addEventListener('click', (e) => {
-			e.preventDefault()
-			nav.open = !nav.open
-		})
 
 		document.querySelector('.mdc-drawer-scrim').addEventListener('click', (e) => {
 			e.preventDefault()
@@ -155,6 +150,13 @@ var instantiateMaterialDesignElements = (element) => {
 
 		$('body').on('click', '.nav-item', () => {
 			nav.open = false
+		})
+	}
+
+	if (document.querySelector('.hamburger')) {
+		document.querySelector('.hamburger').addEventListener('click', (e) => {
+			e.preventDefault()
+			nav.open = !nav.open
 		})
 	}
 

@@ -1,9 +1,9 @@
 header.mdc-top-app-bar.mdc-top-app-bar--fixed
-	div.mdc-top-app-bar__row
+	div#navbar.mdc-top-app-bar__row(data-hijax="true")
 		section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-start
-			a.material-icons.mdc-top-app-bar__navigation-icon(href="#") menu
+			a.hamburger.material-icons.mdc-top-app-bar__navigation-icon(href="#") menu
 
-			#page-title.mdc-top-app-bar__title(data-hijax="true")
+			#page-title.mdc-top-app-bar__title
 				span= title ? title : sitename
 
 			section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-end.hidden-logged-out
