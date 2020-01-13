@@ -8,7 +8,7 @@ block fab
 block content
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
-			div(data-reagent-class="adminController" data-mountpoint= mountpoint data-model= admin.name)
+			div(data-sargasso-class="adminController" data-mountpoint= mountpoint data-model= admin.name)
 				
 				.page-header
 					h2
@@ -28,7 +28,7 @@ block content
 						else
 							
 							section.admin-search
-								form.form-validation(data-reagent-class="formValidator" data-submitter=".search-button")
+								form.form-validation(data-sargasso-class="formValidator" data-submitter=".search-button")
 									.form-group
 										table
 											tr
@@ -47,7 +47,7 @@ block content
 								p No rows found
 					else
 						.admin-form
-							.flextable(data-reagent-class="flexTable" data-break="screen-xs,screen-sm")
+							.flextable(data-sargasso-class="flexTable" data-break="screen-xs,screen-sm")
 								ul
 									li id
 									for property in admin.options.listColumns

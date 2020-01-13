@@ -1,13 +1,13 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
 import * as Utils from './utils'
 
-class formController extends Reagent {
+class formController extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(this.element)
@@ -55,10 +55,10 @@ class formController extends Reagent {
 			}
 		})
 			.done((data, textStatus, jqXHR) => {
-				var flashLevel = jqXHR.getResponseHeader('Reagent-Flash-Level') ? jqXHR.getResponseHeader('Reagent-Flash-Level') : data.flashLevel
-				var flashMessage = jqXHR.getResponseHeader('Reagent-Flash-Message') ? jqXHR.getResponseHeader('Reagent-Flash-Message') : data.flashMessage
-				var loggedIn = jqXHR.getResponseHeader('Reagent-Did-Login') ? jqXHR.getResponseHeader('Reagent-Did-Login') : data.didLogin
-				var loggedOut = jqXHR.getResponseHeader('Reagent-Did-Logout') ? jqXHR.getResponseHeader('Reagent-Did-Logout') : data.didLogout
+				var flashLevel = jqXHR.getResponseHeader('Sargasso-Flash-Level') ? jqXHR.getResponseHeader('Sargasso-Flash-Level') : data.flashLevel
+				var flashMessage = jqXHR.getResponseHeader('Sargasso-Flash-Message') ? jqXHR.getResponseHeader('Sargasso-Flash-Message') : data.flashMessage
+				var loggedIn = jqXHR.getResponseHeader('Sargasso-Did-Login') ? jqXHR.getResponseHeader('Sargasso-Did-Login') : data.didLogin
+				var loggedOut = jqXHR.getResponseHeader('Sargasso-Did-Logout') ? jqXHR.getResponseHeader('Sargasso-Did-Logout') : data.didLogout
 
 				if (loggedIn) {
 					Utils.didLogIn()
@@ -125,7 +125,7 @@ class formController extends Reagent {
 	}
 }
 
-registerReagentClass('formController', formController)
+registerSargassoClass('formController', formController)
 
 export {
 	formController

@@ -1,11 +1,11 @@
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
 import * as Utils from './utils'
 
-class NewPageHandler extends Reagent {
+class NewPageHandler extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 	}
@@ -19,7 +19,7 @@ class NewPageHandler extends Reagent {
 	}
 }
 
-registerReagentClass('NewPageHandler', NewPageHandler)
+registerSargassoClass('NewPageHandler', NewPageHandler)
 
 export {
 	NewPageHandler

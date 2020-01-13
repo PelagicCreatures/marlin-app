@@ -3,9 +3,9 @@ import $ from 'jquery'
 import Cookies from 'js-cookie'
 
 import {
-	bootReagent
+	bootSargasso
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
 import {
 	digitopiaAnalytics
@@ -25,7 +25,7 @@ var linearProgressTimer = null
 let loadPage, reloadPage
 
 const boot = () => {
-	loadPage = bootReagent({
+	loadPage = bootSargasso({
 		scrollElement: document.getElementById('overscroll-wrapper') || window,
 		breakpoints: {},
 		hijax: {

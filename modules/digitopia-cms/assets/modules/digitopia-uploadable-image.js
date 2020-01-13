@@ -1,11 +1,11 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
-class uploadableImage extends Reagent {
+class uploadableImage extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
@@ -84,7 +84,7 @@ class uploadableImage extends Reagent {
 	}
 }
 
-registerReagentClass('uploadableImage', uploadableImage)
+registerSargassoClass('uploadableImage', uploadableImage)
 
 export {
 	uploadableImage

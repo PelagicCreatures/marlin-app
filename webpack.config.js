@@ -46,7 +46,7 @@ module.exports = {
 			test: /\.js$/,
 			loader: 'babel-loader',
 			exclude: /(node_modules|bower_components)/,
-			include: path.join(__dirname, 'node_modules/@antisocialnet/reagent'),
+			include: path.join(__dirname, 'node_modules/@pelagiccreatures/sargasso'),
 			query: {
 				presets: ['@babel/preset-env']
 			}

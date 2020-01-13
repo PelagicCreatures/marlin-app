@@ -1,11 +1,11 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
-class stripeClientCheckout extends Reagent {
+class stripeClientCheckout extends Sargasso {
 	constructor (element, options) {
 		super(element, options)
 		this.jqElement = $(element)
@@ -50,7 +50,7 @@ class stripeClientCheckout extends Reagent {
 	}
 }
 
-registerReagentClass('stripeClientCheckout', stripeClientCheckout)
+registerSargassoClass('stripeClientCheckout', stripeClientCheckout)
 
 export {
 	stripeClientCheckout

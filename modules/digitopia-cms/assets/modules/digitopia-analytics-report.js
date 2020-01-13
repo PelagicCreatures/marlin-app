@@ -1,11 +1,11 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
-class digitopiaAnalyticsReport extends Reagent {
+class digitopiaAnalyticsReport extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
@@ -37,7 +37,7 @@ class digitopiaAnalyticsReport extends Reagent {
 	}
 }
 
-registerReagentClass('digitopiaAnalyticsReport', digitopiaAnalyticsReport)
+registerSargassoClass('digitopiaAnalyticsReport', digitopiaAnalyticsReport)
 
 export {
 	digitopiaAnalyticsReport

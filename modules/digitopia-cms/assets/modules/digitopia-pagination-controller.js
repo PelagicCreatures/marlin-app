@@ -1,11 +1,11 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
-class paginationController extends Reagent {
+class paginationController extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
@@ -51,7 +51,7 @@ class paginationController extends Reagent {
 	};
 }
 
-registerReagentClass('paginationController', paginationController)
+registerSargassoClass('paginationController', paginationController)
 
 export {
 	paginationController

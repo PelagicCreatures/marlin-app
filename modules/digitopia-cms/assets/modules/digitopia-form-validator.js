@@ -1,9 +1,9 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
 import {
 	Validator,
@@ -13,7 +13,7 @@ import {
 
 import async from 'async'
 
-class formValidator extends Reagent {
+class formValidator extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(this.element)
@@ -262,7 +262,7 @@ function getRealVal (elem) {
 	return value
 }
 
-registerReagentClass('formValidator', formValidator)
+registerSargassoClass('formValidator', formValidator)
 
 export {
 	formValidator

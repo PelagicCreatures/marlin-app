@@ -39,10 +39,10 @@ block content
 			if stripe.subscriptions.data.length && !cancelled
 				- canSubscribe = false
 				p
-					a(href="#" data-reagent-class="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Cancel Subscription?" data-endpoint='/api/users/subscription-cancel' data-no-hijax="true" data-method="delete" data-redirect="/users/subscription") Click Here 
+					a(href="#" data-sargasso-class="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Cancel Subscription?" data-endpoint='/api/users/subscription-cancel' data-no-hijax="true" data-method="delete" data-redirect="/users/subscription") Click Here 
 					|  to cancel your subscription at end of current period.
 					
-			.flextable(data-reagent-class="flexTable" data-break="screen-xs")
+			.flextable(data-sargasso-class="flexTable" data-break="screen-xs")
 				ul
 					li Date
 					li Description
@@ -94,9 +94,9 @@ block content
 		if canSubscribe
 			section.button-bar
 				| Subscribe: 
-				button.mdc-button.mdc-button--raised(data-reagent-class="stripeClientCheckout" data-stripe-pk= publicOptions.STRIPE_PUBLIC  data-user-id= user.id data-email= user.email data-plan= publicOptions.STRIPE_YEARLY)
+				button.mdc-button.mdc-button--raised(data-sargasso-class="stripeClientCheckout" data-stripe-pk= publicOptions.STRIPE_PUBLIC  data-user-id= user.id data-email= user.email data-plan= publicOptions.STRIPE_YEARLY)
 					span.mdc-button-label Yearly $10
-				button.mdc-button.mdc-button--raised(data-reagent-class="stripeClientCheckout" data-stripe-pk= publicOptions.STRIPE_PUBLIC  data-user-id= user.id data-email= user.email data-plan= publicOptions.STRIPE_MONTHLY)
+				button.mdc-button.mdc-button--raised(data-sargasso-class="stripeClientCheckout" data-stripe-pk= publicOptions.STRIPE_PUBLIC  data-user-id= user.id data-email= user.email data-plan= publicOptions.STRIPE_MONTHLY)
 					span.mdc-button-label Monthly $1
 
 		#error-message

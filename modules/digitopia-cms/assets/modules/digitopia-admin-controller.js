@@ -1,14 +1,14 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
 import * as Utils from './utils'
 import * as MDC from './MDC'
 
-class adminController extends Reagent {
+class adminController extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
@@ -150,8 +150,8 @@ class adminController extends Reagent {
 				'x-digitopia-hijax': 'true'
 			}
 		}).done(function (data, textStatus, jqXHR) {
-			var flashLevel = jqXHR.getResponseHeader('Reagent-Flash-Level') ? jqXHR.getResponseHeader('Reagent-Flash-Level') : data.flashLevel
-			var flashMessage = jqXHR.getResponseHeader('Reagent-Flash-Message') ? jqXHR.getResponseHeader('Reagent-Flash-Message') : data.flashMessage
+			var flashLevel = jqXHR.getResponseHeader('Sargasso-Flash-Level') ? jqXHR.getResponseHeader('Sargasso-Flash-Level') : data.flashLevel
+			var flashMessage = jqXHR.getResponseHeader('Sargasso-Flash-Message') ? jqXHR.getResponseHeader('Sargasso-Flash-Message') : data.flashMessage
 			if (data.status === 'ok') {
 				Utils.flashAjaxStatus('success', flashMessage)
 				let redir = self.redirect
@@ -183,7 +183,7 @@ class adminController extends Reagent {
 	}
 }
 
-registerReagentClass('adminController', adminController)
+registerSargassoClass('adminController', adminController)
 
 export {
 	adminController

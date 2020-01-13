@@ -10,7 +10,7 @@ block content
 			= ' access history'
 
 	.page-content
-		.flextable(data-reagent-class="flexTable" data-break="screen-xs,screen-sm")
+		.flextable(data-sargasso-class="flexTable" data-break="screen-xs,screen-sm")
 			ul
 				li Created
 				li Last Access
@@ -26,5 +26,5 @@ block content
 							li!= currentToken === token.token ? '<i class="material-icons">check</i>' : ''
 							li
 								if currentToken !== token.token
-									a(href="#" data-reagent-class="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Delete login?" data-endpoint='/api/users/token-delete?token='+token.id data-method="DELETE" data-no-hijax="true" data-redirect="/users/tokens")
+									a(href="#" data-sargasso-class="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Delete login?" data-endpoint='/api/users/token-delete?token='+token.id data-method="DELETE" data-no-hijax="true" data-redirect="/users/tokens")
 										<i class="material-icons">delete</i>

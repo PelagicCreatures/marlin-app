@@ -7,11 +7,11 @@ import {
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
-class markdownEditor extends Reagent {
+class markdownEditor extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
@@ -52,7 +52,7 @@ class markdownEditor extends Reagent {
 	}
 }
 
-registerReagentClass('markdownEditor', markdownEditor)
+registerSargassoClass('markdownEditor', markdownEditor)
 
 export {
 	markdownEditor

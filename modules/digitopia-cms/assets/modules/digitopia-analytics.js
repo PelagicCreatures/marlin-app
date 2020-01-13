@@ -1,15 +1,15 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
 import Cookies from 'js-cookie'
 
 import * as Utils from './utils'
 
-class digitopiaAnalytics extends Reagent {
+class digitopiaAnalytics extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
@@ -84,7 +84,7 @@ class digitopiaAnalytics extends Reagent {
 	}
 }
 
-registerReagentClass('digitopiaAnalytics', digitopiaAnalytics)
+registerSargassoClass('digitopiaAnalytics', digitopiaAnalytics)
 
 export {
 	digitopiaAnalytics

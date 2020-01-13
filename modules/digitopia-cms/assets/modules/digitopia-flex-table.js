@@ -1,9 +1,9 @@
 import $ from 'jquery'
 
 import {
-	Reagent, registerReagentClass
+	Sargasso, registerSargassoClass
 }
-	from '@antisocialnet/reagent'
+	from '@pelagiccreatures/sargasso'
 
 import {
 	didInjectContent
@@ -12,7 +12,7 @@ import {
 
 import Cookies from 'js-cookie'
 
-class flexTable extends Reagent {
+class flexTable extends Sargasso {
 	constructor (elem, options) {
 		super(elem, options)
 		this.jqElement = $(elem)
@@ -119,7 +119,7 @@ class flexTable extends Reagent {
 	}
 }
 
-registerReagentClass('flexTable', flexTable)
+registerSargassoClass('flexTable', flexTable)
 
 export {
 	flexTable
