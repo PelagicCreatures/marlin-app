@@ -12,11 +12,6 @@ import {
 }
 	from './digitopia-analytics.js'
 
-import {
-	NewPageHandler
-}
-	from './new-page-handler.js'
-
 var MDCInstanciateOnce = 0
 var flashTimer = null
 var snackBar, linearProgress, nav
@@ -50,9 +45,6 @@ const boot = () => {
 	if (publicOptions.USER_BEHAVIOR) {
 		const anal = new digitopiaAnalytics(document.body, publicOptions.USER_BEHAVIOR)
 	}
-
-	// Things to do when HIJAX loads a new page
-	const PageHandler = new NewPageHandler(document.body)
 
 	// hook up material design element controllers
 	instantiateMaterialDesignElements($('body'))

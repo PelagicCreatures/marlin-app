@@ -117,10 +117,12 @@ class adminController extends Sargasso {
 
 		this.jqElement.on('MDCChip:selection', '.mdc-chip', function (e) {
 			const selected = []
-			$(this).closest('.mdc-chip-set').find('.mdc-chip--selected').each(function () {
-				selected.push($(this).data('id'))
-			})
-			$(this).closest('.mdc-chip-set').find('input').val(selected.join(',')).trigger('change')
+			if (e.target === this) {
+				$(this).closest('.mdc-chip-set').find('.mdc-chip--selected').each(function () {
+					selected.push($(this).data('id'))
+				})
+				$(this).closest('.mdc-chip-set').find('input').val(selected.join(',')).trigger('change')
+			}
 		})
 	}
 

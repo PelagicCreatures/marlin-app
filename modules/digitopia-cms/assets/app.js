@@ -70,11 +70,6 @@ import {
 }
 	from './modules/digitopia-analytics-report.js'
 
-import {
-	NewPageHandler
-}
-	from './modules/new-page-handler.js'
-
 import * as Utils from './modules/utils.js'
 
 export {
