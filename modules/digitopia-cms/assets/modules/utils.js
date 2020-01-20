@@ -7,11 +7,6 @@ import {
 }
 	from '@pelagiccreatures/sargasso'
 
-import {
-	digitopiaAnalytics
-}
-	from './digitopia-analytics.js'
-
 var MDCInstanciateOnce = 0
 var flashTimer = null
 var snackBar, linearProgress, nav
@@ -40,10 +35,6 @@ const boot = () => {
 
 	reloadPage = (url) => {
 		loadPage(url, true)
-	}
-
-	if (publicOptions.USER_BEHAVIOR) {
-		const anal = new digitopiaAnalytics(document.body, publicOptions.USER_BEHAVIOR)
 	}
 
 	// hook up material design element controllers

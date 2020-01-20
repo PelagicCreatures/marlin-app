@@ -74,9 +74,9 @@ html
     if env === 'production'
       script(src="/dist/js/userapp.min.js")
     else
-      script(src="/dist/js/userapp.js")
-        
-    script(nonce= nonce).
-      App.Utils.boot();
+			
+      script(type="module" nonce= nonce).
+        import { Utils } from "/dist/js/bundle.es.js"
+        Utils.boot() 
       
     #ephemeral

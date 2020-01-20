@@ -16,6 +16,8 @@ npm install
 npm run test
 
 ## Development
+rollup -c rollup.config.js (experimental es6 bundle)
+
 npm run watch
 define config/local.js (see config/config-example.js)
 npm run debug

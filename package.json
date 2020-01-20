@@ -42,7 +42,6 @@
 		"validator": "^12.0.0"
 	},
 	"devDependencies": {
-		"@pelagiccreatures/sargasso": "^0.5.11",
 		"@babel/core": "^7.6.2",
 		"@babel/preset-env": "^7.6.2",
 		"@fortawesome/fontawesome-free": "^5.11.2",
@@ -64,6 +63,8 @@
 		"@material/textfield": "^3.2.0",
 		"@material/top-app-bar": "^3.2.0",
 		"@material/typography": "^4.0.0",
+		"@pelagiccreatures/sargasso": "^0.5.21",
+		"@rollup/plugin-json": "^4.0.1",
 		"assert": "^2.0.0",
 		"autoprefixer": "^9.6.1",
 		"babel-loader": "^8.0.6",
@@ -94,6 +95,8 @@
 		"prosemirror-state": "^1.3.2",
 		"prosemirror-view": "^1.13.4",
 		"pug-cli": "^1.0.0-alpha6",
+		"rollup-plugin-commonjs": "^10.1.0",
+		"rollup-plugin-node-resolve": "^5.2.0",
 		"sass-loader": "^8.0.0",
 		"sequelize-cli": "^5.5.1",
 		"sqlite3": "^4.1.0",
