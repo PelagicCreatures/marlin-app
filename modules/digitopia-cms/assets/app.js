@@ -4,7 +4,7 @@
 	Exports here are exposed on the global namespace as 'App' by webpack.
 
 	EG.
-		App.MDC.MDCRipple
+		App.Utils
 
 */
 
@@ -30,8 +30,6 @@ import './modules/digitopia-markdown-editor.js'
 
 import './modules/digitopia-analytics-report.js'
 
-import * as MDC from './modules/MDC'
-
 import * as Utils from './modules/utils.js'
 
 import {
@@ -44,7 +42,5 @@ if (publicOptions.USER_BEHAVIOR) {
 }
 
 export {
-	Utils,
-	MDC,
-	digitopiaAnalytics
+	Utils
 }

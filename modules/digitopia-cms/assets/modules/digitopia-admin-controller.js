@@ -6,7 +6,6 @@ import {
 	from '@pelagiccreatures/sargasso'
 
 import * as Utils from './utils'
-import * as MDC from './MDC'
 
 class adminController extends Sargasso {
 	constructor (elem, options) {
@@ -42,30 +41,12 @@ class adminController extends Sargasso {
 
 		this.jqElement.on('click', '.delete-button', function (e) {
 			e.preventDefault()
-
-			const html = confirmDialogTemplate({
-				title: 'Please Confirm',
-				prompt: 'Delete this row?'
-			})
-
-			$('#ephemeral').append($(html))
-
-			const dialog = MDC.MDCDialog.attachTo(document.querySelector('#confirm-dialog'))
-			$('#confirm-dialog').data('mdc-dialog', dialog)
-
-			dialog.listen('MDCDialog:closed', function (e) {
-				$('body').removeClass('modal-open')
-				if (e.detail.action === 'accept') {
+			Utils.tropicBird.dialog('#confirm-dialog', 'Delete this row?', this.confirmPrompt, true).then((action) => {
+				if (action === 'accept') {
 					const endpoint = self.mountpoint + '/' + self.model + '/' + self.id
 					self.API('DELETE', endpoint)
 				}
-
-				dialog.destroy()
-				$('#ephemeral').empty()
 			})
-
-			$('body').addClass('modal-open')
-			dialog.open()
 		})
 
 		this.jqElement.on('click', '.search-button', function (e) {

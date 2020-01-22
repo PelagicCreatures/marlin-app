@@ -1,4 +1,3 @@
-import * as MDC from './MDC'
 import $ from 'jquery'
 import Cookies from 'js-cookie'
 
@@ -7,12 +6,15 @@ import {
 }
 	from '@pelagiccreatures/sargasso'
 
-var MDCInstanciateOnce = 0
-var flashTimer = null
-var snackBar, linearProgress, nav
+import {
+	TropicBird
+}
+	from '@pelagiccreatures/tropicbird'
+
+var linearProgress
 var linearProgressTimer = null
 
-let loadPage, reloadPage
+let loadPage, reloadPage, tropicBird
 
 const boot = () => {
 	loadPage = bootSargasso({
@@ -23,22 +25,21 @@ const boot = () => {
 				flashAjaxStatus(level, message)
 			},
 			onLoading: function () {
-				progressBar(this.readyState !== 4)
+				tropicBird.progressBar(this.readyState !== 4)
 			},
 			onExitPage: () => {},
 			onEnterPage: () => {
 				checkSubscription()
-				instantiateMaterialDesignElements($('body'))
 			}
 		}
 	})
 
+	tropicBird = new TropicBird(document.body, {})
+	tropicBird.start()
+
 	reloadPage = (url) => {
 		loadPage(url, true)
 	}
-
-	// hook up material design element controllers
-	instantiateMaterialDesignElements($('body'))
 
 	if (Cookies.get('have-account')) {
 		$('body').addClass('have-account')
@@ -108,89 +109,11 @@ var checkSubscription = () => {
 }
 
 // call when you inject content into the DOM programatically
-var didInjectContent = (element) => {
-	instantiateMaterialDesignElements(element)
-}
-
-// This manages material design elements
-// called on initial page load, hijax page load events and by didInjectContent.
-// some elements like the drawer, snackbar and the navbar only need this once because
-// they are defined in the shared html wrapper.
-var instantiateMaterialDesignElements = (element) => {
-	if (!MDCInstanciateOnce++) {
-		const topAppBar = new MDC.MDCTopAppBar(document.querySelector('.mdc-top-app-bar'))
-
-		nav = new MDC.MDCDrawer(document.querySelector('#nav-drawer'))
-
-		snackBar = new MDC.MDCSnackbar(document.querySelector('.mdc-snackbar'))
-
-		linearProgress = new MDC.MDCLinearProgress(document.querySelector('.mdc-linear-progress'))
-
-		document.querySelector('.mdc-drawer-scrim').addEventListener('click', (e) => {
-			e.preventDefault()
-			nav.open = !nav.open
-		})
-
-		$('body').on('click', '.nav-item', () => {
-			nav.open = false
-		})
-	}
-
-	if (document.querySelector('.hamburger')) {
-		document.querySelector('.hamburger').addEventListener('click', (e) => {
-			e.preventDefault()
-			nav.open = !nav.open
-		})
-	}
-
-	const inputs = document.querySelectorAll('.mdc-text-field')
-	if (inputs && inputs.length) {
-		inputs.forEach((element) => {
-			MDC.MDCTextField.attachTo(element)
-		})
-	}
-
-	const selects = document.querySelectorAll('.mdc-select')
-	if (selects && selects.length) {
-		selects.forEach((element) => {
-			MDC.MDCSelect.attachTo(element)
-		})
-	}
-
-	const switches = document.querySelectorAll('.mdc-switch')
-	if (switches && switches.length) {
-		switches.forEach((element) => {
-			MDC.MDCSwitch.attachTo(element)
-		})
-	}
-
-	const chips = document.querySelectorAll('.mdc-chip-set')
-	if (chips && chips.length) {
-		chips.forEach((element) => {
-			MDC.MDCChipSet.attachTo(element)
-		})
-	}
-
-	const wantRipple = document.querySelectorAll('.mdc-fab,.mdc-button,.mdc-icon-button,.mdc-card__primary-action')
-	if (wantRipple && wantRipple.length) {
-		wantRipple.forEach((element) => {
-			MDC.MDCRipple.attachTo(element)
-		})
-	}
-}
+var didInjectContent = (element) => {}
 
 // call to show the Material Design "snackbar" for user notifications
 var flashAjaxStatus = (level, message) => {
-	if (flashTimer) {
-		clearTimeout(flashTimer)
-	}
-	$('.mdc-snackbar').find('.mdc-snackbar__label').html(message)
-	snackBar.open()
-
-	flashTimer = setTimeout(function () {
-		flashTimer = null
-		snackBar.close()
-	}, 3000)
+	tropicBird.pushSnackBar(level, message)
 }
 
 var progressBar = (show) => {
@@ -285,9 +208,9 @@ export {
 	didLogOut,
 	checkSubscription,
 	didInjectContent,
-	instantiateMaterialDesignElements,
 	flashAjaxStatus,
 	progressBar,
 	loadPage,
-	reloadPage
+	reloadPage,
+	tropicBird
 }

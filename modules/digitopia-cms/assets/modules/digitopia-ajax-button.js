@@ -6,7 +6,6 @@ import {
 	from '@pelagiccreatures/sargasso'
 
 import * as Utils from './utils'
-import * as MDC from './MDC'
 
 class ajaxButton extends Sargasso {
 	constructor (elem, options) {
@@ -24,29 +23,12 @@ class ajaxButton extends Sargasso {
 		super.start()
 		this.jqElement.on('click', (e) => {
 			e.preventDefault()
-
 			if (this.confirm) {
-				const html = confirmDialogTemplate({
-					title: 'Please Confirm',
-					prompt: this.confirmPrompt
-				})
-
-				$('#ephemeral').append($(html))
-
-				const dialog = MDC.MDCDialog.attachTo(document.querySelector(this.confirm))
-				$(this.confirm).data('mdc-dialog', dialog)
-
-				dialog.listen('MDCDialog:closed', (e) => {
-					$('body').removeClass('modal-open')
-					if (e.detail.action === 'accept') {
+				Utils.tropicBird.dialog('#confirm-dialog', 'Please Confirm', this.confirmPrompt, true).then((action) => {
+					if (action === 'accept') {
 						this.doIt()
 					}
-
-					dialog.destroy()
-					$('#ephemeral').empty()
 				})
-				$('body').addClass('modal-open')
-				dialog.open()
 			} else {
 				this.doIt()
 			}
