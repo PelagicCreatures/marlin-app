@@ -11,6 +11,11 @@ import {
 }
 	from '@pelagiccreatures/tropicbird'
 
+import {
+	FlyingFish
+}
+	from '@pelagiccreatures/flyingfish'
+
 var linearProgress
 var linearProgressTimer = null
 
