@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Sargasso, registerSargassoClass
+	Sargasso, utils
 }
 	from '@pelagiccreatures/sargasso'
 
@@ -37,7 +37,7 @@ class digitopiaAnalyticsReport extends Sargasso {
 	}
 }
 
-registerSargassoClass('digitopiaAnalyticsReport', digitopiaAnalyticsReport)
+utils.registerSargassoClass('digitopiaAnalyticsReport', digitopiaAnalyticsReport)
 
 export {
 	digitopiaAnalyticsReport

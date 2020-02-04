@@ -10,21 +10,23 @@ block content
 			= ' access history'
 
 	.page-content
-		.flextable(data-sargasso-class="flexTable" data-break="screen-xs,screen-sm")
-			ul
-				li Created
-				li Last Access
-				li Last Login IP Address
-				li Currrent
-				li 
-			ul
-				for token in tokens
-					li= token.createdAt
-						ul
-							li= token.lastaccess
-							li= token.ip
-							li!= currentToken === token.token ? '<i class="material-icons">check</i>' : ''
-							li
+		.flextable
+			table
+				thead
+					tr
+						th Created
+						th Last Access
+						th Last Login IP Address
+						th Currrent
+						th 
+				tbody
+					for token in tokens
+						tr
+							td= token.createdAt
+							td= token.lastaccess
+							td= token.ip
+							td!= currentToken === token.token ? '<i class="material-icons">check</i>' : ''
+							td
 								if currentToken !== token.token
 									a(href="#" data-sargasso-class="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Delete login?" data-endpoint='/api/users/token-delete?token='+token.id data-method="DELETE" data-no-hijax="true" data-redirect="/users/tokens")
 										<i class="material-icons">delete</i>

@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Sargasso, registerSargassoClass
+	Sargasso, utils
 }
 	from '@pelagiccreatures/sargasso'
 
@@ -51,7 +51,7 @@ class paginationController extends Sargasso {
 	};
 }
 
-registerSargassoClass('paginationController', paginationController)
+utils.registerSargassoClass('paginationController', paginationController)
 
 export {
 	paginationController

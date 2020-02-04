@@ -4,29 +4,29 @@ block content
 	.reg-form-container.centered
 		h2 <i class="material-icons">person</i>  User Login 
 		
-		form.form.form-validation(action="/api/users/login" method="PUT" data-sargasso-class="formValidator,formController" data-submitter="#submitter")
-			input(type="hidden" name="_csrf" value= csrfToken)
+		form.form.form-validation(action="/api/users/login" method="PUT" data-sargasso-class="MolaMola" data-submitter="#submitter" data-helpers="BoilerplateHandler")
+			input(type="hidden" name="_csrf" value= csrfToken  data-payload)
 
 			.reg-form.clear-fix.mdc-elevation--z1
-				section.form-group
+				section.input-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input#email.mdc-text-field__input(autocomplete="username" name="email" data-validate= validators.email value="")
+						input#email.mdc-text-field__input(autocomplete="username" name="email" data-validate= {notEmpty:true,isEmail:true} value="" data-payload)
 						label.mdc-floating-label(for="email") Email Address
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
 					.mdc-text-field-helper-line
 						.validation-help.mdc-text-field-helper-text--persistent
 						
-				section.form-group
+				section.input-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input#password.mdc-text-field__input(type="password" name="password" data-validate= {isPassword:true}  value="")
+						input#password.mdc-text-field__input(autocomplete="current-password" type="password" name="password" data-validate= {notEmpty:true,isPassword:true}  value="" data-payload)
 						label.mdc-floating-label(for="password") Password
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
 					.mdc-text-field-helper-line
 						.validation-help.mdc-text-field-helper-text--persistent
 
-				section.form-group.pull-right.button-bar
+				section.input-group.pull-right.button-bar
 					a.mdc-button(href="/") Cancel
 					button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
 						span.mdc-button__label Login

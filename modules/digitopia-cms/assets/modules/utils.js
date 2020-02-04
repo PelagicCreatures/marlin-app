@@ -2,7 +2,7 @@ import $ from 'jquery'
 import Cookies from 'js-cookie'
 
 import {
-	bootSargasso
+	utils, loadPageHandler, Sargasso
 }
 	from '@pelagiccreatures/sargasso'
 
@@ -11,10 +11,9 @@ import {
 }
 	from '@pelagiccreatures/tropicbird'
 
-import {
-	FlyingFish
-}
-	from '@pelagiccreatures/flyingfish'
+import '@pelagiccreatures/flyingfish'
+
+import '@pelagiccreatures/molamola'
 
 var linearProgress
 var linearProgressTimer = null
@@ -22,7 +21,7 @@ var linearProgressTimer = null
 let loadPage, reloadPage, tropicBird
 
 const boot = () => {
-	loadPage = bootSargasso({
+	utils.bootSargasso({
 		scrollElement: document.getElementById('overscroll-wrapper') || window,
 		breakpoints: {},
 		hijax: {
@@ -42,8 +41,12 @@ const boot = () => {
 	tropicBird = new TropicBird(document.body, {})
 	tropicBird.start()
 
+	loadPage = (url) => {
+		loadPageHandler(url)
+	}
+
 	reloadPage = (url) => {
-		loadPage(url, true)
+		loadPageHandler(url, true)
 	}
 
 	if (Cookies.get('have-account')) {
@@ -112,9 +115,6 @@ var checkSubscription = () => {
 		$('body').removeClass('is-superuser').addClass('not-superuser')
 	}
 }
-
-// call when you inject content into the DOM programatically
-var didInjectContent = (element) => {}
 
 // call to show the Material Design "snackbar" for user notifications
 var flashAjaxStatus = (level, message) => {
@@ -212,10 +212,11 @@ export {
 	didLogIn,
 	didLogOut,
 	checkSubscription,
-	didInjectContent,
 	flashAjaxStatus,
 	progressBar,
 	loadPage,
 	reloadPage,
-	tropicBird
+	tropicBird,
+	Sargasso,
+	utils
 }

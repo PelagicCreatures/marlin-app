@@ -42,54 +42,53 @@ block content
 					a(href="#" data-sargasso-class="ajaxButton" data-confirm="#confirm-dialog" data-confirm-prompt="Cancel Subscription?" data-endpoint='/api/users/subscription-cancel' data-no-hijax="true" data-method="delete" data-redirect="/users/subscription") Click Here 
 					|  to cancel your subscription at end of current period.
 					
-			.flextable(data-sargasso-class="flexTable" data-break="screen-xs")
-				ul
-					li Date
-					li Description
-					li Start
-					li End
-					li Amount
-					li Paid
-				ul
+			.flextable
+				table
+					thead
+						tr
+							th Date
+							th Description
+							th Start
+							th End
+							th Amount
+							th Paid
+					tbody
+						if (upcoming && upcoming.lines && upcoming.lines.data.length) 
+							each line in upcoming.lines.data
 
-					if (upcoming && upcoming.lines && upcoming.lines.data.length) 
-						each line in upcoming.lines.data
-
-							- var date = new moment(upcoming.created * 1000).format('MM/DD/YYYY')
-							- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
-							- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
-							- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
-							- var amount = line.amount / 100
-							- var description = line.plan ? line.plan.name : line.description
-
-							li
-								= date
-								ul
-									li Next bill
-									li= startdate
-									li= enddate
-									li
-									li
-				
-					if (invoices && invoices.data && invoices.data.length) 
-						each invoice in invoices.data
-							each line in invoice.lines.data
-								- var date = new moment(invoice.created * 1000).format('MM/DD/YYYY')
+								- var date = new moment(upcoming.created * 1000).format('MM/DD/YYYY')
 								- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
 								- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
 								- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
 								- var amount = line.amount / 100
-								- var description = line.description
-								- var paid = invoice.paid ? '<i class="material-icons" >check_circle</i>' : ''
+								- var description = line.plan ? line.plan.name : line.description
 
-								li
-									= date
-									ul
-										li= description
-										li= startdate
-										li= enddate
-										li= amount.toFixed(2)
-										li!= paid
+								tr
+									td= date
+									td Next bill
+									td= startdate
+									td= enddate
+									td
+									td
+					
+						if (invoices && invoices.data && invoices.data.length) 
+							each invoice in invoices.data
+								each line in invoice.lines.data
+									- var date = new moment(invoice.created * 1000).format('MM/DD/YYYY')
+									- var prorate = line.proration ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : ''
+									- var startdate = new moment(line.period.start * 1000).format('MM/DD/YYYY')
+									- var enddate = new moment(line.period.end * 1000).format('MM/DD/YYYY')
+									- var amount = line.amount / 100
+									- var description = line.description
+									- var paid = invoice.paid ? '<i class="material-icons" >check_circle</i>' : ''
+
+									tr
+										td= date
+										td= description
+										td= startdate
+										td= enddate
+										td= amount.toFixed(2)
+										td!= paid
 
 		if canSubscribe
 			section.button-bar

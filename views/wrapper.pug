@@ -75,9 +75,19 @@ html
       script(src="/dist/js/userapp.min.js")
     else
       
-      script(type="module" nonce= nonce).
-        import { Utils } from "/dist/js/bundle.es.js"
-        Utils.boot() 
+      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/sargasso/dist/sargasso.iife.js" nonce= nonce)
+      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/tropicbird/dist/tropicbird.iife.js" nonce= nonce)
+      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/flyingfish/dist/flyingfish.iife.js" nonce= nonce)
+      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/molamola/dist/molamola.iife.js" nonce= nonce)
+
+      script(src="/dist/js/userapp.iife.js" defer)
+
+      script(nonce= nonce defer).
+        window.onload=  function() {
+          App.Utils.boot()
+        }
+
+      // script(src="/dist/js/markdown.iife.js")
     
     
     aside#confirm-dialog.mdc-dialog(role="alertdialog")

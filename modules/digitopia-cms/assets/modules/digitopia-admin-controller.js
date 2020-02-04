@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Sargasso, registerSargassoClass
+	Sargasso, utils
 }
 	from '@pelagiccreatures/sargasso'
 
@@ -51,35 +51,11 @@ class adminController extends Sargasso {
 
 		this.jqElement.on('click', '.search-button', function (e) {
 			e.preventDefault()
-			const q = $(this).closest('.form-group').find('input[name="q"]').val()
-			const prop = $(this).closest('.form-group').find('select[name="property"]').val()
+			const q = $(this).closest('.input-group').find('input[name="q"]').val()
+			const prop = $(this).closest('.input-group').find('select[name="property"]').val()
 			if (q && prop) {
 				Utils.loadPage(location.pathname + '?q=' + encodeURIComponent(q) + '&property=' + encodeURIComponent(prop))
 			}
-		})
-
-		this.jqElement.on('click', '#submitter', function (e) {
-			e.preventDefault()
-			let endpoint = self.mountpoint + '/' + self.model
-			if (self.id) {
-				endpoint += '/' + self.id
-			}
-			const method = self.id ? 'PUT' : 'POST'
-			const data = self.jqElement.find('form').serializeObject()
-
-			// special case - serializeObject does not send false checkbox value but we need it for boolean switch
-			const checkboxes = self.jqElement.find('.mdc-switch__native-control')
-			for (let i = 0; i < checkboxes.length; i++) {
-				const cb = checkboxes[i]
-				let n = $(cb).attr('name') // field names are in the form table[column]
-				const p = n.match(/\[([^\]]+)\]/) // column is in p[1]
-				n = n.replace(p[0], '')
-				data[n][p[1]] = $(cb).is(':checked') // sets data.table.column to true or false
-			}
-
-			data._csrf = self.jqElement.find('[name="_csrf"]').val()
-
-			self.API(method, endpoint, data)
 		})
 
 		this.jqElement.on('mouseenter', '.select-row', function (e) {
@@ -95,16 +71,6 @@ class adminController extends Sargasso {
 			var id = parseInt($(this).data('row'))
 			Utils.loadPage(self.mountpoint + '/' + self.model + '/' + id)
 		})
-
-		this.jqElement.on('MDCChip:selection', '.mdc-chip', function (e) {
-			const selected = []
-			if (e.target === this) {
-				$(this).closest('.mdc-chip-set').find('.mdc-chip--selected').each(function () {
-					selected.push($(this).data('id'))
-				})
-				$(this).closest('.mdc-chip-set').find('input').val(selected.join(',')).trigger('change')
-			}
-		})
 	}
 
 	sleep () {
@@ -113,11 +79,9 @@ class adminController extends Sargasso {
 		this.jqElement.off('click', '.edit-button')
 		this.jqElement.off('click', '.delete-button')
 		this.jqElement.off('click', '.search-button')
-		this.jqElement.off('click', '#submitter')
 		this.jqElement.off('mouseenter', '.select-row')
 		this.jqElement.off('mouseleave', '.select-row')
 		this.jqElement.off('click', '.select-row')
-		this.jqElement.off('MDCChip:selection', '.mdc-chip')
 		super.sleep()
 	}
 
@@ -166,7 +130,7 @@ class adminController extends Sargasso {
 	}
 }
 
-registerSargassoClass('adminController', adminController)
+utils.registerSargassoClass('adminController', adminController)
 
 export {
 	adminController

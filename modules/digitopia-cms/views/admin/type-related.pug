@@ -1,5 +1,5 @@
-.form-group
-	select.select-css(name= name data-validate= options.validate)
+.input-group
+	select.select-css(name= name data-validate= options.validate data-payload)
 		option(value="") ---
 		for row in related
 			if row.id == value

@@ -4,13 +4,13 @@ block content
 	.reg-form-container.centered
 		h2 <i class="material-icons">person_add</i>  User Registration 
 	
-		form.form.form-validation(action="/api/users/register" method="PUT" data-sargasso-class="formValidator,formController" data-submitter="#submitter" data-recaptcha= publicOptions.RECAPTCHA_PUBLIC)
-			input(type="hidden" name="_csrf" value= csrfToken)
+		form.form.form-validation(action="/api/users/register" method="PUT" data-sargasso-class="MolaMola" data-helpers="BoilerplateHandler" data-submitter="#submitter" data-recaptcha= publicOptions.RECAPTCHA_PUBLIC)
+			input(type="hidden" name="_csrf" value= csrfToken data-payload)
 				
 			.reg-form.clear-fix.mdc-elevation--z1
-				section.form-group
+				section.input-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(autocomplete="username" name="email" data-validate= {notEmpty:true,isEmail:true} data-unique-endpoint= "/api/users/is-unique-email")
+						input.mdc-text-field__input(autocomplete="username" name="email" data-validate= {notEmpty:true,isEmail:true} data-lookup-endpoint= "/api/users/is-unique-email" data-unique data-payload)
 						label.mdc-floating-label Email Address
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -18,9 +18,9 @@ block content
 						.validation-help.mdc-text-field-helper-text--persistent
 				
 		
-				section.form-group
+				section.input-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(name="confirm-email" data-validate= validators.email data-match="input[name='email']")
+						input.mdc-text-field__input(autocomplete="username" name="confirm-email" data-validate= validators.email data-match="input[name='email']" data-payload)
 						label.mdc-floating-label Confirm Email Address
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -28,9 +28,9 @@ block content
 						.validation-help.mdc-text-field-helper-text--persistent
 				
 		
-				section.form-group
+				section.input-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(type="password" name="password" data-validate= {isPassword:true})
+						input.mdc-text-field__input(autocomplete="new-password" type="password" name="password" data-validate= {isPassword:true} data-payload)
 						label.mdc-floating-label Password
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -38,9 +38,9 @@ block content
 						.validation-help.mdc-text-field-helper-text--persistent
 				
 		
-				section.form-group
+				section.input-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(type="password" name="confirm-password" data-validate= {isPassword:true} data-match="input[name='password']")
+						input.mdc-text-field__input(autocomplete="new-password" type="password" name="confirm-password" data-validate= {isPassword:true} data-match="input[name='password']" data-payload)
 						label.mdc-floating-label Confirm Password
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -48,9 +48,9 @@ block content
 						.validation-help.mdc-text-field-helper-text--persistent
 
 		
-				section.form-group
+				section.input-group
 					.mdc-text-field.mdc-text-field--with-trailing-icon
-						input.mdc-text-field__input(name="username" data-validate= validators.username data-unique-endpoint= "/api/users/is-unique-username")
+						input.mdc-text-field__input(name="username" data-validate= validators.username data-unique-endpoint= "/api/users/is-unique-username" data-payload)
 						label.mdc-floating-label Username - set your unique name
 						.input-ok-indicator.material-icons.mdc-text-field__icon check_circle
 						.mdc-line-ripple
@@ -58,7 +58,7 @@ block content
 						.validation-help.mdc-text-field-helper-text--persistent
 		
 		
-				section.form-group.pull-right
+				section.input-group.pull-right
 					a.mdc-button(href="/") Cancel
 					button#submitter.mdc-button.mdc-button--raised(disabled) Sign Up
 					

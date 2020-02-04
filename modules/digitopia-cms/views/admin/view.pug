@@ -1,11 +1,11 @@
-extends ../../../../views/wrapper
+extends wrapper
 
 block fab
 	button.mdc-fab.mdc-fab--mini.app-fab-fixed
 		.mdc-fab__ripple
 		a.mdc-fab__icon.material-icons(href= mountpoint + '/' + admin.name + '/' + row.id + '/edit') edit
 
-block content
+block amdincontent
 	- let back = mountpoint + '/' + admin.name;
 	if (admin.options.behavior === 'child') && fk
 		- back = mountpoint + '/' + pt + '/' + row[fk]
@@ -24,42 +24,38 @@ block content
 					
 				.page-content
 					.admin-form
-						.flextable(data-sargasso-class="flexTable" data-break="screen-xs,screen-sm")
-							ul
-								li
-								li
-							ul
-								li.label
-									= 'row'
-									ul
-										li
+						.flextable
+							table
+								tbody
+									tr
+										td.label= 'row'
+										td
 											.button-bar.pull-right
 												if canDelete
 													.delete-button
 														i.material-icons delete_forever
 											= row.id
 										
-								if fk
-									li.label
-										= fk
-										ul
-											li.data
+									if fk
+										tr
+											td.label= fk
+											td.data
 												if admin.getColumn(fk).getValueProducesMarkup
 													!= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
 												else
 													= admin.getColumn(fk).getDisplayValue(row,prepared[fk])
-													
-								for property in admin.options.viewColumns
-									if property !== fk
-										li.label
-											= property
-											ul
-												li.data
-													if admin.getColumn(property).getValueProducesMarkup
-														!= admin.getColumn(property).getDisplayValue(row,prepared[property])
-													else
-														= admin.getColumn(property).getDisplayValue(row,prepared[property])
-						
+														
+									for property in admin.options.viewColumns
+										if property !== fk
+											if admin.getColumn(property).getDisplayValue(row,prepared[property])
+												tr
+													td.label= property
+													td.data
+														if admin.getColumn(property).getValueProducesMarkup
+															!= admin.getColumn(property).getDisplayValue(row,prepared[property])
+														else
+															= admin.getColumn(property).getDisplayValue(row,prepared[property])
+							
 						if (admin.options.behavior !== 'reference')
 							// belongs to many relationships (through tables)
 							for join in admin.options.joins

@@ -9,12 +9,12 @@ block content
 		else
 			
 			form.form.form-validation(action="/api/users/email-validate" method="PATCH" data-sargasso-class="formController" data-submitter="#submitter")
-				input(type="hidden" name="_csrf" value= csrfToken)
+				input(type="hidden" name="_csrf" value= csrfToken data-payload)
 
-				input(type="hidden" name="token" value= token)
+				input(type="hidden" name="token" value= token data-payload)
 				.reg-form.clear-fix.mdc-elevation--z1
-					section.form-group
+					section.input-group
 						p.truncate= 'code: ' + token
-					section.form-group.pull-right
+					section.input-group.pull-right
 						button#submitter.mdc-button.mdc-button--raised.primary-button
 							span.mdc-button__label Click Here to Complete Validation

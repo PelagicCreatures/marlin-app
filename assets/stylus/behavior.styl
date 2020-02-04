@@ -159,7 +159,7 @@ h2
 		.mdc-text-field
 			height: 56px
 			width: 100%
-		.form-group
+		.input-group
 			position:relative
 			margin-top: 1em
 	.reg-form-footer
@@ -213,7 +213,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 	border: thin solid black
 	border-radius: 4px
 
-// form validation indicators and help prompts managed by jsclass formValidator.js
+// form validation indicators and help prompts
 
 .form-validation
 	.input-relative
@@ -221,8 +221,6 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 
 	.input-ok-indicator
 		position:absolute
-		top: 7px
-		right: 7px
 		opacity: 0
 		color: $darker-accent!important
 
@@ -237,8 +235,8 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		pointer-events:none
 		color:#b00020
 
-	.input-error
-		&.touched
+	&.touched
+		.error
 			.validation-help
 				opacity:1
 
@@ -285,9 +283,7 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 			top:56px
 
 
-/* flextable */
 .flextable
-	display:none
 	table
 		width:100%
 		border: thin solid #dddddd
@@ -304,22 +300,17 @@ input:-webkit-autofill,input:-webkit-autofill:hover, input:-webkit-autofill:focu
 		tr:not(:last-child)
 			td
 				border-bottom:thin solid #dddddd
-	.flextable-header
-		background-color:#ddd
-	.flextable-row-header
-		text-align: left
-
-	&.folded
-		.flextable-cell
-			height: 30px
-			padding-bottom: 1.5em
-		.flextable-header
-			text-align:left
-			background-color:#eee
-		.flextable-row-header
+	.screen-xs &
+		thead th:not(:first-child)
+			display: none
+		td, th
+			display: block
+		.label
+			text-align:center!important
+		td[data-th]:before
+			display:block
 			font-weight: bold
-			text-align: left!important
-			background-color:#ddd
+			content: attr(data-th)
 
 tr.hovering
 	td
@@ -342,6 +333,9 @@ tr.hovering
 				width: 100%
 				padding: .5em
 .admin-form
+	.input-ok-indicator
+		top: 7px
+		right: 7px
 	table
 		td
 			img
@@ -372,7 +366,7 @@ tr.hovering
 			font-size: 2em
 			vertical-align: middle
 		cursor: pointer
-	.form-group
+	.input-group
 		position:relative
 	.mdc-switch
 		margin: 1em

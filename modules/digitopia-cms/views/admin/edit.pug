@@ -1,6 +1,6 @@
-extends ../../../../views/wrapper
+extends wrapper
 
-block content
+block amdincontent
 	- let back = mountpoint + '/' + admin.name;
 	if (admin.options.behavior === 'child') && fk
 		- back = mountpoint + '/' + pt + '/' + row[fk]
@@ -11,7 +11,6 @@ block content
 			
 				.page-header
 					h2
-						
 						a.back-button(href= mountpoint + '/' + admin.name + '/' + row.id)
 							i.material-icons arrow_back_ios
 						= admin.name + ': edit row ' + row.id
@@ -23,30 +22,26 @@ block content
 										
 				.page-content
 					.admin-form
-						form.form-validation(data-sargasso-class="formValidator" data-submitter="#submitter")
-							input(type="hidden" name="_csrf" value= csrfToken)
+						form.form-validation(action= mountpoint + '/' + admin.name + '/' + row.id method="PUT" data-sargasso-class="MolaMola" data-helpers="AdminHandler,BoilerplateHandler" data-submitter="#submitter" data-redirect= mountpoint + '/' + admin.name + '/' + row.id)
+							input(type="hidden" name="_csrf" value= csrfToken data-payload)
 
-							.flextable(data-sargasso-class="flexTable" data-break="screen-xs,screen-sm")
-								ul
-									li
-									li
-								ul
-									for property in admin.options.editColumns
-										if property !== fk
-											li.label.edit
-												= admin.getColumn(property).options.label
-												ul
-													li.data!= admin.getColumn(property).getForm(row, prepared[property])
+							.flextable
+								table
+									tbody
+										for property in admin.options.editColumns
+											if property !== fk
+												tr
+													td.label.edit= admin.getColumn(property).options.label
+													td.data!= admin.getColumn(property).getForm(row, prepared[property])
 
-									if (admin.options.behavior !== 'reference')
-										// belongs to many relationships (through tables)
-										for join in admin.options.joins
-											li.label
-												= join.as
-												ul
-													li.data!= admin.getColumn(join.as).getForm(row,prepared[join.as],{resolved:joins[join.as]})
+										if (admin.options.behavior !== 'reference')
+											// belongs to many relationships (through tables)
+											for join in admin.options.joins
+												tr
+													td.label= join.as
+													td.data!= admin.getColumn(join.as).getForm(row,prepared[join.as],{resolved:joins[join.as]})
 														
-							section.form-group.pull-right.button-bar
+							section.input-group.pull-right.button-bar
 								a.mdc-button(href= back) Cancel
 								button#submitter.mdc-button.mdc-button--raised(disabled).primary-button
 									span.mdc-button__label Save

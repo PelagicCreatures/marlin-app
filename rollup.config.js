@@ -4,9 +4,24 @@ import json from '@rollup/plugin-json'
 
 export default {
 	input: './assets/app.js',
+	external: [
+		// '@pelagiccreatures/sargasso',
+		// '@pelagiccreatures/tropicBird',
+		// '@pelagiccreatures/flyingFish',
+		// '@pelagiccreatures/molamola'
+	],
+
 	output: {
-		format: 'es',
-		file: 'public/dist/js/bundle.es.js'
+		format: 'iife',
+		file: 'public/dist/js/userapp.iife.js',
+		sourcemap: true,
+		name: 'App',
+		globals: {
+			// '@pelagiccreatures/sargasso': 'PelagicCreatures.Sargasso',
+			// '@pelagiccreatures/tropicBird': 'PelagicCreatures.TropicBird',
+			// '@pelagiccreatures/flyingFish': 'PelagicCreatures.FlyingFish',
+			// '@pelagiccreatures/molamola': 'PelagicCreatures.MolaMola'
+		}
 	},
 
 	plugins: [
@@ -15,11 +30,7 @@ export default {
 			preferBuiltins: false
 		}),
 		commonjs({
-			namedExports: {
-				// jQuery: ['$', 'jQuery'],
-				// async: 'async',
-				// Vibrant: 'vibrant'
-			}
+			namedExports: {}
 		})
 	]
 }

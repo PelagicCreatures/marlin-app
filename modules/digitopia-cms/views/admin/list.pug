@@ -1,11 +1,11 @@
-extends ../../../../views/wrapper
+extends wrapper
 
 block fab
 	button.mdc-fab.mdc-fab--mini.app-fab-fixed
 		.mdc-fab__ripple
 		a.mdc-fab__icon.material-icons(href= mountpoint + '/' + admin.name + '/create') add
 
-block content
+block amdincontent
 	.admin-container
 		.admin.clear-fix.mdc-elevation--z1
 			div(data-sargasso-class="adminController" data-mountpoint= mountpoint data-model= admin.name)
@@ -29,7 +29,7 @@ block content
 							
 							section.admin-search
 								form.form-validation(data-sargasso-class="formValidator" data-submitter=".search-button")
-									.form-group
+									.input-group
 										table
 											tr
 												td
@@ -47,21 +47,25 @@ block content
 								p No rows found
 					else
 						.admin-form
-							.flextable(data-sargasso-class="flexTable" data-break="screen-xs,screen-sm")
-								ul
-									li id
-									for property in admin.options.listColumns
-										li= property
-								ul
-									for row in rows
-										li.select-row(data-row= row.id)= row.id
-											ul
+							.flextable
+								table
+									thead
+										tr
+											th Row
+											for property in admin.options.listColumns
+												th= property
+									tbody
+										for row in rows
+											tr.select-row(data-row= row.id data-th="id")
+												td(data-th="id")
+													.div.data= row.id
 												for col in admin.options.listColumns
-													li.select-row(data-row= row.id)
-														if admin.getColumn(col).getValueProducesMarkup
-															!= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
-														else
-															= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
+													td(data-th= col)
+														.div
+															if admin.getColumn(col).getValueProducesMarkup
+																!= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
+															else
+																= admin.getColumn(col).getDisplayValue(row, prepared[row.id][col])
 							
 						include pagination
 	//	

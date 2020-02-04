@@ -18,6 +18,11 @@ $material-design-icons-font-directory-path: '~material-design-icons-iconfont/dis
 
 @import '~material-design-icons-iconfont/src/material-design-icons';
 
+// TODO MDC TextInput floating label borked on autofill, revisit once they fix it
+.mdc-text-field__input:-webkit-autofill + .mdc-floating-label {
+	transform: translateY(-106%) scale(0.75)!important
+}
+
 .progress {
 	@include mdc-linear-progress-bar-color($darker-accent);
 }

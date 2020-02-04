@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Sargasso, registerSargassoClass
+	Sargasso, utils
 }
 	from '@pelagiccreatures/sargasso'
 
@@ -90,7 +90,7 @@ class ajaxButton extends Sargasso {
 	};
 };
 
-registerSargassoClass('ajaxButton', ajaxButton)
+utils.registerSargassoClass('ajaxButton', ajaxButton)
 
 export {
 	ajaxButton

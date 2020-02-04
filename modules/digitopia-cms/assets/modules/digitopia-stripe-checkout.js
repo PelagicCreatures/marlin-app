@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Sargasso, registerSargassoClass
+	Sargasso, utils
 }
 	from '@pelagiccreatures/sargasso'
 
@@ -50,7 +50,7 @@ class stripeClientCheckout extends Sargasso {
 	}
 }
 
-registerSargassoClass('stripeClientCheckout', stripeClientCheckout)
+utils.registerSargassoClass('stripeClientCheckout', stripeClientCheckout)
 
 export {
 	stripeClientCheckout

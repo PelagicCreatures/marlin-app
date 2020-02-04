@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import {
-	Sargasso, registerSargassoClass
+	Sargasso, utils
 }
 	from '@pelagiccreatures/sargasso'
 
@@ -18,7 +18,7 @@ class uploadableImage extends Sargasso {
 		this.previewElement = $('[data-name="' + this.columnName + '-preview"]')
 		this.widthElement = $('[data-name="' + this.columnName + '-width"]')
 		this.heightElement = $('[data-name="' + this.columnName + '-height"]')
-		this.metadata = this.jqElement.closest('.form-group').find('.metadata')
+		this.metadata = this.jqElement.closest('.input-group').find('.metadata')
 	}
 
 	start () {
@@ -84,7 +84,7 @@ class uploadableImage extends Sargasso {
 	}
 }
 
-registerSargassoClass('uploadableImage', uploadableImage)
+utils.registerSargassoClass('uploadableImage', uploadableImage)
 
 export {
 	uploadableImage
