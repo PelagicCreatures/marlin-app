@@ -1,6 +1,11 @@
-import commonjs from 'rollup-plugin-commonjs'
-import nodeResolve from 'rollup-plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import nodeResolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
+
+import {
+	terser
+}
+	from 'rollup-plugin-terser'
 
 export default {
 	input: './assets/app.js',
@@ -16,6 +21,7 @@ export default {
 		file: 'public/dist/js/userapp.iife.js',
 		sourcemap: true,
 		name: 'App',
+		compact: true,
 		globals: {
 			// '@pelagiccreatures/sargasso': 'PelagicCreatures.Sargasso',
 			// '@pelagiccreatures/tropicBird': 'PelagicCreatures.TropicBird',
@@ -31,6 +37,11 @@ export default {
 		}),
 		commonjs({
 			namedExports: {}
+		}),
+		terser({
+			output: {
+				comments: false
+			}
 		})
 	]
 }
