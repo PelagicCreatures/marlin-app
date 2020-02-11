@@ -15,7 +15,7 @@
 	"dependencies": {
 		"@pelagiccreatures/flyingfish": "^0.1.2",
 		"@pelagiccreatures/molamola": "^0.2.2",
-		"@pelagiccreatures/sargasso": "^0.8.5",
+		"@pelagiccreatures/sargasso": "^0.8.6",
 		"@pelagiccreatures/tropicbird": "^0.2.2",
 		"basic-auth": "^2.0.1",
 		"bcryptjs": "^2.4.3",
