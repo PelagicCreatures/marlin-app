@@ -33,6 +33,7 @@ import {
 
 if (publicOptions.USER_BEHAVIOR) {
 	const anal = new digitopiaAnalytics(document.body, publicOptions.USER_BEHAVIOR)
+	anal.start()
 }
 
 // expose these so huge markdown editor can be dynamically loaded
