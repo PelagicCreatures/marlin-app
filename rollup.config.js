@@ -9,34 +9,23 @@ import {
 
 export default {
 	input: './assets/app.js',
-	external: [
-		// '@pelagiccreatures/sargasso',
-		// '@pelagiccreatures/tropicBird',
-		// '@pelagiccreatures/flyingFish',
-		// '@pelagiccreatures/molamola'
-	],
 
 	output: {
 		format: 'iife',
-		file: 'public/dist/js/userapp.iife.js',
+		file: 'public/dist/js/marlinapp.iife.js',
 		sourcemap: true,
 		name: 'App',
-		compact: true,
-		globals: {
-			// '@pelagiccreatures/sargasso': 'PelagicCreatures.Sargasso',
-			// '@pelagiccreatures/tropicBird': 'PelagicCreatures.TropicBird',
-			// '@pelagiccreatures/flyingFish': 'PelagicCreatures.FlyingFish',
-			// '@pelagiccreatures/molamola': 'PelagicCreatures.MolaMola'
-		}
+		compact: true
 	},
 
 	plugins: [
 		json(),
+		commonjs({}),
 		nodeResolve({
-			preferBuiltins: false
-		}),
-		commonjs({
-			namedExports: {}
+			preferBuiltins: false,
+			dedupe: (dep) => {
+				return dep.match(/^(@pelagiccreatures|lodash|js-cookie)/)
+			}
 		}),
 		terser({
 			output: {

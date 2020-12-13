@@ -1,0 +1,12 @@
+extends wrapper
+
+block amdincontent
+	.admin-container
+		.admin.clear-fix.mdc-elevation--z1
+			.page-header
+				h2.no-icon Analytics
+			
+			.page-content
+				p A bunch of charts here
+				
+				div(data-sargasso-class="AnalyticsReport" data-endpoint= publicOptions.USER_BEHAVIOR.mountPoint + '/report')

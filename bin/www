@@ -5,7 +5,7 @@
  */
 
 const app = require('../app')
-const debug = require('debug')('datalounge-md:server')
+const debug = require('debug')('marlin:server')
 const http = require('http')
 
 let port = process.env.PORT || '3000'
@@ -22,10 +22,10 @@ app.set('port', port)
  */
 
 app.start(() => {
-	var server
+	let server
 
 	if (process.env.SSL_KEY_PATH && process.env.SSL_CERT_PATH) {
-		var fs = require('fs')
+		const fs = require('fs')
 		const sslKey = fs.readFileSync(process.env.SSL_KEY_PATH, 'utf8')
 		const sslCert = fs.readFileSync(process.env.SSL_CERT_PATH, 'utf8')
 
@@ -69,7 +69,7 @@ app.start(() => {
  */
 
 function normalizePort (val) {
-	var port = parseInt(val, 10)
+	const port = parseInt(val, 10)
 
 	if (isNaN(port)) {
 		// named pipe
@@ -93,7 +93,7 @@ function onError (error) {
 		throw error
 	}
 
-	var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+	const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
 
 	// handle specific listen errors with friendly messages
 	switch (error.code) {

@@ -1,105 +1,118 @@
 doctype html
 html
-  head
-    meta(charset="utf-8")
-    meta(http-equiv="X-UA-Compatible" content="IE=edge")
-    meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
-    link(rel="shortcut icon" href="/favicon.ico")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no, minimal-ui, viewport-fit=cover")
-    meta(name="apple-mobile-web-app-capable" content="yes")
-    meta(name="apple-mobile-web-app-status-bar-style" content="black")
-    meta(name="format-detection" content="telephone=no")
-    link(rel="apple-touch-icon" href="/apple-touch-icon.png")
-    meta(name="apple-mobile-web-app-title" content= sitename)
-      
-    title= sitename
-    
-    if env === 'production'
-      link(rel='stylesheet', href='/dist/css/userapp.min.css')
-    else
-      link(rel='stylesheet', href='/dist/css/userapp.css')
-            
-  body.mdc-typography
-    script(nonce= nonce).
-      var result;
-      var cookie=(result=new RegExp('(?:^|; )responsive=([^;]*)').exec(document.cookie))?decodeURIComponent(result[1]):null;
-      if(cookie){document.body.className = document.body.className + ' ' + cookie;}
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible" content="IE=edge")
+		meta(http-equiv="Content-Type" content="text/html; charset=UTF-8")
+			
+		link(rel="shortcut icon" href="/favicon.ico")
+		meta(name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no, minimal-ui, viewport-fit=cover")
+		meta(name="format-detection" content="telephone=no")
+		meta(name="apple-mobile-web-app-capable" content="yes")
+		meta(name="apple-mobile-web-app-title" content="pic")
+		meta(name="apple-mobile-web-app-status-bar-style" content="black")
+		meta(name="theme-color" content="black")
 
-    #splash(style="position:fixed;top:0;left:0;right:0;bottom:0;text-align:center;background-color:#333;z-index:99999;")
-      #splash-logo
-        i.material-icons emoji_people
+		link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" type="image/png")
 
-    include components/drawer
+		link(rel="manifest" href="/manifest.json")
+		
+		title= pageTitle ? pageTitle : sitename
+		
+		block seo
+		
+		//
+			link(href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet")
+			link(href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet")
+			link(href="https://fonts.googleapis.com/css2?family=Material+Icons+Round" rel="stylesheet")
+			link(href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet")
+		
+		if env === 'production'
+			link(rel='stylesheet', href='/dist/css/marlinapp.min.css')
+		else
+			link(rel='stylesheet', href='/dist/css/marlinapp.css')
+				
+		style#override-styles(nonce= nonce type="text/css")
+						
+	body.mdc-typography
+		script(nonce= nonce).
+			var result;
+			var cookie=(result=new RegExp('(?:^|; )responsive=([^;]*)').exec(document.cookie))?decodeURIComponent(result[1]):null;
+			if(cookie){document.body.className = document.body.className + ' ' + cookie;}
 
-    .mdc-drawer-app-content
-      
-      include components/navigation
-      
-      .top-margin
-        
-        .progress.mdc-linear-progress.mdc-linear-progress--indeterminate.mdc-linear-progress--closed(role="progressbar")
-          .mdc-linear-progress__buffering-dots
-          .mdc-linear-progress__buffer
-          .mdc-linear-progress__bar.mdc-linear-progress__primary-bar
-            span.mdc-linear-progress__bar-inner
-          .mdc-linear-progress__bar.mdc-linear-progress__secondary-bar
-            span.mdc-linear-progress__bar-inner
-        
-        #user-alerts.mdc-elevation--z10
+		#overscroll-wrapper
+			
+			#splash(style="position:fixed;top:0;left:0;right:0;bottom:0;text-align:center;background-color:#333;z-index:99999;")
+				#splash-logo
+					i.material-icons emoji_people
 
-        #content-body(data-hijax="true")
-          .mdc-layout-grid
-            .mdc-layout-grid__inner
-              .mdc-layout-grid__cell--span-12
-                block content
-                  
-    #fab(data-hijax="true")
-      block fab
-    
-    .mdc-snackbar
-      .mdc-snackbar__surface
-        .mdc-snackbar__label
-    
-    // expose app.locals.publicOptions to client side javascript gobal var 'publicOptions'
-    script(nonce= nonce)!= "var publicOptions = " + JSON.stringify(publicOptions) + ';'
-    
-    if publicOptions.STRIPE_PUBLIC
-      // stripe for subscriptions
-      script(nonce= nonce src="https://js.stripe.com/v3/")
-      
-    if publicOptions.RECAPTCHA_PUBLIC
-      // CAPTCHA for forms
-      script(nonce= nonce src="https://www.google.com/recaptcha/api.js?render=" + publicOptions.RECAPTCHA_PUBLIC)
-    
-    if env === 'production'
-      script(src="/dist/js/userapp.min.js")
-    else
-      
-      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/sargasso/dist/sargasso.iife.js" nonce= nonce)
-      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/tropicbird/dist/tropicbird.iife.js" nonce= nonce)
-      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/flyingfish/dist/flyingfish.iife.js" nonce= nonce)
-      //script(src="https://cdn.jsdelivr.net/npm/@pelagiccreatures/molamola/dist/molamola.iife.js" nonce= nonce)
+			include components/drawer
 
-      script(src="/dist/js/userapp.iife.js" defer)
+			.mdc-drawer-app-content
+				
+				include components/navigation
+				
+				.top-margin
+					
+					.progress.mdc-linear-progress.mdc-linear-progress--indeterminate.mdc-linear-progress--closed(role="progressbar")
+						.mdc-linear-progress__buffering-dots
+						.mdc-linear-progress__buffer
+						.mdc-linear-progress__bar.mdc-linear-progress__primary-bar
+							span.mdc-linear-progress__bar-inner
+						.mdc-linear-progress__bar.mdc-linear-progress__secondary-bar
+							span.mdc-linear-progress__bar-inner
+					
+					#content-body(data-hijax="true")
+					
+						block fullwidth
+							
+						.mdc-layout-grid
+							.mdc-layout-grid__inner
+								.mdc-layout-grid__cell--span-12
+									block content
+									
+			#fab(data-hijax="true")
+				block fab
+							
+			.mdc-snackbar
+				.mdc-snackbar__surface
+					.mdc-snackbar__label
 
-      script(nonce= nonce defer).
-        window.onload=  function() {
-          App.Utils.boot()
-        }
+		// expose app.locals.publicOptions to client side javascript gobal var 'publicOptions'
+		script(nonce= nonce)!= "var publicOptions = " + JSON.stringify(publicOptions) + ';'
+		
+		if publicOptions.STRIPE_PUBLIC
+			// stripe for subscriptions
+			script(nonce= nonce src="https://js.stripe.com/v3/")
+			
+		if publicOptions.RECAPTCHA_PUBLIC
+			// CAPTCHA for forms
+			script(nonce= nonce src="https://www.google.com/recaptcha/api.js?render=" + publicOptions.RECAPTCHA_PUBLIC)
+		
+		if env === 'production'
+			script(src="/dist/js/marlinapp.iife.min.js" defer)
+		else
+			script(src="/dist/js/marlinapp.iife.js" defer)
 
-      // script(src="/dist/js/markdown.iife.js")
-    
-    
-    aside#confirm-dialog.mdc-dialog(role="alertdialog")
-      .mdc-dialog__container
-        .mdc-dialog__surface
-            h2.mdc-dialog__title title
-            .mdc-dialog__content prompt
-            footer.mdc-dialog__actions
-              button.mdc-button.mdc-dialog__button.mdc-dialog-cancel(data-mdc-dialog-action="cancel")
-                .mdc-button__label Cancel
-              button.mdc-button.mdc-dialog__button(data-mdc-dialog-action="accept" data-mdc-dialog-button-default)
-                .mdc-button__label Continue
-      .mdc-dialog__scrim
+		script(nonce= nonce defer).
+			window.onload=  function() {
+				App.CMSUtils.bootCMS()
+				App.boot()
+			}
 
-    #ephemeral
+		aside#confirm-dialog.mdc-dialog(role="alertdialog")
+			.mdc-dialog__container
+				.mdc-dialog__surface
+						h2.mdc-dialog__title title
+						.mdc-dialog__content prompt
+						footer.mdc-dialog__actions
+							button.mdc-button.mdc-dialog__button.mdc-dialog-cancel(data-mdc-dialog-action="cancel")
+								.mdc-button__label Cancel
+							button.mdc-button.mdc-dialog__button(data-mdc-dialog-action="accept" data-mdc-dialog-button-default)
+								.mdc-button__label Continue
+			.mdc-dialog__scrim
+
+		#ephemeral
+
+		#scripts(data-hijax="true")
+			block scripts

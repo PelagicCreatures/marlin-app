@@ -8,7 +8,7 @@ import {
 	from 'rollup-plugin-terser'
 
 export default {
-	input: './modules/digitopia-cms/assets/markdown.js',
+	input: '@pelagiccreatures/marlin/assets/markdown.js',
 	output: {
 		format: 'iife',
 		file: 'public/dist/js/markdown.iife.js',
@@ -19,9 +19,7 @@ export default {
 		nodeResolve({
 			preferBuiltins: false
 		}),
-		commonjs({
-			namedExports: {}
-		}),
+		commonjs({}),
 		terser({
 			output: {
 				comments: false

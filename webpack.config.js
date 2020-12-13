@@ -2,14 +2,12 @@ const autoprefixer = require('autoprefixer')
 const path = require('path')
 const WebpackNotifierPlugin = require('webpack-notifier')
 
-module.exports = {
-	mode: 'development',
-	entry: ['./assets/scss/app.scss', './assets/app.js'],
+const cssConfig = {
+	entry: ['./assets/scss/app.scss'],
 	output: {
-		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'working/assets'),
-		library: 'App'
+		path: path.resolve(__dirname, 'working/assets')
 	},
+	mode: 'development',
 	watchOptions: {
 		poll: 1000 // Check for changes every second
 	},
@@ -32,33 +30,32 @@ module.exports = {
 			}, {
 				loader: 'postcss-loader',
 				options: {
-					plugins: () => [autoprefixer()]
+					postcssOptions: {
+						plugins: () => [autoprefixer()]
+					}
 				}
 			}, {
 				loader: 'sass-loader',
 				options: {
 					sassOptions: {
-						includePaths: ['./node_modules']
+						includePaths: ['./node_modules', './node_modules/@pelagiccreatures/tropicbird/node_modules']
 					}
 				}
 			}]
-		}, {
-			test: /\.js$/,
-			loader: 'babel-loader',
-			exclude: /(node_modules|bower_components)/,
-			include: path.join(__dirname, 'node_modules/@pelagiccreatures/sargasso'),
-			query: {
-				presets: ['@babel/preset-env']
-			}
 		}, {
 			test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
 			use: [{
 				loader: 'file-loader',
 				options: {
 					name: '[name].[ext]',
-					outputPath: 'fonts/'
+					outputPath: 'fonts/',
+					publicPath: '/dist/css/fonts/'
 				}
 			}]
 		}]
 	}
 }
+
+module.exports = [
+	cssConfig
+]

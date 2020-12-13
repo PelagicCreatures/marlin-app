@@ -5,7 +5,7 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const uuid = require('uuid')
 const helmet = require('helmet')
-const debug = require('debug')('antisocial-user')
+const debug = require('debug')('marlin-user')
 
 if (process.env.ENVFILE) {
 	console.log('loading env:' + process.env.ENVFILE)
@@ -49,15 +49,12 @@ if (config.LOGGER_LEVEL) {
 
 // use basic-auth for development environment
 if (config.BASIC_AUTH && !process.env.TESTING) {
-	var basicAuth = require('./lib/basicAuth')(config.BASIC_AUTH)
+	const basicAuth = require('./lib/basicAuth')(config.BASIC_AUTH)
 	app.use(basicAuth)
 }
 
 // parse cookies in all routes
 app.use(cookieParser(config.COOKIE_KEY))
-
-// set up and mount the user API
-app.userAPI = require('./modules/digitopia-cms/index')(app, config)
 
 const bootDir = path.join(__dirname, 'boot')
 fs
@@ -90,7 +87,7 @@ fs
 // handlers need to be defined after this call
 app.start = function (done) {
 	debug('starting app')
-	app.db.sync(() => {
+	app.marlin.db.sync(() => {
 		debug('db sync done')
 
 		// catch 404 and forward to error handler
@@ -113,7 +110,7 @@ app.start = function (done) {
 
 			res.locals.message = err.cause && err.cause() ? err.cause().message : err.message
 
-			if (req.headers['x-digitopia-hijax']) {
+			if (req.get('Sargasso-Hijax')) {
 				res.set('Sargasso-Flash-Level', 'danger')
 				res.set('Sargasso-Flash-Message', res.locals.message)
 			}

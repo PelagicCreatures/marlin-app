@@ -1,13 +1,17 @@
 header.mdc-top-app-bar.mdc-top-app-bar--fixed
 	div#navbar.mdc-top-app-bar__row(data-hijax="true")
 		section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-start
-			a.hamburger.material-icons.mdc-top-app-bar__navigation-icon(href="#") menu
+			if backArrow
+				a.material-icons.mdc-top-app-bar__navigation-icon(href="/") arrow_back_ios
+			else
+				a.hamburger.material-icons.mdc-top-app-bar__navigation-icon(href="#") menu
 
 			#page-title.mdc-top-app-bar__title
-				span= title ? title : sitename
+				a.mdc-top-app-bar__action-item(href="/")= pageTitle ? pageTitle : sitename
 
-			section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-end.hidden-logged-out
-				.position-relative
-					.show-notifications-button.material-icons.mdc-top-app-bar__action-item
-						i.fa.fa-fw.fa-bell
-					.badge.activity-count 10
+			if fullscreen
+				section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-end
+					.position-relative
+						.material-icons.mdc-top-app-bar__action-item
+							i.material-icons.rotate-phone-prompt.rotate90(data-sargasso-class="immersive" data-target=".want-fullscreen") smartphone
+							i.material-icons.fullscreen-prompt(data-sargasso-class="immersive" data-target=".want-fullscreen") fullscreen

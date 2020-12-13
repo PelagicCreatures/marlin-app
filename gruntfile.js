@@ -1,35 +1,60 @@
 module.exports = function (grunt) {
-	var jsFiles = [
-		'working/assets/*.js',
-		'working/templates/*.js',
-		'assets/js/*.js'
-	]
-
-	var cssFiles = [
+	const cssFiles = [
 		'working/assets/*.css',
-		'assets/css/*.css'
+		'assets/css/*.css',
+		'node_modules/animate.css/animate.css'
 	]
 
-	var stylusFiles = [
+	const stylusFiles = [
 		'assets/stylus/*.styl'
 	]
 
-	var watchfiles = ['modules/digitopia-cms/views/shared/*.pug']
+	const watchfiles = ['@pelagiccreatures/marlin/views/shared/*.pug', 'assets/workers/*.js']
 
-	var allFiles = []
-	allFiles = allFiles.concat(watchfiles, jsFiles, cssFiles, stylusFiles)
+	let allFiles = []
+	allFiles = allFiles.concat(watchfiles, cssFiles, stylusFiles)
 
-	var copyCommand = [{
+	const copyCommand = [{
 		expand: true,
-		cwd: 'node_modules/jquery/dist/',
-		src: ['jquery.js', 'jquery.min.js'],
+		cwd: 'node_modules/workbox-sw/build/',
+		src: ['workbox-sw.js', 'workbox-sw.js.map'],
 		dest: 'public/dist/js/',
 		filter: 'isFile'
 	}, {
 		expand: true,
-		cwd: 'working/assets/',
-		src: ['*.map'],
+		cwd: 'node_modules/workbox-strategies/build/',
+		src: ['workbox-strategies.prod.js', 'workbox-strategies.prod.js.map'],
 		dest: 'public/dist/js/',
+		filter: 'isFile'
+	}, {
+		expand: true,
+		cwd: 'node_modules/workbox-cacheable-response/build/',
+		src: ['workbox-cacheable-response.prod.js', 'workbox-cacheable-response.prod.js.map'],
+		dest: 'public/dist/js/',
+		filter: 'isFile'
+	}, {
+		expand: true,
+		cwd: 'node_modules/workbox-routing/build/',
+		src: ['workbox-routing.prod.js', 'workbox-routing.prod.js.map'],
+		dest: 'public/dist/js/',
+		filter: 'isFile'
+	}, {
+		expand: true,
+		cwd: 'node_modules/workbox-core/build/',
+		src: ['workbox-core.prod.js', 'workbox-core.prod.js.map'],
+		dest: 'public/dist/js/',
+		filter: 'isFile'
+	}, {
+		expand: true,
+		cwd: 'node_modules/workbox-expiration/build/',
+		src: ['workbox-expiration.prod.js', 'workbox-expiration.prod.js.map'],
+		dest: 'public/dist/js/',
+		filter: 'isFile'
+	}, {
+		expand: true,
+		cwd: 'assets/workers/',
+		src: ['service-worker.js', 'service-worker.js'],
+		dest: 'public/',
 		filter: 'isFile'
 	}, {
 		expand: true,
@@ -44,7 +69,7 @@ module.exports = function (grunt) {
 		cssDistDir: 'public/dist/css/',
 		pkg: grunt.file.readJSON('package.json'),
 		exec: {
-			pug: 'npx pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  modules/digitopia-cms/views/shared/confirm-dialog.pug'
+			confirmDialogTemplate: 'npx pug --client --no-debug --pretty --out working/templates --name confirmDialogTemplate  node_modules/@pelagiccreatures/marlin/views/shared/confirm-dialog.pug'
 		},
 		copy: {
 			main: {
@@ -62,27 +87,10 @@ module.exports = function (grunt) {
 			}
 		},
 		concat: {
-			js: {
-				options: {
-					separator: grunt.util.linefeed + ';' + grunt.util.linefeed
-				},
-				src: jsFiles,
-				dest: '<%=jsDistDir%><%= pkg.name %>.js',
-				nonull: true
-
-			},
 			css: {
 				src: cssFiles,
 				dest: '<%=cssDistDir%><%= pkg.name %>.css',
 				nonull: true
-			}
-		},
-		terser: {
-			dist: {
-				options: {},
-				files: {
-					'<%=jsDistDir%><%= pkg.name %>.min.js': '<%=jsDistDir%><%= pkg.name %>.js'
-				}
 			}
 		},
 		cssmin: {
@@ -104,7 +112,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy')
 	grunt.loadNpmTasks('grunt-contrib-stylus')
 	grunt.loadNpmTasks('grunt-contrib-concat')
-	grunt.loadNpmTasks('grunt-terser')
 	grunt.loadNpmTasks('grunt-contrib-cssmin')
 	grunt.loadNpmTasks('grunt-contrib-watch')
 	grunt.loadNpmTasks('grunt-exec')
@@ -114,8 +121,7 @@ module.exports = function (grunt) {
 		'copy',
 		'stylus',
 		'concat',
-		'cssmin',
-		'terser'
+		'cssmin'
 	])
 
 	grunt.registerTask('devel', [

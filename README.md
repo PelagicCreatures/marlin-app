@@ -13,7 +13,7 @@ This repository is a boilerplate app that includes many common functions of a we
 	* ACL access control on tables by user role (superuser, admin, etc.)
 	* Ajax forms and unified input validation
 	* Stripe for subscription plans
-	* Packaging automation for client distribution using webpack (sass, ES6) and grunt
+	* Packaging automation for client distribution using webpack, rollup and grunt
 	* ReCaptcha v3 support for registration
 	* CSS compiles from SCSS and/or stylus
 	* CSRF protection support
@@ -31,22 +31,14 @@ This repository is a boilerplate app that includes many common functions of a we
 	* lib/
 	* migrations/
 	* models/
-	* modules/ - local node modules
-		* antisocial-users/  - user API
-		* digitopia/ - client side controllers
 	* public/ - public files
 		* dist/ - compiled JS and CSS (managed by grunt)
 		* images/
 	* routes/ - page routes
-		* index.js - home page
-		* user-pages.js - user reg forms etc.
-	* seeders/
 	* tests/ - mocha testing suite
 	* views/ - pug templates for pages
-		* admin/ - site admin UI
 		* components/ - reusable page components
 		* shared/ - client/server shared templates
-		* users/ - user pages
 		* wrapper.pug - html wrapper
 	* app.js - express app
 	* gruntfile.js - grunt automation

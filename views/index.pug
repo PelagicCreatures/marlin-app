@@ -1,26 +1,25 @@
 extends wrapper
 
 block content
-  .page-content
-    p Home
-    
-    .hidden-logged-out
-      .hidden-not-subscriber
-        p Hi subscriber!
-      .hidden-is-subscriber
-        p Hi, why not subscribe now!
+	p Home
+	
+	.hidden-logged-out
+		.hidden-not-subscriber
+			p Hi subscriber!
+		.hidden-is-subscriber
+			p Hi, why not subscribe now!
 
 block fab
-  .hidden-logged-in
-    .hidden-have-account
-      a(href="/users/register")
-        button#fab-register.mdc-fab.mdc-fab--extended.app-fab-fixed
-          span.mdc-fab__icon.material-icons account_circle
-          span.mdc-fab__label Register
-    .hidden-dont-have-account
-      a(href="/users/login")
-        button#fab-login.mdc-fab.mdc-fab--extended.app-fab-fixed
-          span.mdc-fab__icon.material-icons account_circle
-          span.mdc-fab__label Login
-  
-  
+	.hidden-logged-in
+		.hidden-have-account
+			a(href="/users/register")
+				button#fab-register.mdc-fab.mdc-fab--extended.app-fab-fixed
+					span.mdc-fab__icon.material-icons account_circle
+					span.mdc-fab__label Register
+		.hidden-dont-have-account
+			a(href="/users/login")
+				button#fab-login.mdc-fab.mdc-fab--extended.app-fab-fixed
+					span.mdc-fab__icon.material-icons account_circle
+					span.mdc-fab__label Login
+	
+	
