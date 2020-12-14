@@ -21,6 +21,9 @@ module.exports = function (app) {
 			STRIPE_PUBLIC: process.env.STRIPE_PUBLIC,
 			STRIPE_YEARLY: process.env.STRIPE_YEARLY,
 			STRIPE_MONTHLY: process.env.STRIPE_MONTHLY,
+			SERVICE_WORKER: '/service-worker.js',
+			MANIFEST: '/manifest.json',
+			NOTIFICATIONS_PK: process.env.VAPID_PUBLIC,
 			USER_BEHAVIOR: { // experimental
 				scope: 'shiny-happy-cookie',
 				method: 'put',

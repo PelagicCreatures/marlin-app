@@ -6,14 +6,15 @@ window.cookieOptions = {
 	expires: 365
 }
 
-let serviceWorker = null
+window.serviceWorkerRegistration = null
 
-if ('serviceWorker' in navigator) {
-	// if (window.navigator.standalone == true || window.matchMedia('(display-mode: standalone)').matches) {
+if (publicOptions.SERVICE_WORKER && 'serviceWorker' in navigator) {
 	window.addEventListener('load', async () => {
-		serviceWorker = await navigator.serviceWorker.register('/service-worker.js', {
+		const options = {
 			scope: '/'
+		}
+		navigator.serviceWorker.register(publicOptions.SERVICE_WORKER, options).then(function (reg) {
+			window.serviceWorkerRegistration = reg
 		})
 	})
-	// }
 }

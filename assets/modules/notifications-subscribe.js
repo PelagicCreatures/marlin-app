@@ -29,13 +29,15 @@ class NotificationsSubscribe extends Sargasso {
 
 	start () {
 		super.start()
-		navigator.serviceWorker.getRegistration('/').then(reg => {
-			if (reg && reg.pushManager) {
-				if (window.Notification.permission !== 'granted' && window.Notification.permission !== 'denied') {
-					this.setup(reg)
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.ready.then(async (reg) => {
+				if (reg && reg.pushManager) {
+					if (window.Notification.permission !== 'granted' && window.Notification.permission !== 'denied') {
+						await this.setup(reg)
+					}
 				}
-			}
-		})
+			})
+		}
 	}
 
 	setup (reg) {

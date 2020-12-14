@@ -1,9 +1,10 @@
-let namespace = 'assets-v2'
+const namespace = 'assets-v2'
 
 importScripts('/dist/js/workbox-sw.js')
 
 self.addEventListener('install', (event) => {
 	console.log('service worker install')
+	self.skipWaiting()
 	event.waitUntil(
 		caches.open(namespace).then((cache) => {
 			return cache.addAll(

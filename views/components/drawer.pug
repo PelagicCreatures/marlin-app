@@ -28,9 +28,10 @@ aside#nav-drawer.drawer-top.mdc-drawer.mdc-drawer--dismissible
 				i.material-icons.mdc-list-item__graphic cloud_download
 				span.mdc-list-item__text Install On Homescreen
 
-			a.nav-item.mdc-list-item.hidden(href="#" data-sargasso-class="NotificationsSubscribe")
-				i.material-icons.mdc-list-item__graphic notifications
-				span.mdc-list-item__text Subscribe To Notifications
+			.hidden-logged-out
+				a.nav-item.mdc-list-item.hidden(href="#" data-sargasso-class="NotificationsSubscribe")
+					i.material-icons.mdc-list-item__graphic notifications
+					span.mdc-list-item__text Subscribe To Notifications
 
 			.hidden-not-admin
 				hr.mdc-list-divider
