@@ -2,6 +2,14 @@ const namespace = 'assets-v2'
 
 importScripts('/dist/js/workbox-sw.js')
 
+workbox.setConfig({
+	debug: false,
+	modulePathPrefix: '/dist/js/'
+})
+
+workbox.loadModule('workbox-strategies')
+workbox.loadModule('workbox-expiration')
+
 self.addEventListener('install', (event) => {
 	console.log('service worker install')
 	self.skipWaiting()
@@ -26,15 +34,11 @@ self.addEventListener('activate', function (event) {
 					if (namespace !== cacheName && cacheName.startsWith('assets-v')) {
 						return caches.delete(cacheName)
 					}
+					return false
 				})
 			)
 		})
 	)
-})
-
-workbox.setConfig({
-	debug: false,
-	modulePathPrefix: '/dist/js/'
 })
 
 workbox.routing.registerRoute(

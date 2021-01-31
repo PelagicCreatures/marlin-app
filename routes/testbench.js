@@ -6,11 +6,13 @@ const {
 	getUserForRequestMiddleware
 } = require('@pelagiccreatures/marlin/lib/get-user-for-request-middleware')
 
-webpush.setVapidDetails(
-	'mailto:example@yourdomain.org',
-	process.env.VAPID_PUBLIC,
-	process.env.VAPID_SECRET
-)
+if (process.env.VAPID_PUBLIC) {
+	webpush.setVapidDetails(
+		'mailto:example@yourdomain.org',
+		process.env.VAPID_PUBLIC,
+		process.env.VAPID_SECRET
+	)
+}
 
 const sendNotifications = async (subs, message) => {
 	const toSend = subs.map((sub) => {
