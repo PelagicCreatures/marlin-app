@@ -10,13 +10,23 @@ import {
 export default {
 	input: './assets/app.js',
 
-	output: {
+	output: [{
 		format: 'iife',
 		file: 'public/dist/js/marlinapp.iife.js',
+		name: 'App'
+	}, {
+		format: 'iife',
+		file: 'public/dist/js/marlinapp.iife.min.js',
 		sourcemap: true,
 		name: 'App',
-		compact: true
-	},
+		plugins: [
+			terser({
+				output: {
+					comments: false
+				}
+			})
+		]
+	}],
 
 	plugins: [
 		json(),
@@ -25,11 +35,6 @@ export default {
 			preferBuiltins: false,
 			dedupe: (dep) => {
 				return dep.match(/^(@pelagiccreatures|lodash|js-cookie)/)
-			}
-		}),
-		terser({
-			output: {
-				comments: false
 			}
 		})
 	]
