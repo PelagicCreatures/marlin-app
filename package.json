@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@pelagiccreatures/flyingfish": "^1.0.4",
-		"@pelagiccreatures/marlin": "^0.2.1",
+		"@pelagiccreatures/marlin": "^0.2.2",
 		"@pelagiccreatures/molamola": "^1.1.0",
 		"@pelagiccreatures/sargasso": "^1.1.0",
 		"@pelagiccreatures/tropicbird": "^1.0.5",
